@@ -1,0 +1,555 @@
+/*
+Theme Name: YourSite.biz - SaaS Store Builder
+Description: A modern WordPress theme for SaaS eCommerce platform businesses, inspired by Shopify's clean and conversion-focused design. Features include drag & drop customization, pricing tables, testimonials, and complete eCommerce integration.
+Version: 1.0.0
+Author: YourSite.biz
+Author URI: https://yoursite.biz
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: yoursite
+Tags: ecommerce, business, saas, modern, responsive, customizer-ready, block-styles, wide-blocks
+Requires at least: 5.0
+Tested up to: 6.4
+Requires PHP: 7.4
+*/ 
+
+/* Import Tailwind CSS */
+@import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
+
+/* Custom CSS Variables */
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --accent-color: #f093fb;
+    --text-color: #374151;
+    --text-light: #6b7280;
+    --background-color: #ffffff;
+    --border-color: #e5e7eb;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+}
+
+/* Base Typography */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+/* WordPress specific overrides */
+/*
+Theme Name: YourSite.biz - SaaS Store Builder
+Description: A modern WordPress theme for SaaS eCommerce platform businesses, inspired by Shopify's clean and conversion-focused design. Features include drag & drop customization, pricing tables, testimonials, and complete eCommerce integration.
+Version: 1.0.0
+Author: YourSite.biz
+Author URI: https://yoursite.biz
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: yoursite
+Tags: ecommerce, business, saas, modern, responsive, customizer-ready, block-styles, wide-blocks
+Requires at least: 5.0
+Tested up to: 6.4
+Requires PHP: 7.4
+*/
+
+/* Import Tailwind CSS */
+@import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
+
+/* Custom CSS Variables */
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --accent-color: #f093fb;
+    --text-color: #374151;
+    --text-light: #6b7280;
+    --background-color: #ffffff;
+    --border-color: #e5e7eb;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+}
+
+/* Base Typography */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+/* WordPress specific overrides */
+.wp-block-image {
+    margin: 0;
+}
+
+.aligncenter {
+    text-align: center;
+}
+
+.screen-reader-text {
+    clip: rect(1px, 1px, 1px, 1px);
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+}
+
+/* Custom gradient for hero section */
+.hero-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Hover effects */
+.hover-lift:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+/* Button Styles - CRITICAL FIXES */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    padding: 12px 24px !important;
+    border-radius: 6px !important;
+    color: white !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3) !important;
+    color: white !important;
+    text-decoration: none !important;
+}
+
+.btn-primary:visited {
+    color: white !important;
+}
+
+.btn-secondary {
+    background: white !important;
+    border: 2px solid #e5e7eb !important;
+    padding: 12px 24px !important;
+    border-radius: 6px !important;
+    color: #374151 !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.btn-secondary:hover {
+    border-color: #667eea !important;
+    color: #667eea !important;
+    text-decoration: none !important;
+}
+
+.btn-secondary:visited {
+    color: #374151 !important;
+}
+
+/* Hero section text visibility */
+.hero-gradient h1,
+.hero-gradient h2,
+.hero-gradient h3,
+.hero-gradient h4,
+.hero-gradient h5,
+.hero-gradient h6,
+.hero-gradient p,
+.hero-gradient span,
+.hero-gradient div {
+    color: white !important;
+}
+
+/* Ensure text is visible on gradients */
+.text-white {
+    color: white !important;
+}
+
+.text-gray-900 {
+    color: #111827 !important;
+}
+
+.text-gray-600 {
+    color: #4b5563 !important;
+}
+
+.text-gray-300 {
+    color: #d1d5db !important;
+}
+
+/* Card hover effects */
+.feature-card {
+    transition: all 0.3s ease !important;
+}
+
+.feature-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Background colors */
+.bg-white {
+    background-color: white !important;
+}
+
+.bg-gray-50 {
+    background-color: #f9fafb !important;
+}
+
+.bg-gray-100 {
+    background-color: #f3f4f6 !important;
+}
+
+.bg-gray-900 {
+    background-color: #111827 !important;
+}
+
+/* Ensure proper contrast */
+.bg-gray-900 * {
+    color: white !important;
+}
+
+.bg-gray-900 h1,
+.bg-gray-900 h2,
+.bg-gray-900 h3,
+.bg-gray-900 h4,
+.bg-gray-900 h5,
+.bg-gray-900 h6 {
+    color: white !important;
+}
+
+/* Form styles */
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+textarea,
+select {
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+    background-color: white !important;
+    color: #374151 !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="number"]:focus,
+input[type="tel"]:focus,
+textarea:focus,
+select:focus {
+    outline: none !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Navigation styles */
+.site-header {
+    background-color: white !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+.site-header a {
+    color: #374151 !important;
+    text-decoration: none !important;
+}
+
+.site-header a:hover {
+    color: #667eea !important;
+}
+
+/* Footer styles */
+.site-footer {
+    background-color: #111827 !important;
+    color: white !important;
+}
+
+.site-footer * {
+    color: white !important;
+}
+
+.site-footer a {
+    color: #d1d5db !important;
+}
+
+.site-footer a:hover {
+    color: white !important;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+    .hero-gradient {
+        padding: 60px 0 !important;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 2.5rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .hero-gradient p {
+        font-size: 1.1rem !important;
+    }
+}
+
+/* Pricing table styles */
+.pricing-card {
+    background: white !important;
+    border: 2px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 32px !important;
+    position: relative !important;
+}
+
+.pricing-card.featured {
+    border-color: #667eea !important;
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15) !important;
+}
+
+/* Icon backgrounds */
+.bg-blue-100 {
+    background-color: #dbeafe !important;
+}
+
+.bg-green-100 {
+    background-color: #dcfce7 !important;
+}
+
+.bg-purple-100 {
+    background-color: #f3e8ff !important;
+}
+
+.bg-orange-100 {
+    background-color: #fed7aa !important;
+}
+
+.bg-red-100 {
+    background-color: #fee2e2 !important;
+}
+
+.bg-yellow-100 {
+    background-color: #fef3c7 !important;
+}
+
+/* Icon colors */
+.text-blue-600 {
+    color: #2563eb !important;
+}
+
+.text-green-600 {
+    color: #16a34a !important;
+}
+
+.text-purple-600 {
+    color: #9333ea !important;
+}
+
+.text-orange-600 {
+    color: #ea580c !important;
+}
+
+.text-red-600 {
+    color: #dc2626 !important;
+}
+
+.text-yellow-600 {
+    color: #d97706 !important;
+}
+
+/* Search form styles */
+.search-form {
+    max-width: 400px !important;
+    margin: 0 auto !important;
+}
+
+.search-field {
+    flex: 1 !important;
+    border: 1px solid #d1d5db !important;
+    border-right: none !important;
+    border-radius: 6px 0 0 6px !important;
+    padding: 12px 16px !important;
+}
+
+.search-submit {
+    background: #667eea !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 0 6px 6px 0 !important;
+    padding: 12px 16px !important;
+    cursor: pointer !important;
+}
+
+.search-submit:hover {
+    background: #5b21b6 !important;
+}
+
+/* Ensure all text is readable */
+h1, h2, h3, h4, h5, h6 {
+    color: #111827 !important;
+    font-weight: bold !important;
+}
+
+p {
+    color: #374151 !important;
+    line-height: 1.6 !important;
+}
+
+/* Override any white text on white backgrounds */
+.bg-white h1,
+.bg-white h2,
+.bg-white h3,
+.bg-white h4,
+.bg-white h5,
+.bg-white h6 {
+    color: #111827 !important;
+}
+
+.bg-white p,
+.bg-white span,
+.bg-white div {
+    color: #374151 !important;
+}
+
+/* Specific hero section fixes */
+.hero-gradient .btn-primary {
+    background: white !important;
+    color: #764ba2 !important;
+}
+
+.hero-gradient .btn-primary:hover {
+    background: #f9fafb !important;
+    color: #764ba2 !important;
+}
+
+.hero-gradient .btn-secondary {
+    background: transparent !important;
+    border: 2px solid white !important;
+    color: white !important;
+}
+
+.hero-gradient .btn-secondary:hover {
+    background: white !important;
+    color: #764ba2 !important;
+}
+
+/* Link styles */
+a {
+    color: #667eea !important;
+    text-decoration: none !important;
+}
+
+a:hover {
+    color: #5b21b6 !important;
+    text-decoration: underline !important;
+}
+
+/* Make sure all content is visible */
+* {
+    box-sizing: border-box;
+}
+
+/* Container styles */
+.container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 16px !important;
+}
+
+/* Grid fixes */
+.grid {
+    display: grid !important;
+}
+
+.flex {
+    display: flex !important;
+}
+
+/* Spacing utilities */
+.py-20 {
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+}
+
+.py-16 {
+    padding-top: 64px !important;
+    padding-bottom: 64px !important;
+}
+
+.mb-6 {
+    margin-bottom: 24px !important;
+}
+
+.mb-8 {
+    margin-bottom: 32px !important;
+}
+
+.mt-16 {
+    margin-top: 64px !important;
+}
+
+/* Rounded corners */
+.rounded-lg {
+    border-radius: 8px !important;
+}
+
+/* Shadows */
+.shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.shadow-2xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Debug styles - remove after testing */
+.debug-bg {
+    background: red !important;
+    color: white !important;
+}
+
+/* Ensure WordPress admin bar doesn't interfere */
+html {
+    margin-top: 0 !important;
+}
+
+#wpadminbar {
+    position: fixed !important;
+    top: 0 !important;
+}
