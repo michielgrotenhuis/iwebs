@@ -1,6 +1,6 @@
 <?php
 /**
- * Main theme customizer loader
+ * Safe Main theme customizer loader - RESTORE VERSION
  */
 
 if (!defined('ABSPATH')) {
@@ -19,11 +19,10 @@ function yoursite_load_customizer_modules() {
         'customizer-company.php',       // Company information
         'customizer-social.php',        // Social media links
         'customizer-features.php',      // Features page
-        'customizer-pricing.php',    // Pricing page
-        'customizer-contact.php',    // Contact page
-        'customizer-about.php',      // About page
-        'customizer-templates.php',        // Templates page
-
+        'customizer-pricing.php',       // Pricing page
+        'customizer-contact.php',       // Contact page
+        'customizer-about.php',         // About page
+        'customizer-templates.php',     // Templates page
     );
     
     foreach ($customizer_modules as $module) {
@@ -46,12 +45,14 @@ function yoursite_customize_register($wp_customize) {
         'priority' => 10,
     ));
     
-    // The individual modules will add their sections to this panel
+    // Theme Options panel
+    $wp_customize->add_panel('yoursite_theme_options', array(
+        'title' => __('Theme Options', 'yoursite'),
+        'description' => __('General theme settings, colors, fonts, and layout options', 'yoursite'),
+        'priority' => 20,
+    ));
 }
-add_action('customize_register', 'yoursite_customize_register');
-
-// Add this to the existing yoursite_customize_register function in inc/customizer.php
-add_action('customize_register', 'yoursite_features_page_customizer');
+add_action('customize_register', 'yoursite_customize_register', 1);
 
 /**
  * Sanitize checkbox

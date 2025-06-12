@@ -150,6 +150,40 @@ body {
     text-decoration: none !important;
 }
 
+/* Footer Breadcrumbs - Subtle styling */
+.breadcrumbs-footer {
+    font-size: 0.75rem !important;
+    color: #9ca3af !important;
+    opacity: 0.8 !important;
+    text-align: center !important;
+}
+
+.breadcrumbs-footer a {
+    color: #9ca3af !important;
+    text-decoration: none !important;
+    transition: color 0.2s ease !important;
+}
+
+.breadcrumbs-footer a:hover {
+    color: #d1d5db !important;
+    text-decoration: none !important;
+}
+
+.breadcrumbs-footer .breadcrumb-separator {
+    margin: 0 8px !important;
+    color: #6b7280 !important;
+    opacity: 0.6 !important;
+}
+
+/* Responsive adjustments for breadcrumbs */
+@media (max-width: 768px) {
+    .breadcrumbs-footer {
+        font-size: 0.7rem !important;
+        text-align: center !important;
+        margin-bottom: 8px !important;
+    }
+}
+
 .btn-primary:visited {
     color: white !important;
 }

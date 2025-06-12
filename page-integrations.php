@@ -14,7 +14,8 @@ $integrations = array(
         'description' => 'Nicky.me offers cryptocurrency payment solutions for your online store, making digital currency transactions fast and secure.',
         'icon' => 'N',
         'color' => 'purple',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/nicky/'
     ),
     array(
         'name' => 'Flutterwave',
@@ -22,7 +23,8 @@ $integrations = array(
         'description' => 'Flutterwave is a robust payment gateway operating in multiple countries, including Nigeria, Ghana, Kenya, and the US, empowering merchants to accept payments from all over the world.',
         'icon' => 'FW',
         'color' => 'orange',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/flutterwave/'
     ),
     array(
         'name' => 'Stripe',
@@ -30,7 +32,8 @@ $integrations = array(
         'description' => 'Stripe provides a convenient way to receive payments in your store using various credit and debit cards like Visa, MasterCard, American Express, and more. Secure and simple.',
         'icon' => 'S',
         'color' => 'blue',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/stripe/'
     ),
     array(
         'name' => 'PayPal',
@@ -38,7 +41,8 @@ $integrations = array(
         'description' => 'PayPal is a popular payment provider that allows you to accept payments in your online store with ease and security, trusted worldwide.',
         'icon' => 'PP',
         'color' => 'blue',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/paypal/'
     ),
     array(
         'name' => 'RazorPay',
@@ -46,7 +50,8 @@ $integrations = array(
         'description' => 'Razorpay is India\'s leading converged payments solution, enabling businesses to accept, process, and disburse payments effortlessly.',
         'icon' => 'RP',
         'color' => 'blue',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/razorpay/'
     ),
     array(
         'name' => 'Cash Free',
@@ -54,7 +59,8 @@ $integrations = array(
         'description' => 'Cash Free offers seamless payment gateway services for businesses in India, facilitating secure and hassle-free transactions.',
         'icon' => 'CF',
         'color' => 'green',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/cash-free/'
     ),
     array(
         'name' => 'Paystack',
@@ -62,7 +68,8 @@ $integrations = array(
         'description' => 'Paystack offers a seamless payment gateway in Africa, including Kenya, Nigeria, Ghana, and South Africa, helping businesses grow through secure payments.',
         'icon' => 'PS',
         'color' => 'blue',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/paystack/'
     ),
     array(
         'name' => 'Mercado Pago',
@@ -70,7 +77,8 @@ $integrations = array(
         'description' => 'Mercado Pago makes payments easier for businesses in Latin America with a comprehensive suite of solutions tailored to meet the diverse needs of online merchants.',
         'icon' => 'MP',
         'color' => 'blue',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/mercado-pago/'
     ),
     array(
         'name' => 'Mollie',
@@ -78,7 +86,8 @@ $integrations = array(
         'description' => 'Mollie is a European payment provider that enables merchants to accept online payments through an easy and reliable system.',
         'icon' => 'M',
         'color' => 'orange',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/mollie/'
     ),
     array(
         'name' => 'Vipps',
@@ -86,7 +95,8 @@ $integrations = array(
         'description' => 'Vipps is a Norwegian mobile payment service that enables fast and secure payments with just a few taps.',
         'icon' => 'V',
         'color' => 'orange',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/vipps/'
     ),
     array(
         'name' => 'Epoint',
@@ -94,7 +104,8 @@ $integrations = array(
         'description' => 'Epoint, based in Azerbaijan, is a payment system that enables secure electronic payments for various services and products.',
         'icon' => 'E',
         'color' => 'red',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/epoint/'
     ),
     array(
         'name' => 'Iyzico',
@@ -102,7 +113,8 @@ $integrations = array(
         'description' => 'Iyzico offers a reliable payment solution platform, simplifying ePayments for businesses in Turkey and beyond.',
         'icon' => 'I',
         'color' => 'purple',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/iyzico/'
     ),
     array(
         'name' => 'Payriff',
@@ -110,7 +122,8 @@ $integrations = array(
         'description' => 'Payriff provides secure and efficient payment processing solutions for businesses across various industries.',
         'icon' => 'PR',
         'color' => 'blue',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/payriff/'
     ),
     array(
         'name' => 'Yoco',
@@ -118,7 +131,8 @@ $integrations = array(
         'description' => 'Yoco provides South African businesses with a complete financial platform to manage payments, invoices, and more—empowering entrepreneurs to grow.',
         'icon' => 'Y',
         'color' => 'green',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/yoco/'
     ),
     array(
         'name' => 'Mamo Pay',
@@ -126,7 +140,8 @@ $integrations = array(
         'description' => 'Mamo Pay is an all-in-one payment platform for SMEs, offering a seamless and efficient payment solution.',
         'icon' => 'MP',
         'color' => 'purple',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/mamo-pay/'
     ),
     
     // Shipping & Fulfillment
@@ -136,7 +151,8 @@ $integrations = array(
         'description' => 'Exciting news for merchants! MyParcel offers streamlined shipping and fulfillment solutions directly integrated into our platform.',
         'icon' => 'MP',
         'color' => 'blue',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/myparcel/'
     ),
     array(
         'name' => 'The Courier Guy',
@@ -144,7 +160,8 @@ $integrations = array(
         'description' => 'The Courier Guy brings efficient and reliable shipping solutions, providing you with fast deliveries for your customers.',
         'icon' => 'TCG',
         'color' => 'orange',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/the-courier-guy/'
     ),
     
     // Analytics & Marketing
@@ -154,7 +171,8 @@ $integrations = array(
         'description' => 'Google Analytics offers detailed website traffic analysis, helping you understand how visitors interact with your site, which drives better decision-making.',
         'icon' => 'GA',
         'color' => 'red',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/google-analytics/'
     ),
     array(
         'name' => 'Meta Pixel',
@@ -162,7 +180,8 @@ $integrations = array(
         'description' => 'Meta Pixel allows you to track customer behavior and ad performance, offering valuable insights to optimize your Facebook and Instagram marketing campaigns.',
         'icon' => 'FB',
         'color' => 'blue',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/meta-pixel/'
     ),
     array(
         'name' => 'TikTok Pixel',
@@ -170,7 +189,8 @@ $integrations = array(
         'description' => 'The TikTok Pixel integration lets you track and analyze ad performance, conversion metrics, and customer interactions directly from your online store.',
         'icon' => 'TT',
         'color' => 'pink',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/tiktok-pixel/'
     ),
     array(
         'name' => 'Google Tag Manager',
@@ -178,7 +198,8 @@ $integrations = array(
         'description' => 'Google Tag Manager streamlines website tag management, enabling you to add and update tags like tracking codes quickly and efficiently.',
         'icon' => 'GTM',
         'color' => 'blue',
-        'status' => 'available'
+        'status' => 'available',
+        'url' => 'https://iwebs.in/integration/google-tag-manager/'
     )
 );
 
@@ -298,9 +319,10 @@ $categories = array(
                             </p>
                             
                             <!-- Action Button -->
-                            <button class="btn-primary text-sm w-full py-2 rounded-lg font-medium transition-all hover:shadow-md bg-blue-600 text-white hover:bg-blue-700">
+                            <a href="<?php echo isset($integration['url']) ? $integration['url'] : '#'; ?>" 
+                               class="btn-primary text-sm w-full py-2 rounded-lg font-medium transition-all hover:shadow-md bg-blue-600 text-white hover:bg-blue-700 inline-block">
                                 <?php echo (isset($integration['status']) && $integration['status'] === 'beta') ? 'Try Beta' : 'View Details'; ?>
-                            </button>
+                            </a>
                         </div>
                     </div>
                     <?php endforeach; ?>

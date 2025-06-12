@@ -11,7 +11,8 @@ if (!defined('ABSPATH')) {
  * Add security headers
  */
 function yoursite_security_headers() {
-    if (!is_admin()) {
+    // Check if headers have already been sent
+    if (!headers_sent() && !is_admin()) {
         header('X-Content-Type-Options: nosniff');
         header('X-Frame-Options: SAMEORIGIN');
         header('X-XSS-Protection: 1; mode=block');
@@ -181,7 +182,8 @@ add_action('init', 'yoursite_secure_wp_config');
  * Add Content Security Policy
  */
 function yoursite_add_csp_header() {
-    if (!is_admin()) {
+    // Check if headers have already been sent
+    if (!headers_sent() && !is_admin()) {
         $csp = "default-src 'self'; ";
         $csp .= "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ";
         $csp .= "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; ";
@@ -295,8 +297,8 @@ function yoursite_log_security_event($event, $description = '') {
         'timestamp' => current_time('mysql'),
         'event' => $event,
         'description' => $description,
-        'ip' => $_SERVER['REMOTE_ADDR'],
-        'user_agent' => $_SERVER['HTTP_USER_AGENT']
+        'ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown',
+        'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown'
     );
     
     // Keep only last 100 entries

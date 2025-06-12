@@ -1275,3 +1275,338 @@ function yoursite_render_webinar_additional_fields($fields) {
     echo '</td>';
     echo '</tr>';
 }
+/**
+ * Add meta boxes for guides
+ */
+function yoursite_add_guide_meta_boxes() {
+    add_meta_box(
+        'guide_settings',
+        __('Guide Settings', 'yoursite'),
+        'yoursite_guide_settings_callback',
+        'guide',
+        'side',
+        'high'
+    );
+
+    add_meta_box(
+        'guide_markdown',
+        __('Markdown Content', 'yoursite'),
+        'yoursite_guide_markdown_callback',
+        'guide',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'yoursite_add_guide_meta_boxes');
+
+/**
+ * Guide settings meta box callback
+ */
+function yoursite_guide_settings_callback($post) {
+    // Add nonce for security
+    wp_nonce_field('yoursite_guide_meta_box', 'yoursite_guide_meta_box_nonce');
+
+    // Get current values
+    $featured = get_post_meta($post->ID, '_featured_guide', true);
+    $difficulty = get_post_meta($post->ID, '_guide_difficulty', true);
+    $reading_time = get_post_meta($post->ID, '_reading_time', true);
+    $order = get_post_meta($post->ID, '_guide_order', true);
+    
+    echo '<table class="form-table">';
+    
+    // Featured Guide
+    echo '<tr>';
+    echo '<th><label for="featured_guide">' . __('Featured Guide', 'yoursite') . '</label></th>';
+    echo '<td>';
+    echo '<input type="checkbox" id="featured_guide" name="featured_guide" value="1" ' . checked($featured, '1', false) . ' />';
+    echo '<label for="featured_guide">' . __('Mark as featured guide', 'yoursite') . '</label>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Difficulty Level
+    echo '<tr>';
+    echo '<th><label for="guide_difficulty">' . __('Difficulty Level', 'yoursite') . '</label></th>';
+    echo '<td>';
+    echo '<select id="guide_difficulty" name="guide_difficulty">';
+    echo '<option value="beginner" ' . selected($difficulty, 'beginner', false) . '>' . __('Beginner', 'yoursite') . '</option>';
+    echo '<option value="intermediate" ' . selected($difficulty, 'intermediate', false) . '>' . __('Intermediate', 'yoursite') . '</option>';
+    echo '<option value="advanced" ' . selected($difficulty, 'advanced', false) . '>' . __('Advanced', 'yoursite') . '</option>';
+    echo '</select>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Reading Time
+    echo '<tr>';
+    echo '<th><label for="reading_time">' . __('Reading Time (minutes)', 'yoursite') . '</label></th>';
+    echo '<td>';
+    echo '<input type="number" id="reading_time" name="reading_time" value="' . esc_attr($reading_time) . '" min="1" max="120" />';
+    echo '<p class="description">' . __('Estimated reading time in minutes. Leave empty to auto-calculate.', 'yoursite') . '</p>';
+    echo '</td>';
+    echo '</tr>';
+    
+    // Guide Order
+    echo '<tr>';
+    echo '<th><label for="guide_order">' . __('Display Order', 'yoursite') . '</label></th>';
+    echo '<td>';
+    echo '<input type="number" id="guide_order" name="guide_order" value="' . esc_attr($order) . '" />';
+    echo '<p class="description">' . __('Order for displaying guides (lower numbers first).', 'yoursite') . '</p>';
+    echo '</td>';
+    echo '</tr>';
+    
+    echo '</table>';
+}
+
+/**
+ * Guide markdown content meta box callback
+ */
+function yoursite_guide_markdown_callback($post) {
+    // Get current markdown content
+    $markdown_content = get_post_meta($post->ID, '_markdown_content', true);
+    
+    echo '<p><strong>' . __('Paste your Docusaurus markdown content here:', 'yoursite') . '</strong></p>';
+    echo '<p class="description">' . __('This content will be automatically converted to WordPress blocks when you save. The regular editor above will be updated with the converted content.', 'yoursite') . '</p>';
+    
+    echo '<textarea id="markdown_content" name="markdown_content" rows="20" style="width: 100%; font-family: monospace;">' . esc_textarea($markdown_content) . '</textarea>';
+    
+    echo '<p class="description">';
+    echo __('Supported Markdown features:', 'yoursite') . '<br>';
+    echo '• ' . __('Headers (# ## ###)', 'yoursite') . '<br>';
+    echo '• ' . __('Bold (**text**) and Italic (*text*)', 'yoursite') . '<br>';
+    echo '• ' . __('Links [text](url)', 'yoursite') . '<br>';
+    echo '• ' . __('Images ![alt](url)', 'yoursite') . '<br>';
+    echo '• ' . __('Code blocks ```language', 'yoursite') . '<br>';
+    echo '• ' . __('Inline code `code`', 'yoursite') . '<br>';
+    echo '• ' . __('Lists (- or 1.)', 'yoursite') . '<br>';
+    echo '• ' . __('Blockquotes (>)', 'yoursite') . '<br>';
+    echo '• ' . __('Tables', 'yoursite') . '<br>';
+    echo '</p>';
+    
+    // Add some JavaScript for better UX
+    echo '<script>
+    document.getElementById("markdown_content").addEventListener("keydown", function(e) {
+        if (e.key === "Tab") {
+            e.preventDefault();
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.substring(0, start) + "\t" + this.value.substring(end);
+            this.selectionStart = this.selectionEnd = start + 1;
+        }
+    });
+    </script>';
+}
+
+/**
+ * Save guide meta box data
+ */
+function yoursite_save_guide_meta_box_data($post_id) {
+    // Check if nonce is valid
+    if (!isset($_POST['yoursite_guide_meta_box_nonce']) || !wp_verify_nonce($_POST['yoursite_guide_meta_box_nonce'], 'yoursite_guide_meta_box')) {
+        return;
+    }
+
+    // Check if user has permissions to save data
+    if ('guide' == $_POST['post_type']) {
+        if (!current_user_can('edit_post', $post_id)) {
+            return;
+        }
+    }
+
+    // Check if not an autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    // Save featured guide setting
+    $featured = isset($_POST['featured_guide']) ? '1' : '0';
+    update_post_meta($post_id, '_featured_guide', $featured);
+
+    // Save difficulty level
+    if (isset($_POST['guide_difficulty'])) {
+        $difficulty = sanitize_text_field($_POST['guide_difficulty']);
+        update_post_meta($post_id, '_guide_difficulty', $difficulty);
+    }
+
+    // Save reading time
+    if (isset($_POST['reading_time'])) {
+        $reading_time = intval($_POST['reading_time']);
+        update_post_meta($post_id, '_reading_time', $reading_time);
+    }
+
+    // Save guide order
+    if (isset($_POST['guide_order'])) {
+        $order = intval($_POST['guide_order']);
+        update_post_meta($post_id, '_guide_order', $order);
+    }
+
+    // Save markdown content and convert to HTML
+    if (isset($_POST['markdown_content'])) {
+        $markdown_content = wp_unslash($_POST['markdown_content']);
+        update_post_meta($post_id, '_markdown_content', $markdown_content);
+        
+        // Convert markdown to HTML and update post content
+        if (!empty($markdown_content)) {
+            $html_content = yoursite_convert_markdown_to_blocks($markdown_content);
+            
+            // Update the post content
+            $post_data = array(
+                'ID' => $post_id,
+                'post_content' => $html_content
+            );
+            
+            // Remove the action to prevent infinite loop
+            remove_action('save_post', 'yoursite_save_guide_meta_box_data');
+            wp_update_post($post_data);
+            add_action('save_post', 'yoursite_save_guide_meta_box_data');
+        }
+    }
+}
+add_action('save_post', 'yoursite_save_guide_meta_box_data');
+
+/**
+ * Simple markdown to WordPress blocks converter
+ */
+function yoursite_convert_markdown_to_blocks($markdown) {
+    $html = '';
+    $lines = explode("\n", $markdown);
+    $in_code_block = false;
+    $code_language = '';
+    $code_content = '';
+    $in_list = false;
+    $list_type = '';
+    
+    foreach ($lines as $line) {
+        $line = trim($line);
+        
+        // Handle code blocks
+        if (preg_match('/^```(\w+)?/', $line, $matches)) {
+            if (!$in_code_block) {
+                $in_code_block = true;
+                $code_language = isset($matches[1]) ? $matches[1] : 'text';
+                $code_content = '';
+                continue;
+            } else {
+                $in_code_block = false;
+                $html .= '<!-- wp:code {"language":"' . esc_attr($code_language) . '"} -->' . "\n";
+                $html .= '<pre class="wp-block-code"><code lang="' . esc_attr($code_language) . '" class="language-' . esc_attr($code_language) . '">' . esc_html($code_content) . '</code></pre>' . "\n";
+                $html .= '<!-- /wp:code -->' . "\n\n";
+                continue;
+            }
+        }
+        
+        if ($in_code_block) {
+            $code_content .= $line . "\n";
+            continue;
+        }
+        
+        // Empty line - close any open lists
+        if (empty($line)) {
+            if ($in_list) {
+                $html .= '</' . $list_type . '>' . "\n";
+                $html .= '<!-- /wp:list -->' . "\n\n";
+                $in_list = false;
+            }
+            continue;
+        }
+        
+        // Headers
+        if (preg_match('/^(#{1,6})\s+(.+)/', $line, $matches)) {
+            if ($in_list) {
+                $html .= '</' . $list_type . '>' . "\n";
+                $html .= '<!-- /wp:list -->' . "\n\n";
+                $in_list = false;
+            }
+            
+            $level = strlen($matches[1]);
+            $text = trim($matches[2]);
+            $html .= '<!-- wp:heading {"level":' . $level . '} -->' . "\n";
+            $html .= '<h' . $level . '>' . esc_html($text) . '</h' . $level . '>' . "\n";
+            $html .= '<!-- /wp:heading -->' . "\n\n";
+            continue;
+        }
+        
+        // Lists
+        if (preg_match('/^[-*+]\s+(.+)/', $line, $matches)) {
+            if (!$in_list) {
+                $html .= '<!-- wp:list -->' . "\n";
+                $html .= '<ul>' . "\n";
+                $in_list = true;
+                $list_type = 'ul';
+            }
+            $text = yoursite_process_inline_markdown(trim($matches[1]));
+            $html .= '<li>' . $text . '</li>' . "\n";
+            continue;
+        }
+        
+        // Numbered lists
+        if (preg_match('/^\d+\.\s+(.+)/', $line, $matches)) {
+            if (!$in_list) {
+                $html .= '<!-- wp:list {"ordered":true} -->' . "\n";
+                $html .= '<ol>' . "\n";
+                $in_list = true;
+                $list_type = 'ol';
+            }
+            $text = yoursite_process_inline_markdown(trim($matches[1]));
+            $html .= '<li>' . $text . '</li>' . "\n";
+            continue;
+        }
+        
+        // Blockquotes
+        if (preg_match('/^>\s+(.+)/', $line, $matches)) {
+            if ($in_list) {
+                $html .= '</' . $list_type . '>' . "\n";
+                $html .= '<!-- /wp:list -->' . "\n\n";
+                $in_list = false;
+            }
+            
+            $text = yoursite_process_inline_markdown(trim($matches[1]));
+            $html .= '<!-- wp:quote -->' . "\n";
+            $html .= '<blockquote class="wp-block-quote"><p>' . $text . '</p></blockquote>' . "\n";
+            $html .= '<!-- /wp:quote -->' . "\n\n";
+            continue;
+        }
+        
+        // Regular paragraphs
+        if (!empty($line)) {
+            if ($in_list) {
+                $html .= '</' . $list_type . '>' . "\n";
+                $html .= '<!-- /wp:list -->' . "\n\n";
+                $in_list = false;
+            }
+            
+            $text = yoursite_process_inline_markdown($line);
+            $html .= '<!-- wp:paragraph -->' . "\n";
+            $html .= '<p>' . $text . '</p>' . "\n";
+            $html .= '<!-- /wp:paragraph -->' . "\n\n";
+        }
+    }
+    
+    // Close any remaining open list
+    if ($in_list) {
+        $html .= '</' . $list_type . '>' . "\n";
+        $html .= '<!-- /wp:list -->' . "\n\n";
+    }
+    
+    return $html;
+}
+
+/**
+ * Process inline markdown (bold, italic, links, etc.)
+ */
+function yoursite_process_inline_markdown($text) {
+    // Bold text
+    $text = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $text);
+    
+    // Italic text
+    $text = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $text);
+    
+    // Inline code
+    $text = preg_replace('/`(.*?)`/', '<code>$1</code>', $text);
+    
+    // Links
+    $text = preg_replace('/\[([^\]]+)\]\(([^)]+)\)/', '<a href="$2">$1</a>', $text);
+    
+    // Images
+    $text = preg_replace('/!\[([^\]]*)\]\(([^)]+)\)/', '<img src="$2" alt="$1" />', $text);
+    
+    return $text;
+}

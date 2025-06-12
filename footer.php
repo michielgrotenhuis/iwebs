@@ -120,6 +120,11 @@
                         © <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. All rights reserved.
                     </div>
                     
+                    <!-- Breadcrumbs - Subtle in footer -->
+                    <div class="breadcrumbs-footer mb-4 lg:mb-0 order-first lg:order-none">
+                        <?php if (function_exists('rank_math_the_breadcrumbs')) rank_math_the_breadcrumbs(); ?>
+                    </div>
+                    
                     <!-- Footer Navigation -->
                     <div class="flex flex-wrap justify-center lg:justify-end items-center space-x-6 text-sm">
                         <?php
@@ -138,7 +143,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+                    
+                   
     </footer><!-- #colophon -->
 
 </div><!-- #page -->

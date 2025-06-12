@@ -1,26 +1,30 @@
 <?php
 /**
- * Features Page Customizer Settings
- * Add this to your inc/customizer.php file
+ * Features Page Customizer Settings - SYNTAX FIXED VERSION
+ * Add this to your inc/customizer/customizer-features.php file
  */
+
+/**
+ * Sanitize checkbox values
+ */
+if (!function_exists('yoursite_sanitize_checkbox')) {
+    function yoursite_sanitize_checkbox($checked) {
+        return ((isset($checked) && true == $checked) ? true : false);
+    }
+}
 
 /**
  * Add Features Page customizer options
  */
 function yoursite_features_page_customizer($wp_customize) {
     
-    // Features Page Section
-    $wp_customize->add_section('features_page_settings', array(
-        'title' => __('Edit Pages', 'yoursite'),
-        'priority' => 55,
-    ));
-    
     // Features Page Panel
-    $wp_customize->add_panel('features_page_panel', array(
-        'title' => __('Features Page', 'yoursite'),
-        'description' => __('Customize all elements of the Features page', 'yoursite'),
-        'priority' => 56,
-    ));
+$wp_customize->add_panel('features_page_panel', array(
+    'title' => __('Features Page', 'yoursite'),
+    'description' => __('Customize all elements of the Features page', 'yoursite'),
+    'priority' => 56,
+    'panel' => 'yoursite_pages', // Add this line
+));
     
     // Hero Section
     $wp_customize->add_section('features_hero_section', array(
@@ -53,9 +57,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Hero Title', 'yoursite'),
         'section' => 'features_hero_section',
         'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_hero_enable', true);
-        },
     ));
     
     // Hero Description
@@ -69,9 +70,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Hero Description', 'yoursite'),
         'section' => 'features_hero_section',
         'type' => 'textarea',
-        'active_callback' => function() {
-            return get_theme_mod('features_hero_enable', true);
-        },
     ));
     
     // Hero Button Text
@@ -85,9 +83,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Hero Button Text', 'yoursite'),
         'section' => 'features_hero_section',
         'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_hero_enable', true);
-        },
     ));
     
     // Hero Button URL
@@ -101,9 +96,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Hero Button URL', 'yoursite'),
         'section' => 'features_hero_section',
         'type' => 'url',
-        'active_callback' => function() {
-            return get_theme_mod('features_hero_enable', true);
-        },
     ));
     
     // Store Building Section
@@ -137,9 +129,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Section Title', 'yoursite'),
         'section' => 'features_store_building',
         'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_store_building_enable', true);
-        },
     ));
     
     // Store Building Description
@@ -153,148 +142,64 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Section Description', 'yoursite'),
         'section' => 'features_store_building',
         'type' => 'textarea',
-        'active_callback' => function() {
-            return get_theme_mod('features_store_building_enable', true);
-        },
     ));
     
-    // Store Building Feature 1
-    $wp_customize->add_setting('features_store_building_feature_1_enable', array(
-        'default' => true,
-        'sanitize_callback' => 'yoursite_sanitize_checkbox',
-        'transport' => 'refresh',
-    ));
+    // Store Building Features (1-3)
+    $store_features = array(
+        1 => array(
+            'title' => __('Drag & Drop Builder', 'yoursite'),
+            'description' => __('Intuitive visual editor to customize your store layout, add products, and arrange elements exactly how you want them.', 'yoursite')
+        ),
+        2 => array(
+            'title' => __('Professional Templates', 'yoursite'),
+            'description' => __('Choose from 100+ mobile-responsive templates designed for conversion and optimized for your industry.', 'yoursite')
+        ),
+        3 => array(
+            'title' => __('Mobile Optimized', 'yoursite'),
+            'description' => __('Every store is automatically optimized for mobile devices, ensuring perfect shopping experience across all screen sizes.', 'yoursite')
+        )
+    );
     
-    $wp_customize->add_control('features_store_building_feature_1_enable', array(
-        'label' => __('Enable Feature 1 (Drag & Drop Builder)', 'yoursite'),
-        'section' => 'features_store_building',
-        'type' => 'checkbox',
-        'active_callback' => function() {
-            return get_theme_mod('features_store_building_enable', true);
-        },
-    ));
-    
-    $wp_customize->add_setting('features_store_building_feature_1_title', array(
-        'default' => __('Drag & Drop Builder', 'yoursite'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('features_store_building_feature_1_title', array(
-        'label' => __('Feature 1 Title', 'yoursite'),
-        'section' => 'features_store_building',
-        'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_store_building_enable', true) && get_theme_mod('features_store_building_feature_1_enable', true);
-        },
-    ));
-    
-    $wp_customize->add_setting('features_store_building_feature_1_description', array(
-        'default' => __('Intuitive visual editor to customize your store layout, add products, and arrange elements exactly how you want them.', 'yoursite'),
-        'sanitize_callback' => 'sanitize_textarea_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('features_store_building_feature_1_description', array(
-        'label' => __('Feature 1 Description', 'yoursite'),
-        'section' => 'features_store_building',
-        'type' => 'textarea',
-        'active_callback' => function() {
-            return get_theme_mod('features_store_building_enable', true) && get_theme_mod('features_store_building_feature_1_enable', true);
-        },
-    ));
-    
-    // Store Building Feature 2
-    $wp_customize->add_setting('features_store_building_feature_2_enable', array(
-        'default' => true,
-        'sanitize_callback' => 'yoursite_sanitize_checkbox',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('features_store_building_feature_2_enable', array(
-        'label' => __('Enable Feature 2 (Professional Templates)', 'yoursite'),
-        'section' => 'features_store_building',
-        'type' => 'checkbox',
-        'active_callback' => function() {
-            return get_theme_mod('features_store_building_enable', true);
-        },
-    ));
-    
-    $wp_customize->add_setting('features_store_building_feature_2_title', array(
-        'default' => __('Professional Templates', 'yoursite'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('features_store_building_feature_2_title', array(
-        'label' => __('Feature 2 Title', 'yoursite'),
-        'section' => 'features_store_building',
-        'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_store_building_enable', true) && get_theme_mod('features_store_building_feature_2_enable', true);
-        },
-    ));
-    
-    $wp_customize->add_setting('features_store_building_feature_2_description', array(
-        'default' => __('Choose from 100+ mobile-responsive templates designed for conversion and optimized for your industry.', 'yoursite'),
-        'sanitize_callback' => 'sanitize_textarea_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('features_store_building_feature_2_description', array(
-        'label' => __('Feature 2 Description', 'yoursite'),
-        'section' => 'features_store_building',
-        'type' => 'textarea',
-        'active_callback' => function() {
-            return get_theme_mod('features_store_building_enable', true) && get_theme_mod('features_store_building_feature_2_enable', true);
-        },
-    ));
-    
-    // Store Building Feature 3
-    $wp_customize->add_setting('features_store_building_feature_3_enable', array(
-        'default' => true,
-        'sanitize_callback' => 'yoursite_sanitize_checkbox',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('features_store_building_feature_3_enable', array(
-        'label' => __('Enable Feature 3 (Mobile Optimized)', 'yoursite'),
-        'section' => 'features_store_building',
-        'type' => 'checkbox',
-        'active_callback' => function() {
-            return get_theme_mod('features_store_building_enable', true);
-        },
-    ));
-    
-    $wp_customize->add_setting('features_store_building_feature_3_title', array(
-        'default' => __('Mobile Optimized', 'yoursite'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('features_store_building_feature_3_title', array(
-        'label' => __('Feature 3 Title', 'yoursite'),
-        'section' => 'features_store_building',
-        'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_store_building_enable', true) && get_theme_mod('features_store_building_feature_3_enable', true);
-        },
-    ));
-    
-    $wp_customize->add_setting('features_store_building_feature_3_description', array(
-        'default' => __('Every store is automatically optimized for mobile devices, ensuring perfect shopping experience across all screen sizes.', 'yoursite'),
-        'sanitize_callback' => 'sanitize_textarea_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('features_store_building_feature_3_description', array(
-        'label' => __('Feature 3 Description', 'yoursite'),
-        'section' => 'features_store_building',
-        'type' => 'textarea',
-        'active_callback' => function() {
-            return get_theme_mod('features_store_building_enable', true) && get_theme_mod('features_store_building_feature_3_enable', true);
-        },
-    ));
+    foreach ($store_features as $i => $feature) {
+        // Enable Feature
+        $wp_customize->add_setting("features_store_building_feature_{$i}_enable", array(
+            'default' => true,
+            'sanitize_callback' => 'yoursite_sanitize_checkbox',
+            'transport' => 'refresh',
+        ));
+        
+        $wp_customize->add_control("features_store_building_feature_{$i}_enable", array(
+            'label' => sprintf(__('Enable Feature %d', 'yoursite'), $i),
+            'section' => 'features_store_building',
+            'type' => 'checkbox',
+        ));
+        
+        // Feature Title
+        $wp_customize->add_setting("features_store_building_feature_{$i}_title", array(
+            'default' => $feature['title'],
+            'sanitize_callback' => 'sanitize_text_field',
+            'transport' => 'refresh',
+        ));
+        
+        $wp_customize->add_control("features_store_building_feature_{$i}_title", array(
+            'label' => sprintf(__('Feature %d Title', 'yoursite'), $i),
+            'section' => 'features_store_building',
+            'type' => 'text',
+        ));
+        
+        // Feature Description
+        $wp_customize->add_setting("features_store_building_feature_{$i}_description", array(
+            'default' => $feature['description'],
+            'sanitize_callback' => 'sanitize_textarea_field',
+            'transport' => 'refresh',
+        ));
+        
+        $wp_customize->add_control("features_store_building_feature_{$i}_description", array(
+            'label' => sprintf(__('Feature %d Description', 'yoursite'), $i),
+            'section' => 'features_store_building',
+            'type' => 'textarea',
+        ));
+    }
     
     // Payments & Checkout Section
     $wp_customize->add_section('features_payments_checkout', array(
@@ -327,9 +232,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Section Title', 'yoursite'),
         'section' => 'features_payments_checkout',
         'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_payments_enable', true);
-        },
     ));
     
     // Payments Section Description
@@ -343,25 +245,26 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Section Description', 'yoursite'),
         'section' => 'features_payments_checkout',
         'type' => 'textarea',
-        'active_callback' => function() {
-            return get_theme_mod('features_payments_enable', true);
-        },
     ));
     
-    // Payments Features (similar pattern for all 3 features)
-    for ($i = 1; $i <= 3; $i++) {
-        $default_titles = array(
-            1 => __('Secure Payments', 'yoursite'),
-            2 => __('One-Click Checkout', 'yoursite'),
-            3 => __('Multi-Currency', 'yoursite')
-        );
-        
-        $default_descriptions = array(
-            1 => __('Accept all major credit cards, PayPal, Apple Pay, and Google Pay with bank-level security and PCI compliance.', 'yoursite'),
-            2 => __('Reduce cart abandonment with express checkout options that let customers buy in seconds.', 'yoursite'),
-            3 => __('Sell globally with support for 100+ currencies, automatic tax calculation, and local payment methods.', 'yoursite')
-        );
-        
+    // Payment Features
+    $payment_features = array(
+        1 => array(
+            'title' => __('Secure Payments', 'yoursite'),
+            'description' => __('Accept all major credit cards, PayPal, Apple Pay, and Google Pay with bank-level security and PCI compliance.', 'yoursite')
+        ),
+        2 => array(
+            'title' => __('One-Click Checkout', 'yoursite'),
+            'description' => __('Reduce cart abandonment with express checkout options that let customers buy in seconds.', 'yoursite')
+        ),
+        3 => array(
+            'title' => __('Multi-Currency', 'yoursite'),
+            'description' => __('Sell globally with support for 100+ currencies, automatic tax calculation, and local payment methods.', 'yoursite')
+        )
+    );
+    
+    foreach ($payment_features as $i => $feature) {
+        // Enable Feature
         $wp_customize->add_setting("features_payments_feature_{$i}_enable", array(
             'default' => true,
             'sanitize_callback' => 'yoursite_sanitize_checkbox',
@@ -372,13 +275,11 @@ function yoursite_features_page_customizer($wp_customize) {
             'label' => sprintf(__('Enable Payment Feature %d', 'yoursite'), $i),
             'section' => 'features_payments_checkout',
             'type' => 'checkbox',
-            'active_callback' => function() {
-                return get_theme_mod('features_payments_enable', true);
-            },
         ));
         
+        // Feature Title
         $wp_customize->add_setting("features_payments_feature_{$i}_title", array(
-            'default' => $default_titles[$i],
+            'default' => $feature['title'],
             'sanitize_callback' => 'sanitize_text_field',
             'transport' => 'refresh',
         ));
@@ -387,13 +288,11 @@ function yoursite_features_page_customizer($wp_customize) {
             'label' => sprintf(__('Payment Feature %d Title', 'yoursite'), $i),
             'section' => 'features_payments_checkout',
             'type' => 'text',
-            'active_callback' => function() use ($i) {
-                return get_theme_mod('features_payments_enable', true) && get_theme_mod("features_payments_feature_{$i}_enable", true);
-            },
         ));
         
+        // Feature Description
         $wp_customize->add_setting("features_payments_feature_{$i}_description", array(
-            'default' => $default_descriptions[$i],
+            'default' => $feature['description'],
             'sanitize_callback' => 'sanitize_textarea_field',
             'transport' => 'refresh',
         ));
@@ -402,9 +301,6 @@ function yoursite_features_page_customizer($wp_customize) {
             'label' => sprintf(__('Payment Feature %d Description', 'yoursite'), $i),
             'section' => 'features_payments_checkout',
             'type' => 'textarea',
-            'active_callback' => function() use ($i) {
-                return get_theme_mod('features_payments_enable', true) && get_theme_mod("features_payments_feature_{$i}_enable", true);
-            },
         ));
     }
     
@@ -439,9 +335,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Section Title', 'yoursite'),
         'section' => 'features_marketing_seo',
         'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_marketing_enable', true);
-        },
     ));
     
     // Marketing Section Description
@@ -455,25 +348,26 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Section Description', 'yoursite'),
         'section' => 'features_marketing_seo',
         'type' => 'textarea',
-        'active_callback' => function() {
-            return get_theme_mod('features_marketing_enable', true);
-        },
     ));
     
     // Marketing Features
-    $marketing_default_titles = array(
-        1 => __('SEO Optimization', 'yoursite'),
-        2 => __('Email Marketing', 'yoursite'),
-        3 => __('Analytics & Insights', 'yoursite')
+    $marketing_features = array(
+        1 => array(
+            'title' => __('SEO Optimization', 'yoursite'),
+            'description' => __('Built-in SEO tools, meta tags, sitemaps, and clean URLs to help your store rank higher in search results.', 'yoursite')
+        ),
+        2 => array(
+            'title' => __('Email Marketing', 'yoursite'),
+            'description' => __('Automated email campaigns, abandoned cart recovery, and customer segmentation to boost repeat purchases.', 'yoursite')
+        ),
+        3 => array(
+            'title' => __('Analytics & Insights', 'yoursite'),
+            'description' => __('Detailed reports on sales, traffic, customer behavior, and inventory to make data-driven decisions.', 'yoursite')
+        )
     );
     
-    $marketing_default_descriptions = array(
-        1 => __('Built-in SEO tools, meta tags, sitemaps, and clean URLs to help your store rank higher in search results.', 'yoursite'),
-        2 => __('Automated email campaigns, abandoned cart recovery, and customer segmentation to boost repeat purchases.', 'yoursite'),
-        3 => __('Detailed reports on sales, traffic, customer behavior, and inventory to make data-driven decisions.', 'yoursite')
-    );
-    
-    for ($i = 1; $i <= 3; $i++) {
+    foreach ($marketing_features as $i => $feature) {
+        // Enable Feature
         $wp_customize->add_setting("features_marketing_feature_{$i}_enable", array(
             'default' => true,
             'sanitize_callback' => 'yoursite_sanitize_checkbox',
@@ -484,13 +378,11 @@ function yoursite_features_page_customizer($wp_customize) {
             'label' => sprintf(__('Enable Marketing Feature %d', 'yoursite'), $i),
             'section' => 'features_marketing_seo',
             'type' => 'checkbox',
-            'active_callback' => function() {
-                return get_theme_mod('features_marketing_enable', true);
-            },
         ));
         
+        // Feature Title
         $wp_customize->add_setting("features_marketing_feature_{$i}_title", array(
-            'default' => $marketing_default_titles[$i],
+            'default' => $feature['title'],
             'sanitize_callback' => 'sanitize_text_field',
             'transport' => 'refresh',
         ));
@@ -499,13 +391,11 @@ function yoursite_features_page_customizer($wp_customize) {
             'label' => sprintf(__('Marketing Feature %d Title', 'yoursite'), $i),
             'section' => 'features_marketing_seo',
             'type' => 'text',
-            'active_callback' => function() use ($i) {
-                return get_theme_mod('features_marketing_enable', true) && get_theme_mod("features_marketing_feature_{$i}_enable", true);
-            },
         ));
         
+        // Feature Description
         $wp_customize->add_setting("features_marketing_feature_{$i}_description", array(
-            'default' => $marketing_default_descriptions[$i],
+            'default' => $feature['description'],
             'sanitize_callback' => 'sanitize_textarea_field',
             'transport' => 'refresh',
         ));
@@ -514,9 +404,6 @@ function yoursite_features_page_customizer($wp_customize) {
             'label' => sprintf(__('Marketing Feature %d Description', 'yoursite'), $i),
             'section' => 'features_marketing_seo',
             'type' => 'textarea',
-            'active_callback' => function() use ($i) {
-                return get_theme_mod('features_marketing_enable', true) && get_theme_mod("features_marketing_feature_{$i}_enable", true);
-            },
         ));
     }
     
@@ -551,9 +438,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Section Title', 'yoursite'),
         'section' => 'features_inventory_orders',
         'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_inventory_enable', true);
-        },
     ));
     
     // Inventory Section Description
@@ -567,25 +451,26 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Section Description', 'yoursite'),
         'section' => 'features_inventory_orders',
         'type' => 'textarea',
-        'active_callback' => function() {
-            return get_theme_mod('features_inventory_enable', true);
-        },
     ));
     
     // Inventory Features
-    $inventory_default_titles = array(
-        1 => __('Product Management', 'yoursite'),
-        2 => __('Order Management', 'yoursite'),
-        3 => __('Inventory Tracking', 'yoursite')
+    $inventory_features = array(
+        1 => array(
+            'title' => __('Product Management', 'yoursite'),
+            'description' => __('Easy product catalog management with variants, bulk editing, and unlimited product uploads.', 'yoursite')
+        ),
+        2 => array(
+            'title' => __('Order Management', 'yoursite'),
+            'description' => __('Centralized order processing, automatic invoices, and real-time order tracking for customers.', 'yoursite')
+        ),
+        3 => array(
+            'title' => __('Inventory Tracking', 'yoursite'),
+            'description' => __('Real-time inventory tracking, low stock alerts, and automatic reorder points to prevent stockouts.', 'yoursite')
+        )
     );
     
-    $inventory_default_descriptions = array(
-        1 => __('Easy product catalog management with variants, bulk editing, and unlimited product uploads.', 'yoursite'),
-        2 => __('Centralized order processing, automatic invoices, and real-time order tracking for customers.', 'yoursite'),
-        3 => __('Real-time inventory tracking, low stock alerts, and automatic reorder points to prevent stockouts.', 'yoursite')
-    );
-    
-    for ($i = 1; $i <= 3; $i++) {
+    foreach ($inventory_features as $i => $feature) {
+        // Enable Feature
         $wp_customize->add_setting("features_inventory_feature_{$i}_enable", array(
             'default' => true,
             'sanitize_callback' => 'yoursite_sanitize_checkbox',
@@ -596,13 +481,11 @@ function yoursite_features_page_customizer($wp_customize) {
             'label' => sprintf(__('Enable Inventory Feature %d', 'yoursite'), $i),
             'section' => 'features_inventory_orders',
             'type' => 'checkbox',
-            'active_callback' => function() {
-                return get_theme_mod('features_inventory_enable', true);
-            },
         ));
         
+        // Feature Title
         $wp_customize->add_setting("features_inventory_feature_{$i}_title", array(
-            'default' => $inventory_default_titles[$i],
+            'default' => $feature['title'],
             'sanitize_callback' => 'sanitize_text_field',
             'transport' => 'refresh',
         ));
@@ -611,13 +494,11 @@ function yoursite_features_page_customizer($wp_customize) {
             'label' => sprintf(__('Inventory Feature %d Title', 'yoursite'), $i),
             'section' => 'features_inventory_orders',
             'type' => 'text',
-            'active_callback' => function() use ($i) {
-                return get_theme_mod('features_inventory_enable', true) && get_theme_mod("features_inventory_feature_{$i}_enable", true);
-            },
         ));
         
+        // Feature Description
         $wp_customize->add_setting("features_inventory_feature_{$i}_description", array(
-            'default' => $inventory_default_descriptions[$i],
+            'default' => $feature['description'],
             'sanitize_callback' => 'sanitize_textarea_field',
             'transport' => 'refresh',
         ));
@@ -626,9 +507,6 @@ function yoursite_features_page_customizer($wp_customize) {
             'label' => sprintf(__('Inventory Feature %d Description', 'yoursite'), $i),
             'section' => 'features_inventory_orders',
             'type' => 'textarea',
-            'active_callback' => function() use ($i) {
-                return get_theme_mod('features_inventory_enable', true) && get_theme_mod("features_inventory_feature_{$i}_enable", true);
-            },
         ));
     }
     
@@ -663,9 +541,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Comparison Title', 'yoursite'),
         'section' => 'features_comparison_section',
         'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_comparison_enable', true);
-        },
     ));
     
     // Comparison Section Description
@@ -679,9 +554,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Comparison Description', 'yoursite'),
         'section' => 'features_comparison_section',
         'type' => 'textarea',
-        'active_callback' => function() {
-            return get_theme_mod('features_comparison_enable', true);
-        },
     ));
     
     // CTA Section
@@ -715,9 +587,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('CTA Title', 'yoursite'),
         'section' => 'features_cta_section',
         'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_cta_enable', true);
-        },
     ));
     
     // CTA Description
@@ -731,9 +600,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('CTA Description', 'yoursite'),
         'section' => 'features_cta_section',
         'type' => 'textarea',
-        'active_callback' => function() {
-            return get_theme_mod('features_cta_enable', true);
-        },
     ));
     
     // CTA Primary Button
@@ -747,9 +613,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Primary Button Text', 'yoursite'),
         'section' => 'features_cta_section',
         'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_cta_enable', true);
-        },
     ));
     
     $wp_customize->add_setting('features_cta_primary_url', array(
@@ -762,9 +625,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Primary Button URL', 'yoursite'),
         'section' => 'features_cta_section',
         'type' => 'url',
-        'active_callback' => function() {
-            return get_theme_mod('features_cta_enable', true);
-        },
     ));
     
     // CTA Secondary Button
@@ -778,9 +638,6 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Secondary Button Text', 'yoursite'),
         'section' => 'features_cta_section',
         'type' => 'text',
-        'active_callback' => function() {
-            return get_theme_mod('features_cta_enable', true);
-        },
     ));
     
     $wp_customize->add_setting('features_cta_secondary_url', array(
@@ -793,8 +650,8 @@ function yoursite_features_page_customizer($wp_customize) {
         'label' => __('Secondary Button URL', 'yoursite'),
         'section' => 'features_cta_section',
         'type' => 'url',
-        'active_callback' => function() {
-            return get_theme_mod('features_cta_enable', true);
-        },
     ));
 }
+
+// Hook the function to the customizer
+add_action('customize_register', 'yoursite_features_page_customizer');

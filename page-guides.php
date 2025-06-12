@@ -1,48 +1,104 @@
 <?php
 /**
  * Template Name: Guides Page
- * Custom page template for guides and tutorials
+ * Custom page template for guides and tutorials using the guide post type
  * Save as: page-guides.php
  */
 
 get_header(); 
 
-// Get guides categories (using regular post categories for guides)
-$guide_categories = get_categories(array(
-    'taxonomy' => 'category',
-    'hide_empty' => false,
-    'exclude' => array(1) // Exclude uncategorized
-));
+// Check if guide post type exists
+$guide_post_type_exists = post_type_exists('guide');
+$guide_taxonomy_exists = taxonomy_exists('guide_category');
 
-// Get featured guides (posts with a custom meta field)
-$featured_guides = get_posts(array(
-    'post_type' => 'post',
-    'posts_per_page' => 3,
-    'meta_query' => array(
-        array(
-            'key' => '_featured_guide',
-            'value' => '1',
-            'compare' => '='
-        )
-    )
-));
+// Show admin notice if guide system isn't set up
+if (current_user_can('manage_options') && (!$guide_post_type_exists || !$guide_taxonomy_exists)) {
+    echo '<div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">';
+    echo '<div class="flex">';
+    echo '<div class="flex-shrink-0">';
+    echo '<svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">';
+    echo '<path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>';
+    echo '</svg>';
+    echo '</div>';
+    echo '<div class="ml-3">';
+    echo '<p class="text-sm text-yellow-700">';
+    echo '<strong>Admin Notice:</strong> The Guide system is not fully activated yet. ';
+    if (!$guide_post_type_exists) {
+        echo 'The Guide post type needs to be registered. ';
+    }
+    if (!$guide_taxonomy_exists) {
+        echo 'The Guide Categories taxonomy needs to be set up. ';
+    }
+    echo 'Please ensure the inc/post-types.php file has been updated with the guide post type and taxonomy definitions.';
+    echo '</p>';
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
+}
 
-// If no featured guides, get recent ones
-if (empty($featured_guides)) {
+// Get guide categories (using custom taxonomy)
+$guide_categories = array();
+if ($guide_taxonomy_exists) {
+    $guide_categories = get_terms(array(
+        'taxonomy' => 'guide_category',
+        'hide_empty' => false,
+        'orderby' => 'name',
+        'order' => 'ASC'
+    ));
+    if (is_wp_error($guide_categories)) {
+        $guide_categories = array();
+    }
+}
+
+// Get featured guides (guides with featured meta field)
+$featured_guides = array();
+if ($guide_post_type_exists) {
     $featured_guides = get_posts(array(
-        'post_type' => 'post',
+        'post_type' => 'guide',
         'posts_per_page' => 3,
+        'meta_query' => array(
+            array(
+                'key' => '_featured_guide',
+                'value' => '1',
+                'compare' => '='
+            )
+        ),
         'orderby' => 'date',
         'order' => 'DESC'
     ));
+    
+    if (is_wp_error($featured_guides)) {
+        $featured_guides = array();
+    }
+    
+    // If no featured guides, get recent ones
+    if (empty($featured_guides)) {
+        $featured_guides = get_posts(array(
+            'post_type' => 'guide',
+            'posts_per_page' => 3,
+            'orderby' => 'date',
+            'order' => 'DESC'
+        ));
+        
+        if (is_wp_error($featured_guides)) {
+            $featured_guides = array();
+        }
+    }
 }
 
 // Get all guides for stats
-$all_guides = get_posts(array(
-    'post_type' => 'post',
-    'posts_per_page' => -1,
-    'post_status' => 'publish'
-));
+$all_guides = array();
+if ($guide_post_type_exists) {
+    $all_guides = get_posts(array(
+        'post_type' => 'guide',
+        'posts_per_page' => -1,
+        'post_status' => 'publish'
+    ));
+    
+    if (is_wp_error($all_guides)) {
+        $all_guides = array();
+    }
+}
 
 ?>
 
@@ -64,7 +120,7 @@ $all_guides = get_posts(array(
                     <div class="text-white/80">Step-by-Step Guides</div>
                 </div>
                 <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                    <div class="text-3xl font-bold mb-2">20+</div>
+                    <div class="text-3xl font-bold mb-2"><?php echo count($guide_categories); ?>+</div>
                     <div class="text-white/80">Topics Covered</div>
                 </div>
                 <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
@@ -106,7 +162,7 @@ $all_guides = get_posts(array(
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Create Account</h3>
                     <p class="text-gray-600 mb-4">Sign up for your free account and choose your plan</p>
-                    <a href="/guides/getting-started" class="text-blue-600 hover:text-blue-800 font-medium">Read Guide →</a>
+                    <a href="<?php echo get_post_type_archive_link('guide'); ?>?category=getting-started" class="text-blue-600 hover:text-blue-800 font-medium">Read Guide →</a>
                 </div>
                 
                 <div class="text-center">
@@ -120,7 +176,7 @@ $all_guides = get_posts(array(
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Choose Template</h3>
                     <p class="text-gray-600 mb-4">Select from our professional store templates</p>
-                    <a href="/guides/choosing-template" class="text-blue-600 hover:text-blue-800 font-medium">Read Guide →</a>
+                    <a href="<?php echo get_post_type_archive_link('guide'); ?>?category=design" class="text-blue-600 hover:text-blue-800 font-medium">Read Guide →</a>
                 </div>
                 
                 <div class="text-center">
@@ -134,7 +190,7 @@ $all_guides = get_posts(array(
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Add Products</h3>
                     <p class="text-gray-600 mb-4">Upload your products with photos and descriptions</p>
-                    <a href="/guides/adding-products" class="text-blue-600 hover:text-blue-800 font-medium">Read Guide →</a>
+                    <a href="<?php echo get_post_type_archive_link('guide'); ?>?category=products" class="text-blue-600 hover:text-blue-800 font-medium">Read Guide →</a>
                 </div>
                 
                 <div class="text-center">
@@ -148,7 +204,7 @@ $all_guides = get_posts(array(
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Launch Store</h3>
                     <p class="text-gray-600 mb-4">Configure payments and go live with your store</p>
-                    <a href="/guides/launching-store" class="text-blue-600 hover:text-blue-800 font-medium">Read Guide →</a>
+                    <a href="<?php echo get_post_type_archive_link('guide'); ?>?category=payments" class="text-blue-600 hover:text-blue-800 font-medium">Read Guide →</a>
                 </div>
             </div>
         </div>
@@ -189,12 +245,18 @@ $all_guides = get_posts(array(
                         
                         <select id="category-filter" class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">All Topics</option>
-                            <option value="getting-started">Getting Started</option>
-                            <option value="design">Design & Customization</option>
-                            <option value="products">Product Management</option>
-                            <option value="marketing">Marketing & SEO</option>
-                            <option value="payments">Payments & Checkout</option>
-                            <option value="analytics">Analytics & Reports</option>
+                            <?php if (!empty($guide_categories)) : ?>
+                                <?php foreach ($guide_categories as $category) : ?>
+                                    <option value="<?php echo esc_attr($category->slug); ?>"><?php echo esc_html($category->name); ?></option>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <option value="getting-started">Getting Started</option>
+                                <option value="design">Design & Customization</option>
+                                <option value="products">Product Management</option>
+                                <option value="marketing">Marketing & SEO</option>
+                                <option value="payments">Payments & Checkout</option>
+                                <option value="analytics">Analytics & Reports</option>
+                            <?php endif; ?>
                         </select>
                         
                         <button id="reset-filters" class="px-4 py-3 text-gray-600 hover:text-gray-800 transition-colors">
@@ -223,7 +285,7 @@ $all_guides = get_posts(array(
                 <?php foreach ($featured_guides as $guide) : 
                     $reading_time = yoursite_get_reading_time($guide->ID);
                     $difficulty = get_post_meta($guide->ID, '_guide_difficulty', true) ?: 'beginner';
-                    $guide_category = get_the_category($guide->ID);
+                    $guide_categories_terms = get_the_terms($guide->ID, 'guide_category');
                 ?>
                     <article class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 group">
                         <a href="<?php echo get_permalink($guide->ID); ?>" class="block">
@@ -253,9 +315,9 @@ $all_guides = get_posts(array(
                                         <?php echo ucfirst($difficulty); ?>
                                     </span>
                                     
-                                    <?php if ($guide_category) : ?>
+                                    <?php if ($guide_categories_terms && !is_wp_error($guide_categories_terms)) : ?>
                                         <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
-                                            <?php echo esc_html($guide_category[0]->name); ?>
+                                            <?php echo esc_html($guide_categories_terms[0]->name); ?>
                                         </span>
                                     <?php endif; ?>
                                 </div>
@@ -303,91 +365,216 @@ $all_guides = get_posts(array(
             </div>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Getting Started -->
+                <?php 
+                // Define category data with icons and colors - fallback for when taxonomies don't exist yet
+                $category_data = array(
+                    'getting-started' => array(
+                        'icon' => 'M13 10V3L4 14h7v7l9-11h-7z',
+                        'color' => 'green',
+                        'title' => 'Getting Started',
+                        'desc' => 'Learn the basics of setting up your online store from scratch',
+                        'sample_guides' => array(
+                            'Account setup and dashboard tour',
+                            'Choosing the right plan',
+                            'Your first store setup',
+                            'Essential settings configuration'
+                        )
+                    ),
+                    'design' => array(
+                        'icon' => 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17v4a2 2 0 002 2h4M15 5l3 3m-3-3l3 3',
+                        'color' => 'purple',
+                        'title' => 'Design & Customization',
+                        'desc' => 'Make your store unique with custom designs and branding',
+                        'sample_guides' => array(
+                            'Template selection and customization',
+                            'Brand colors and logo setup',
+                            'Custom CSS and styling',
+                            'Mobile optimization'
+                        )
+                    ),
+                    'products' => array(
+                        'icon' => 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
+                        'color' => 'blue',
+                        'title' => 'Product Management',
+                        'desc' => 'Add, organize, and optimize your product catalog',
+                        'sample_guides' => array(
+                            'Adding products and variants',
+                            'Product photography best practices',
+                            'Inventory tracking and management',
+                            'Categories and collections'
+                        )
+                    ),
+                    'marketing' => array(
+                        'icon' => 'M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a1 1 0 01-1-1V9a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V4a1 1 0 011-1h3a1 1 0 001-1v-1a2 2 0 012-2z',
+                        'color' => 'red',
+                        'title' => 'Marketing & SEO',
+                        'desc' => 'Drive traffic and sales with proven marketing strategies',
+                        'sample_guides' => array(
+                            'SEO optimization and meta tags',
+                            'Social media integration',
+                            'Email marketing campaigns',
+                            'Discount codes and promotions'
+                        )
+                    ),
+                    'payments' => array(
+                        'icon' => 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
+                        'color' => 'yellow',
+                        'title' => 'Payments & Checkout',
+                        'desc' => 'Set up secure payments and optimize your checkout process',
+                        'sample_guides' => array(
+                            'Payment gateway setup',
+                            'Checkout optimization',
+                            'Security and compliance',
+                            'Currency and tax settings'
+                        )
+                    ),
+                    'analytics' => array(
+                        'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+                        'color' => 'orange',
+                        'title' => 'Analytics & Reports',
+                        'desc' => 'Track performance and make data-driven decisions',
+                        'sample_guides' => array(
+                            'Setting up analytics',
+                            'Understanding your reports',
+                            'Key performance indicators',
+                            'Data-driven optimization'
+                        )
+                    )
+                );
+
+                // Use actual categories if they exist, otherwise use fallback data
+                if (!empty($guide_categories)) :
+                    foreach ($guide_categories as $category) : 
+                        $category_slug = $category->slug;
+                        $category_info = isset($category_data[$category_slug]) ? $category_data[$category_slug] : $category_data['products'];
+                        
+                        // Count guides in this category
+                        $guides_count = get_posts(array(
+                            'post_type' => 'guide',
+                            'posts_per_page' => -1,
+                            'tax_query' => array(
+                                array(
+                                    'taxonomy' => 'guide_category',
+                                    'field' => 'term_id',
+                                    'terms' => $category->term_id
+                                )
+                            )
+                        ));
+                        
+                        if (is_wp_error($guides_count)) {
+                            $guides_count = array();
+                        }
+                ?>
                 <div class="bg-white rounded-lg p-8 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 group">
-                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-6 group-hover:bg-green-200 transition-colors">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    <div class="w-12 h-12 bg-<?php echo $category_info['color']; ?>-100 rounded-lg flex items-center justify-center mb-6 group-hover:bg-<?php echo $category_info['color']; ?>-200 transition-colors">
+                        <svg class="w-6 h-6 text-<?php echo $category_info['color']; ?>-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<?php echo $category_info['icon']; ?>"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Getting Started</h3>
-                    <p class="text-gray-600 mb-6">Learn the basics of setting up your online store from scratch</p>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3"><?php echo esc_html($category->name); ?></h3>
+                    <p class="text-gray-600 mb-6"><?php echo esc_html($category->description ?: $category_info['desc']); ?></p>
                     <ul class="space-y-2 mb-6">
-                        <li class="text-sm text-gray-600">• Account setup and dashboard tour</li>
-                        <li class="text-sm text-gray-600">• Choosing the right plan</li>
-                        <li class="text-sm text-gray-600">• Your first store setup</li>
-                        <li class="text-sm text-gray-600">• Essential settings configuration</li>
+                        <?php 
+                        // Get sample guides from this category
+                        $sample_guides = get_posts(array(
+                            'post_type' => 'guide',
+                            'posts_per_page' => 4,
+                            'tax_query' => array(
+                                array(
+                                    'taxonomy' => 'guide_category',
+                                    'field' => 'term_id',
+                                    'terms' => $category->term_id
+                                )
+                            )
+                        ));
+                        
+                        if (is_wp_error($sample_guides)) {
+                            $sample_guides = array();
+                        }
+                        
+                        if (!empty($sample_guides)) :
+                            foreach ($sample_guides as $sample_guide) :
+                            ?>
+                                <li class="text-sm text-gray-600">• <?php echo esc_html($sample_guide->post_title); ?></li>
+                            <?php endforeach; ?>
+                            
+                            <?php if (count($guides_count) > 4) : ?>
+                                <li class="text-sm text-gray-500">• And <?php echo count($guides_count) - 4; ?> more guides...</li>
+                            <?php endif; ?>
+                        <?php else : ?>
+                            <?php foreach ($category_info['sample_guides'] as $sample) : ?>
+                                <li class="text-sm text-gray-600">• <?php echo esc_html($sample); ?></li>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </ul>
-                    <a href="/guides/category/getting-started" class="text-blue-600 hover:text-blue-800 font-medium group-hover:text-blue-700">
+                    <a href="<?php echo get_term_link($category); ?>" class="text-blue-600 hover:text-blue-800 font-medium group-hover:text-blue-700">
+                        View All Guides (<?php echo count($guides_count); ?>) →
+                    </a>
+                </div>
+                <?php 
+                    endforeach;
+                else : 
+                    // Show fallback categories when no taxonomy exists yet
+                    foreach ($category_data as $slug => $info) :
+                ?>
+                <div class="bg-white rounded-lg p-8 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-<?php echo $info['color']; ?>-100 rounded-lg flex items-center justify-center mb-6 group-hover:bg-<?php echo $info['color']; ?>-200 transition-colors">
+                        <svg class="w-6 h-6 text-<?php echo $info['color']; ?>-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<?php echo $info['icon']; ?>"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3"><?php echo esc_html($info['title']); ?></h3>
+                    <p class="text-gray-600 mb-6"><?php echo esc_html($info['desc']); ?></p>
+                    <ul class="space-y-2 mb-6">
+                        <?php foreach ($info['sample_guides'] as $sample) : ?>
+                            <li class="text-sm text-gray-600">• <?php echo esc_html($sample); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <a href="<?php echo get_post_type_archive_link('guide') ?: '#'; ?>" class="text-blue-600 hover:text-blue-800 font-medium group-hover:text-blue-700">
                         View Guides →
                     </a>
                 </div>
+                <?php 
+                    endforeach;
+                endif; 
+                ?>
+            </div>
+        </div>
+    </div>
+</section>
 
-                <!-- Design & Customization -->
-                <div class="bg-white rounded-lg p-8 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 group">
-                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6 group-hover:bg-purple-200 transition-colors">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17v4a2 2 0 002 2h4M15 5l3 3m-3-3l3 3"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Design & Customization</h3>
-                    <p class="text-gray-600 mb-6">Make your store unique with custom designs and branding</p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="text-sm text-gray-600">• Template selection and customization</li>
-                        <li class="text-sm text-gray-600">• Brand colors and logo setup</li>
-                        <li class="text-sm text-gray-600">• Custom CSS and styling</li>
-                        <li class="text-sm text-gray-600">• Mobile optimization</li>
-                    </ul>
-                    <a href="/guides/category/design" class="text-blue-600 hover:text-blue-800 font-medium group-hover:text-blue-700">
-                        View Guides →
-                    </a>
-                </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('guide-search');
+    const difficultyFilter = document.getElementById('difficulty-filter');
+    const categoryFilter = document.getElementById('category-filter');
+    const resetButton = document.getElementById('reset-filters');
+    
+    // Simple client-side filtering (for demo purposes)
+    // In production, you'd want to implement AJAX search
+    
+    resetButton.addEventListener('click', function() {
+        searchInput.value = '';
+        difficultyFilter.value = '';
+        categoryFilter.value = '';
+    });
+    
+    // Add some basic interactivity
+    searchInput.addEventListener('input', function() {
+        // Placeholder for search functionality
+        console.log('Searching for:', this.value);
+    });
+    
+    categoryFilter.addEventListener('change', function() {
+        // Placeholder for category filtering
+        console.log('Filter by category:', this.value);
+    });
+    
+    difficultyFilter.addEventListener('change', function() {
+        // Placeholder for difficulty filtering
+        console.log('Filter by difficulty:', this.value);
+    });
+});
+</script>
 
-                <!-- Product Management -->
-                <div class="bg-white rounded-lg p-8 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 group">
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-200 transition-colors">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Product Management</h3>
-                    <p class="text-gray-600 mb-6">Add, organize, and optimize your product catalog</p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="text-sm text-gray-600">• Adding products and variants</li>
-                        <li class="text-sm text-gray-600">• Product photography best practices</li>
-                        <li class="text-sm text-gray-600">• Inventory tracking and management</li>
-                        <li class="text-sm text-gray-600">• Categories and collections</li>
-                    </ul>
-                    <a href="/guides/category/products" class="text-blue-600 hover:text-blue-800 font-medium group-hover:text-blue-700">
-                        View Guides →
-                    </a>
-                </div>
-
-                <!-- Marketing & SEO -->
-                <div class="bg-white rounded-lg p-8 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 group">
-                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-6 group-hover:bg-red-200 transition-colors">
-                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a1 1 0 01-1-1V9a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V4a1 1 0 011-1h3a1 1 0 001-1v-1a2 2 0 012-2z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Marketing & SEO</h3>
-                    <p class="text-gray-600 mb-6">Drive traffic and sales with proven marketing strategies</p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="text-sm text-gray-600">• SEO optimization and meta tags</li>
-                        <li class="text-sm text-gray-600">• Social media integration</li>
-                        <li class="text-sm text-gray-600">• Email marketing campaigns</li>
-                        <li class="text-sm text-gray-600">• Discount codes and promotions</li>
-                    </ul>
-                    <a href="/guides/category/marketing" class="text-blue-600 hover:text-blue-800 font-medium group-hover:text-blue-700">
-                        View Guides →
-                    </a>
-                </div>
-
-                <!-- Payments & Checkout -->
-                <div class="bg-white rounded-lg p-8 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 group">
-                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-6 group-hover:bg-yellow-200 transition-colors">
-                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                        </svg>
-
-                        <?php get_footer(); ?>
+<?php get_footer(); ?>
