@@ -38,17 +38,22 @@ foreach ($jobs as $job) {
     
     $jobs_by_department[$department_name][] = $job;
 }
+
+// Get customizer background colors
+$hero_bg_start = get_theme_mod('careers_hero_bg_color', '#f3e8ff');
+$hero_bg_end = get_theme_mod('careers_hero_bg_color_end', '#dbeafe');
 ?>
 
+<?php if (get_theme_mod('careers_hero_enable', true)) : ?>
 <!-- Hero Section -->
-<section class="bg-gradient-to-br from-purple-50 to-blue-100 py-20">
+<section class="py-20" style="background: linear-gradient(to bottom right, <?php echo esc_attr($hero_bg_start); ?>, <?php echo esc_attr($hero_bg_end); ?>);">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-4xl lg:text-6xl font-bold text-gray-900 mb-6">
-                Join Our Amazing Team
+                <?php echo esc_html(get_theme_mod('careers_hero_title', __('Join Our Amazing Team', 'yoursite'))); ?>
             </h1>
             <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                We're building the future of e-commerce, one integration at a time. Join our passionate team and help businesses around the world grow and succeed.
+                <?php echo esc_html(get_theme_mod('careers_hero_subtitle', __('We\'re building the future of e-commerce, one integration at a time. Join our passionate team and help businesses around the world grow and succeed.', 'yoursite'))); ?>
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
                 <div class="bg-white/80 backdrop-blur-sm rounded-lg px-6 py-3">
@@ -67,86 +72,58 @@ foreach ($jobs as $job) {
         </div>
     </div>
 </section>
+<?php endif; ?>
 
+<?php if (get_theme_mod('careers_culture_enable', true)) : ?>
 <!-- Company Culture -->
 <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Why Work With Us?</h2>
-                <p class="text-xl text-gray-600">Join a company that values innovation, collaboration, and personal growth</p>
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                    <?php echo esc_html(get_theme_mod('careers_culture_title', __('Why Work With Us?', 'yoursite'))); ?>
+                </h2>
+                <p class="text-xl text-gray-600">
+                    <?php echo esc_html(get_theme_mod('careers_culture_subtitle', __('Join a company that values innovation, collaboration, and personal growth', 'yoursite'))); ?>
+                </p>
             </div>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Culture Point 1 -->
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-6">
-                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">Innovation First</h3>
-                    <p class="text-gray-600">We're constantly pushing boundaries and exploring new technologies to stay ahead of the curve.</p>
-                </div>
+                <?php 
+                // Culture point icons
+                $culture_icons = array(
+                    1 => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>',
+                    2 => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>',
+                    3 => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>',
+                    4 => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
+                    5 => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>',
+                    6 => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
+                );
                 
-                <!-- Culture Point 2 -->
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-6">
-                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">Collaborative Team</h3>
-                    <p class="text-gray-600">Work with talented individuals from around the world in a supportive, inclusive environment.</p>
-                </div>
-                
-                <!-- Culture Point 3 -->
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-6">
-                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">Growth Focused</h3>
-                    <p class="text-gray-600">Continuous learning opportunities, mentorship programs, and clear career advancement paths.</p>
-                </div>
-                
-                <!-- Culture Point 4 -->
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-yellow-100 rounded-xl flex items-center justify-center mx-auto mb-6">
-                        <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">Global Impact</h3>
-                    <p class="text-gray-600">Help millions of businesses worldwide succeed with our platform and integrations.</p>
-                </div>
-                
-                <!-- Culture Point 5 -->
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center mx-auto mb-6">
-                        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">Work-Life Balance</h3>
-                    <p class="text-gray-600">Flexible schedules, unlimited PTO, and a culture that respects your time and well-being.</p>
-                </div>
-                
-                <!-- Culture Point 6 -->
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-indigo-100 rounded-xl flex items-center justify-center mx-auto mb-6">
-                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-3">Competitive Benefits</h3>
-                    <p class="text-gray-600">Great salary, equity, health benefits, and perks that make a real difference.</p>
-                </div>
+                for ($i = 1; $i <= 6; $i++) {
+                    if (get_theme_mod("careers_culture_{$i}_enable", true)) :
+                        $title = get_theme_mod("careers_culture_{$i}_title", '');
+                        $description = get_theme_mod("careers_culture_{$i}_description", '');
+                        $color = get_theme_mod("careers_culture_{$i}_color", '#3b82f6');
+                        ?>
+                        <div class="text-center">
+                            <div class="w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-6" style="background-color: <?php echo esc_attr($color); ?>20;">
+                                <svg class="w-8 h-8" style="color: <?php echo esc_attr($color); ?>;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <?php echo $culture_icons[$i]; ?>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3"><?php echo esc_html($title); ?></h3>
+                            <p class="text-gray-600"><?php echo esc_html($description); ?></p>
+                        </div>
+                        <?php
+                    endif;
+                }
+                ?>
             </div>
         </div>
     </div>
 </section>
+<?php endif; ?>
 
 <!-- Open Positions -->
 <?php if (!empty($jobs)) : ?>
@@ -296,30 +273,33 @@ foreach ($jobs as $job) {
 </section>
 <?php endif; ?>
 
+<?php if (get_theme_mod('careers_cta_enable', true)) : ?>
 <!-- CTA Section -->
 <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl lg:text-5xl font-bold mb-6">
-                Ready to Make an Impact?
+                <?php echo esc_html(get_theme_mod('careers_cta_title', __('Ready to Make an Impact?', 'yoursite'))); ?>
             </h2>
             <p class="text-xl mb-8 opacity-90">
-                Join our mission to empower businesses worldwide with seamless integrations
+                <?php echo esc_html(get_theme_mod('careers_cta_description', __('Join our mission to empower businesses worldwide with seamless integrations', 'yoursite'))); ?>
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <?php if (!empty($jobs)) : ?>
                     <a href="#" onclick="document.querySelector('.job-card').scrollIntoView({behavior: 'smooth'})" 
                        class="btn-primary text-lg px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 rounded-lg font-semibold transition-all">
-                        View Open Positions
+                        <?php echo esc_html(get_theme_mod('careers_cta_primary_text', __('View Open Positions', 'yoursite'))); ?>
                     </a>
                 <?php endif; ?>
-                <a href="/contact" class="btn-secondary text-lg px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-blue-600 rounded-lg font-semibold transition-all">
-                    Contact Us
+                <a href="<?php echo esc_url(get_theme_mod('careers_cta_secondary_url', '/contact')); ?>" 
+                   class="btn-secondary text-lg px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-blue-600 rounded-lg font-semibold transition-all">
+                    <?php echo esc_html(get_theme_mod('careers_cta_secondary_text', __('Contact Us', 'yoursite'))); ?>
                 </a>
             </div>
         </div>
     </div>
 </section>
+<?php endif; ?>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -374,9 +354,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Add event listeners
-    searchInput.addEventListener('input', filterJobs);
-    departmentFilter.addEventListener('change', filterJobs);
-    remoteFilter.addEventListener('change', filterJobs);
+    if (searchInput) searchInput.addEventListener('input', filterJobs);
+    if (departmentFilter) departmentFilter.addEventListener('change', filterJobs);
+    if (remoteFilter) remoteFilter.addEventListener('change', filterJobs);
 });
 </script>
 

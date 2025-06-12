@@ -116,32 +116,53 @@ get_header(); ?>
                 </div>
                 
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <?php 
-                    $payment_icons = array(
-                        1 => '<svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>',
-                        2 => '<svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>',
-                        3 => '<svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path></svg>'
-                    );
-                    $payment_colors = array(1 => 'green', 2 => 'orange', 3 => 'purple');
-                    
-                    for ($i = 1; $i <= 3; $i++) :
-                        if (get_theme_mod("features_payments_feature_{$i}_enable", true)) :
-                    ?>
+                    <?php if (get_theme_mod('features_payments_feature_1_enable', true)) : ?>
                     <div class="bg-white rounded-lg p-8 feature-card border border-gray-200">
-                        <div class="w-12 h-12 bg-<?php echo $payment_colors[$i]; ?>-100 rounded-lg mb-4 flex items-center justify-center">
-                            <?php echo $payment_icons[$i]; ?>
+                        <div class="w-12 h-12 bg-green-100 rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
                         </div>
                         <h3 class="text-xl font-semibold mb-3">
-                            <?php echo esc_html(get_theme_mod("features_payments_feature_{$i}_title", '')); ?>
+                            <?php echo esc_html(get_theme_mod('features_payments_feature_1_title', __('Secure Payments', 'yoursite'))); ?>
                         </h3>
                         <p class="text-gray-600">
-                            <?php echo esc_html(get_theme_mod("features_payments_feature_{$i}_description", '')); ?>
+                            <?php echo esc_html(get_theme_mod('features_payments_feature_1_description', __('Accept all major credit cards, PayPal, Apple Pay, and Google Pay with bank-level security and PCI compliance.', 'yoursite'))); ?>
                         </p>
                     </div>
-                    <?php 
-                        endif;
-                    endfor; 
-                    ?>
+                    <?php endif; ?>
+                    
+                    <?php if (get_theme_mod('features_payments_feature_2_enable', true)) : ?>
+                    <div class="bg-white rounded-lg p-8 feature-card border border-gray-200">
+                        <div class="w-12 h-12 bg-orange-100 rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">
+                            <?php echo esc_html(get_theme_mod('features_payments_feature_2_title', __('One-Click Checkout', 'yoursite'))); ?>
+                        </h3>
+                        <p class="text-gray-600">
+                            <?php echo esc_html(get_theme_mod('features_payments_feature_2_description', __('Reduce cart abandonment with express checkout options that let customers buy in seconds.', 'yoursite'))); ?>
+                        </p>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (get_theme_mod('features_payments_feature_3_enable', true)) : ?>
+                    <div class="bg-white rounded-lg p-8 feature-card border border-gray-200">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">
+                            <?php echo esc_html(get_theme_mod('features_payments_feature_3_title', __('Multi-Currency', 'yoursite'))); ?>
+                        </h3>
+                        <p class="text-gray-600">
+                            <?php echo esc_html(get_theme_mod('features_payments_feature_3_description', __('Sell globally with support for 100+ currencies, automatic tax calculation, and local payment methods.', 'yoursite'))); ?>
+                        </p>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php endif; ?>
@@ -164,32 +185,53 @@ get_header(); ?>
                 </div>
                 
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <?php 
-                    $marketing_icons = array(
-                        1 => '<svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>',
-                        2 => '<svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>',
-                        3 => '<svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>'
-                    );
-                    $marketing_colors = array(1 => 'purple', 2 => 'red', 3 => 'yellow');
-                    
-                    for ($i = 1; $i <= 3; $i++) :
-                        if (get_theme_mod("features_marketing_feature_{$i}_enable", true)) :
-                    ?>
+                    <?php if (get_theme_mod('features_marketing_feature_1_enable', true)) : ?>
                     <div class="bg-white rounded-lg p-8 feature-card border border-gray-200">
-                        <div class="w-12 h-12 bg-<?php echo $marketing_colors[$i]; ?>-100 rounded-lg mb-4 flex items-center justify-center">
-                            <?php echo $marketing_icons[$i]; ?>
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
                         </div>
                         <h3 class="text-xl font-semibold mb-3">
-                            <?php echo esc_html(get_theme_mod("features_marketing_feature_{$i}_title", '')); ?>
+                            <?php echo esc_html(get_theme_mod('features_marketing_feature_1_title', __('SEO Optimization', 'yoursite'))); ?>
                         </h3>
                         <p class="text-gray-600">
-                            <?php echo esc_html(get_theme_mod("features_marketing_feature_{$i}_description", '')); ?>
+                            <?php echo esc_html(get_theme_mod('features_marketing_feature_1_description', __('Built-in SEO tools, meta tags, sitemaps, and clean URLs to help your store rank higher in search results.', 'yoursite'))); ?>
                         </p>
                     </div>
-                    <?php 
-                        endif;
-                    endfor; 
-                    ?>
+                    <?php endif; ?>
+                    
+                    <?php if (get_theme_mod('features_marketing_feature_2_enable', true)) : ?>
+                    <div class="bg-white rounded-lg p-8 feature-card border border-gray-200">
+                        <div class="w-12 h-12 bg-red-100 rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">
+                            <?php echo esc_html(get_theme_mod('features_marketing_feature_2_title', __('Email Marketing', 'yoursite'))); ?>
+                        </h3>
+                        <p class="text-gray-600">
+                            <?php echo esc_html(get_theme_mod('features_marketing_feature_2_description', __('Automated email campaigns, abandoned cart recovery, and customer segmentation to boost repeat purchases.', 'yoursite'))); ?>
+                        </p>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (get_theme_mod('features_marketing_feature_3_enable', true)) : ?>
+                    <div class="bg-white rounded-lg p-8 feature-card border border-gray-200">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">
+                            <?php echo esc_html(get_theme_mod('features_marketing_feature_3_title', __('Analytics & Insights', 'yoursite'))); ?>
+                        </h3>
+                        <p class="text-gray-600">
+                            <?php echo esc_html(get_theme_mod('features_marketing_feature_3_description', __('Detailed reports on sales, traffic, customer behavior, and inventory to make data-driven decisions.', 'yoursite'))); ?>
+                        </p>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php endif; ?>
@@ -212,32 +254,53 @@ get_header(); ?>
                 </div>
                 
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <?php 
-                    $inventory_icons = array(
-                        1 => '<svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>',
-                        2 => '<svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>',
-                        3 => '<svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>'
-                    );
-                    $inventory_colors = array(1 => 'orange', 2 => 'blue', 3 => 'green');
-                    
-                    for ($i = 1; $i <= 3; $i++) :
-                        if (get_theme_mod("features_inventory_feature_{$i}_enable", true)) :
-                    ?>
+                    <?php if (get_theme_mod('features_inventory_feature_1_enable', true)) : ?>
                     <div class="bg-white rounded-lg p-8 feature-card border border-gray-200">
-                        <div class="w-12 h-12 bg-<?php echo $inventory_colors[$i]; ?>-100 rounded-lg mb-4 flex items-center justify-center">
-                            <?php echo $inventory_icons[$i]; ?>
+                        <div class="w-12 h-12 bg-orange-100 rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                            </svg>
                         </div>
                         <h3 class="text-xl font-semibold mb-3">
-                            <?php echo esc_html(get_theme_mod("features_inventory_feature_{$i}_title", '')); ?>
+                            <?php echo esc_html(get_theme_mod('features_inventory_feature_1_title', __('Product Management', 'yoursite'))); ?>
                         </h3>
                         <p class="text-gray-600">
-                            <?php echo esc_html(get_theme_mod("features_inventory_feature_{$i}_description", '')); ?>
+                            <?php echo esc_html(get_theme_mod('features_inventory_feature_1_description', __('Easy product catalog management with variants, bulk editing, and unlimited product uploads.', 'yoursite'))); ?>
                         </p>
                     </div>
-                    <?php 
-                        endif;
-                    endfor; 
-                    ?>
+                    <?php endif; ?>
+                    
+                    <?php if (get_theme_mod('features_inventory_feature_2_enable', true)) : ?>
+                    <div class="bg-white rounded-lg p-8 feature-card border border-gray-200">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">
+                            <?php echo esc_html(get_theme_mod('features_inventory_feature_2_title', __('Order Management', 'yoursite'))); ?>
+                        </h3>
+                        <p class="text-gray-600">
+                            <?php echo esc_html(get_theme_mod('features_inventory_feature_2_description', __('Centralized order processing, automatic invoices, and real-time order tracking for customers.', 'yoursite'))); ?>
+                        </p>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (get_theme_mod('features_inventory_feature_3_enable', true)) : ?>
+                    <div class="bg-white rounded-lg p-8 feature-card border border-gray-200">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg mb-4 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">
+                            <?php echo esc_html(get_theme_mod('features_inventory_feature_3_title', __('Inventory Tracking', 'yoursite'))); ?>
+                        </h3>
+                        <p class="text-gray-600">
+                            <?php echo esc_html(get_theme_mod('features_inventory_feature_3_description', __('Real-time inventory tracking, low stock alerts, and automatic reorder points to prevent stockouts.', 'yoursite'))); ?>
+                        </p>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php endif; ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Safe Main theme customizer loader - UPDATED VERSION WITH PARTNERS
+ * Safe Main theme customizer loader - UPDATED VERSION WITH ALL PAGES
  */
 
 if (!defined('ABSPATH')) {
@@ -24,6 +24,8 @@ function yoursite_load_customizer_modules() {
         'customizer-about.php',         // About page
         'customizer-templates.php',     // Templates page
         'customizer-partners.php',      // Partners page
+        'customizer-webinars.php',      // Webinars page
+        'customizer-press-kit.php',     // Press Kit page
     );
     
     foreach ($customizer_modules as $module) {

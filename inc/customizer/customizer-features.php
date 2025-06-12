@@ -1,6 +1,6 @@
 <?php
 /**
- * Features Page Customizer Settings - SYNTAX FIXED VERSION
+ * Features Page Customizer Settings - Nested under Edit Pages > Features Page
  * Add this to your inc/customizer/customizer-features.php file
  */
 
@@ -14,17 +14,25 @@ if (!function_exists('yoursite_sanitize_checkbox')) {
 }
 
 /**
- * Add Features Page customizer options
+ * Add Features Page customizer options with proper nesting
  */
 function yoursite_features_page_customizer($wp_customize) {
     
-    // Features Page Panel
-$wp_customize->add_panel('features_page_panel', array(
-    'title' => __('Features Page', 'yoursite'),
-    'description' => __('Customize all elements of the Features page', 'yoursite'),
-    'priority' => 56,
-    'panel' => 'yoursite_pages', // Add this line
-));
+    // First, create the main "Edit Pages" panel if it doesn't exist
+    if (!$wp_customize->get_panel('yoursite_pages')) {
+        $wp_customize->add_panel('yoursite_pages', array(
+            'title' => __('Edit Pages', 'yoursite'),
+            'description' => __('Customize all your website pages', 'yoursite'),
+            'priority' => 55,
+        ));
+    }
+    
+    // Create Features Page as a Panel under Edit Pages
+    $wp_customize->add_panel('features_page_panel', array(
+        'title' => __('Features Page', 'yoursite'),
+        'description' => __('Customize all elements of the Features page', 'yoursite'),
+        'priority' => 10,
+    ));
     
     // Hero Section
     $wp_customize->add_section('features_hero_section', array(
@@ -655,3 +663,49 @@ $wp_customize->add_panel('features_page_panel', array(
 
 // Hook the function to the customizer
 add_action('customize_register', 'yoursite_features_page_customizer');
+
+/**
+ * Add custom JavaScript to create nested panel behavior
+ */
+function yoursite_features_customizer_scripts() {
+    ?>
+    <script type="text/javascript">
+    wp.customize.bind('ready', function() {
+        // Move Features Page panel under Edit Pages panel
+        var editPagesPanel = wp.customize.panel('yoursite_pages');
+        var featuresPanel = wp.customize.panel('features_page_panel');
+        
+        if (editPagesPanel && featuresPanel) {
+            // Hide the features panel from root level
+            jQuery('#accordion-panel-features_page_panel').appendTo('#sub-accordion-panel-yoursite_pages');
+            
+            // Add click handler to Edit Pages panel to show Features Page as sub-panel
+            editPagesPanel.container.on('click', '.accordion-section-title', function() {
+                // Small delay to ensure the panel is expanded
+                setTimeout(function() {
+                    jQuery('#accordion-panel-features_page_panel').show();
+                }, 100);
+            });
+        }
+    });
+    </script>
+    <style type="text/css">
+    /* Style the nested panel */
+    #sub-accordion-panel-yoursite_pages #accordion-panel-features_page_panel {
+        margin-left: 20px;
+        border-left: 2px solid #0073aa;
+        background: #f9f9f9;
+    }
+    
+    #sub-accordion-panel-yoursite_pages #accordion-panel-features_page_panel .accordion-section-title {
+        background: #f1f1f1;
+        border-left: 4px solid #0073aa;
+    }
+    
+    #sub-accordion-panel-yoursite_pages #accordion-panel-features_page_panel .accordion-section-title:hover {
+        background: #e5e5e5;
+    }
+    </style>
+    <?php
+}
+add_action('customize_controls_print_scripts', 'yoursite_features_customizer_scripts');

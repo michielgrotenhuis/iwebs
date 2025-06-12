@@ -36,58 +36,32 @@ get_header(); ?>
                     4 => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>'
                 );
                 
-                // Simple hardcoded contact options since customizer isn't working
-                $default_options = array(
-                    1 => array(
-                        'title' => 'Live Chat',
-                        'description' => 'Get instant answers from our support team',
-                        'button_text' => 'Start Chat →',
-                        'button_url' => '#',
-                        'icon_color' => '#3b82f6'
-                    ),
-                    2 => array(
-                        'title' => 'Email Support',
-                        'description' => 'We\'ll respond within 24 hours',
-                        'button_text' => 'support@yoursite.biz',
-                        'button_url' => 'mailto:support@yoursite.biz',
-                        'icon_color' => '#10b981'
-                    ),
-                    3 => array(
-                        'title' => 'Phone Support',
-                        'description' => 'Mon-Fri, 9AM-6PM EST',
-                        'button_text' => '+1 (555) 123-4567',
-                        'button_url' => 'tel:+1-555-123-4567',
-                        'icon_color' => '#8b5cf6'
-                    ),
-                    4 => array(
-                        'title' => 'Help Center',
-                        'description' => 'Find answers to common questions',
-                        'button_text' => 'Browse Articles →',
-                        'button_url' => '/help',
-                        'icon_color' => '#f97316'
-                    )
-                );
-                
                 for ($i = 1; $i <= 4; $i++) {
-                    $option = $default_options[$i];
-                    ?>
-                    <div class="text-center">
-                        <div class="w-16 h-16 rounded-lg mx-auto mb-4 flex items-center justify-center" style="background-color: <?php echo esc_attr($option['icon_color']); ?>20;">
-                            <svg class="w-8 h-8" style="color: <?php echo esc_attr($option['icon_color']); ?>;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <?php echo $contact_icons[$i]; ?>
-                            </svg>
+                    if (get_theme_mod("contact_option_{$i}_enable", true)) :
+                        $title = get_theme_mod("contact_option_{$i}_title", '');
+                        $description = get_theme_mod("contact_option_{$i}_description", '');
+                        $button_text = get_theme_mod("contact_option_{$i}_button_text", '');
+                        $button_url = get_theme_mod("contact_option_{$i}_button_url", '#');
+                        $icon_color = get_theme_mod("contact_option_{$i}_icon_color", '#3b82f6');
+                        ?>
+                        <div class="text-center">
+                            <div class="w-16 h-16 rounded-lg mx-auto mb-4 flex items-center justify-center" style="background-color: <?php echo esc_attr($icon_color); ?>20;">
+                                <svg class="w-8 h-8" style="color: <?php echo esc_attr($icon_color); ?>;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <?php echo $contact_icons[$i]; ?>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2"><?php echo esc_html($title); ?></h3>
+                            <p class="text-gray-600 mb-4 dark:text-gray-300"><?php echo esc_html($description); ?></p>
+                            <?php if (strpos($button_url, 'mailto:') === 0) : ?>
+                                <a href="<?php echo esc_url($button_url); ?>" style="color: <?php echo esc_attr($icon_color); ?>;" class="hover:opacity-80 font-medium"><?php echo esc_html($button_text); ?></a>
+                            <?php elseif (strpos($button_url, 'tel:') === 0) : ?>
+                                <a href="<?php echo esc_url($button_url); ?>" style="color: <?php echo esc_attr($icon_color); ?>;" class="hover:opacity-80 font-medium"><?php echo esc_html($button_text); ?></a>
+                            <?php else : ?>
+                                <button onclick="window.open('<?php echo esc_url($button_url); ?>', '_blank')" style="color: <?php echo esc_attr($icon_color); ?>;" class="hover:opacity-80 font-medium"><?php echo esc_html($button_text); ?></button>
+                            <?php endif; ?>
                         </div>
-                        <h3 class="text-xl font-semibold mb-2"><?php echo esc_html($option['title']); ?></h3>
-                        <p class="text-gray-600 mb-4 dark:text-gray-300"><?php echo esc_html($option['description']); ?></p>
-                        <?php if (strpos($option['button_url'], 'mailto:') === 0) : ?>
-                            <a href="<?php echo esc_url($option['button_url']); ?>" style="color: <?php echo esc_attr($option['icon_color']); ?>;" class="hover:opacity-80 font-medium"><?php echo esc_html($option['button_text']); ?></a>
-                        <?php elseif (strpos($option['button_url'], 'tel:') === 0) : ?>
-                            <a href="<?php echo esc_url($option['button_url']); ?>" style="color: <?php echo esc_attr($option['icon_color']); ?>;" class="hover:opacity-80 font-medium"><?php echo esc_html($option['button_text']); ?></a>
-                        <?php else : ?>
-                            <button onclick="window.open('<?php echo esc_url($option['button_url']); ?>', '_blank')" style="color: <?php echo esc_attr($option['icon_color']); ?>;" class="hover:opacity-80 font-medium"><?php echo esc_html($option['button_text']); ?></button>
-                        <?php endif; ?>
-                    </div>
-                    <?php
+                        <?php
+                    endif;
                 }
                 ?>
             </div>
@@ -201,65 +175,27 @@ get_header(); ?>
             </div>
             
             <div class="space-y-6">
+                <?php for ($i = 1; $i <= 5; $i++) {
+                    if (get_theme_mod("contact_faq_{$i}_enable", true)) :
+                        $question = get_theme_mod("contact_faq_{$i}_question", '');
+                        $answer = get_theme_mod("contact_faq_{$i}_answer", '');
+                        if ($question && $answer) :
+                ?>
                 <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                     <button class="flex justify-between items-center w-full text-left faq-toggle">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">How quickly can I get my store online?</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white"><?php echo esc_html($question); ?></h3>
                         <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div class="faq-content hidden mt-4">
-                        <p class="text-gray-600 dark:text-gray-300">Most merchants can set up their store and start selling within minutes using our templates and drag-and-drop builder. For custom designs, it may take a few hours to get everything exactly how you want it.</p>
+                        <p class="text-gray-600 dark:text-gray-300"><?php echo esc_html($answer); ?></p>
                     </div>
                 </div>
-                
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-                    <button class="flex justify-between items-center w-full text-left faq-toggle">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">What payment methods do you support?</h3>
-                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="faq-content hidden mt-4">
-                        <p class="text-gray-600 dark:text-gray-300">We support all major credit cards, PayPal, Apple Pay, Google Pay, and many other payment methods. Our platform integrates with leading payment processors like Stripe, Square, and more.</p>
-                    </div>
-                </div>
-                
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-                    <button class="flex justify-between items-center w-full text-left faq-toggle">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Do you offer customer support?</h3>
-                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="faq-content hidden mt-4">
-                        <p class="text-gray-600 dark:text-gray-300">Yes! We offer 24/7 chat support, email support with 24-hour response times, phone support during business hours, and a comprehensive help center with tutorials and guides.</p>
-                    </div>
-                </div>
-                
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-                    <button class="flex justify-between items-center w-full text-left faq-toggle">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Can I migrate my existing store?</h3>
-                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="faq-content hidden mt-4">
-                        <p class="text-gray-600 dark:text-gray-300">Absolutely! We offer free migration services to help you move your products, customers, and order history from platforms like Shopify, WooCommerce, Magento, and others. Our team will handle the technical details.</p>
-                    </div>
-                </div>
-                
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-                    <button class="flex justify-between items-center w-full text-left faq-toggle">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">What's included in the free trial?</h3>
-                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="faq-content hidden mt-4">
-                        <p class="text-gray-600 dark:text-gray-300">Our 14-day free trial includes access to all features, unlimited products, all templates, and full customer support. No credit card required to start, and you can upgrade or cancel anytime.</p>
-                    </div>
-                </div>
+                <?php 
+                        endif;
+                    endif;
+                } ?>
             </div>
         </div>
     </div>
