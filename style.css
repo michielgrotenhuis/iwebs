@@ -587,3 +587,115 @@ html {
     position: fixed !important;
     top: 0 !important;
 }
+
+/* Fix for sticky header on webinars page */
+
+/* Remove sticky positioning from header globally */
+.site-header,
+#masthead,
+header,
+.main-navigation {
+    position: relative !important;
+    position: static !important;
+    top: auto !important;
+    z-index: auto !important;
+    transform: none !important;
+}
+
+/* Specific fixes for webinars page */
+.archive-webinars .site-header,
+.page-template-webinars .site-header {
+    position: static !important;
+    position: relative !important;
+    top: 0 !important;
+    transform: translateY(0) !important;
+    box-shadow: none !important;
+}
+
+/* Remove any fixed positioning that might be applied */
+body:not(.admin-bar) .site-header {
+    top: 0 !important;
+}
+
+body.admin-bar .site-header {
+    top: 32px !important;
+}
+
+/* Ensure no JavaScript-applied sticky classes interfere */
+.site-header.sticky,
+.site-header.fixed,
+.site-header.is-sticky {
+    position: static !important;
+    top: auto !important;
+    transform: none !important;
+}
+
+/* Reset any potential sticky navigation */
+.main-navigation.sticky {
+    position: static !important;
+}
+
+/* Make sure body doesn't have padding-top for sticky header */
+body {
+    padding-top: 0 !important;
+}
+
+/* Remove any transforms that might be causing stickiness */
+.site-header * {
+    transform: none !important;
+}
+
+/* Specific webinars page body fixes */
+.archive-webinars,
+.page-template-webinars {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Override any theme sticky styles */
+@media (min-width: 768px) {
+    .site-header {
+        position: static !important;
+        position: relative !important;
+    }
+}
+
+/* If you have a specific header wrapper that's causing issues */
+.header-wrapper,
+.site-header-wrapper {
+    position: static !important;
+    top: auto !important;
+}
+
+/* Remove transition effects that might make it seem sticky */
+.site-header {
+    transition: none !important;
+}
+
+/* Make sure WordPress admin bar doesn't push content */
+html {
+    margin-top: 0 !important;
+}
+
+/* Override any Tailwind sticky classes */
+.sticky {
+    position: static !important;
+}
+
+.fixed {
+    position: static !important;
+}
+
+/* If using a specific navigation framework */
+.navbar-fixed-top {
+    position: static !important;
+}
+
+/* Additional safeguards */
+header[role="banner"] {
+    position: static !important;
+}
+
+#site-navigation {
+    position: static !important;
+}
