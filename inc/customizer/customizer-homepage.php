@@ -146,6 +146,21 @@ function yoursite_homepage_customizer($wp_customize) {
         'priority' => 18,
     )));
     
+    // Hero Video URL (NEW)
+    $wp_customize->add_setting('hero_video_url', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('hero_video_url', array(
+        'label' => __('Dashboard Video URL', 'yoursite'),
+        'section' => 'homepage_editor',
+        'type' => 'url',
+        'description' => __('YouTube video URL to play when clicking the dashboard preview', 'yoursite'),
+        'priority' => 19,
+    ));
+    
     // ===================
     // SOCIAL PROOF SECTION
     // ===================

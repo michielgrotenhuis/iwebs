@@ -257,7 +257,6 @@ function yoursite_footer_menu() {
         <a href="<?php echo home_url('/privacy-policy'); ?>" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
         <a href="<?php echo home_url('/terms-of-service'); ?>" class="text-gray-300 hover:text-white transition-colors">Terms of Service</a>
         <a href="<?php echo home_url('/cookie-policy'); ?>" class="text-gray-300 hover:text-white transition-colors">Cookie Policy</a>
-        <a href="<?php echo home_url('/sitemap'); ?>" class="text-gray-300 hover:text-white transition-colors">Sitemap</a>
     </div>
     <?php
 }
