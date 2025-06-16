@@ -1,6 +1,6 @@
 <?php
 /**
- * Dark/Light Mode Functionality
+ * Dark/Light Mode Functionality - MOBILE FIXED VERSION
  */
 
 if (!defined('ABSPATH')) {
@@ -8,15 +8,49 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Add dark mode toggle styles and scripts
+ * Create theme toggle button HTML - MOBILE IMPROVED
+ */
+function yoursite_get_theme_toggle_button() {
+    return '
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode" type="button">
+        <div class="theme-toggle-slider">
+            <svg class="theme-icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+            <svg class="theme-icon-moon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+        </div>
+    </button>';
+}
+
+/**
+ * Create mobile-specific theme toggle button
+ */
+function yoursite_get_mobile_theme_toggle_button() {
+    return '
+    <button id="mobile-theme-toggle" class="mobile-theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode" type="button">
+        <div class="mobile-theme-toggle-slider">
+            <svg class="mobile-theme-icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+            <svg class="mobile-theme-icon-moon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+        </div>
+    </button>';
+}
+
+/**
+ * Add dark mode toggle styles and scripts - MOBILE ENHANCED
  */
 function yoursite_add_dark_mode_assets() {
     ?>
     <style id="dark-mode-styles">
-    /* Dark Mode Toggle Button */
+    /* Desktop Dark Mode Toggle Button */
     .theme-toggle {
         position: relative;
-        background: transparent;
+        background: #f3f4f6;
         border: 2px solid #e5e7eb;
         border-radius: 50px;
         padding: 4px;
@@ -26,10 +60,18 @@ function yoursite_add_dark_mode_assets() {
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
     }
     
     .theme-toggle:hover {
         border-color: #9ca3af;
+        background: #e5e7eb;
+    }
+    
+    .theme-toggle:focus {
+        outline: 2px solid #667eea;
+        outline-offset: 2px;
     }
     
     .theme-toggle-slider {
@@ -44,23 +86,135 @@ function yoursite_add_dark_mode_assets() {
         display: flex;
         align-items: center;
         justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     
     .theme-toggle-slider svg {
         width: 12px;
         height: 12px;
         color: white;
+        transition: opacity 0.2s ease;
     }
     
-    /* Dark mode active state */
+    /* Mobile Dark Mode Toggle Button */
+    .mobile-theme-toggle {
+        position: relative;
+        background: #f3f4f6;
+        border: 2px solid #e5e7eb;
+        border-radius: 50px;
+        padding: 6px;
+        width: 70px;
+        height: 38px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+    }
+    
+    .mobile-theme-toggle:hover,
+    .mobile-theme-toggle:active {
+        border-color: #9ca3af;
+        background: #e5e7eb;
+    }
+    
+    .mobile-theme-toggle:focus {
+        outline: 2px solid #667eea;
+        outline-offset: 2px;
+    }
+    
+    .mobile-theme-toggle-slider {
+        position: absolute;
+        background: #374151;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        top: 5px;
+        left: 5px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .mobile-theme-toggle-slider svg {
+        width: 14px;
+        height: 14px;
+        color: white;
+        transition: opacity 0.2s ease;
+    }
+    
+    /* Icon states - Desktop */
+    .theme-toggle .theme-icon-sun {
+        display: block;
+    }
+    
+    .theme-toggle .theme-icon-moon {
+        display: none;
+    }
+    
+    /* Icon states - Mobile */
+    .mobile-theme-toggle .mobile-theme-icon-sun {
+        display: block;
+    }
+    
+    .mobile-theme-toggle .mobile-theme-icon-moon {
+        display: none;
+    }
+    
+    /* Dark mode active state - Desktop */
     body.dark-mode .theme-toggle {
         border-color: #4b5563;
-        background: #1f2937;
+        background: #374151;
+    }
+    
+    body.dark-mode .theme-toggle:hover {
+        border-color: #6b7280;
+        background: #4b5563;
     }
     
     body.dark-mode .theme-toggle-slider {
         transform: translateX(28px);
         background: #fbbf24;
+    }
+    
+    body.dark-mode .theme-toggle .theme-icon-sun {
+        display: none;
+    }
+    
+    body.dark-mode .theme-toggle .theme-icon-moon {
+        display: block;
+        color: #374151;
+    }
+    
+    /* Dark mode active state - Mobile */
+    body.dark-mode .mobile-theme-toggle {
+        border-color: #4b5563;
+        background: #374151;
+    }
+    
+    body.dark-mode .mobile-theme-toggle:hover,
+    body.dark-mode .mobile-theme-toggle:active {
+        border-color: #6b7280;
+        background: #4b5563;
+    }
+    
+    body.dark-mode .mobile-theme-toggle-slider {
+        transform: translateX(32px);
+        background: #fbbf24;
+    }
+    
+    body.dark-mode .mobile-theme-toggle .mobile-theme-icon-sun {
+        display: none;
+    }
+    
+    body.dark-mode .mobile-theme-toggle .mobile-theme-icon-moon {
+        display: block;
+        color: #374151;
     }
     
     /* Dark Mode Variables */
@@ -100,9 +254,9 @@ function yoursite_add_dark_mode_assets() {
     
     /* Header dark mode */
     body.dark-mode .site-header {
-        background: rgba(17, 24, 39, 0.95);
+        background: rgba(17, 24, 39, 0.95) !important;
         backdrop-filter: blur(10px);
-        border-color: var(--border-primary);
+        border-color: var(--border-primary) !important;
     }
     
     body.dark-mode .site-title a,
@@ -137,19 +291,19 @@ function yoursite_add_dark_mode_assets() {
     
     /* Mobile navigation */
     body.dark-mode #mobile-navigation {
-        background-color: var(--bg-primary);
-        border-color: var(--border-primary);
+        background-color: var(--bg-primary) !important;
+        border-color: var(--border-primary) !important;
     }
     
     /* Buttons dark mode */
     body.dark-mode .mobile-menu-toggle {
-        border-color: var(--border-secondary);
-        color: var(--text-secondary);
+        border-color: var(--border-secondary) !important;
+        color: var(--text-secondary) !important;
     }
     
     body.dark-mode .mobile-menu-toggle:hover {
-        color: var(--text-primary);
-        border-color: var(--border-primary);
+        color: var(--text-primary) !important;
+        border-color: var(--border-primary) !important;
     }
     
     body.dark-mode .login-btn {
@@ -201,131 +355,51 @@ function yoursite_add_dark_mode_assets() {
         color: var(--text-tertiary) !important;
     }
     
-    /* Ensure all text elements inherit proper colors */
-    body.dark-mode {
-        color: var(--text-primary);
+    /* Mobile responsive toggle styles */
+    @media (max-width: 1023px) {
+        .theme-toggle {
+            display: none;
+        }
     }
     
-    body.dark-mode *:not(.hero-gradient *):not(.bg-gray-900 *):not(.btn-primary *):not(.text-white):not(.text-blue-600):not(.text-green-500):not(.text-yellow-400) {
-        color: inherit;
+    @media (min-width: 1024px) {
+        .mobile-theme-toggle {
+            display: none;
+        }
     }
     
-    /* Specific text element overrides */
-    body.dark-mode .text-xl,
-    body.dark-mode .text-2xl,
-    body.dark-mode .text-3xl,
-    body.dark-mode .text-4xl,
-    body.dark-mode .text-5xl,
-    body.dark-mode .text-6xl {
-        color: var(--text-primary) !important;
+    /* Mobile actions styling improvements */
+    .mobile-actions {
+        background-color: rgba(249, 250, 251, 0.5);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
     }
     
-    body.dark-mode .text-sm {
-        color: var(--text-tertiary) !important;
+    body.dark-mode .mobile-actions {
+        background-color: rgba(55, 65, 81, 0.5);
     }
     
-    body.dark-mode .text-base {
-        color: var(--text-secondary) !important;
+    .mobile-theme-toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
     }
     
-    /* Font weight classes */
-    body.dark-mode .font-bold,
-    body.dark-mode .font-semibold,
-    body.dark-mode .font-medium {
-        color: var(--text-primary) !important;
+    .mobile-theme-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
     }
     
-    /* Borders */
-    body.dark-mode .border-gray-200 {
-        border-color: var(--border-primary) !important;
-    }
-    
-    body.dark-mode .border-gray-300 {
-        border-color: var(--border-secondary) !important;
-    }
-    
-    /* Form inputs */
-    body.dark-mode input[type="text"],
-    body.dark-mode input[type="email"],
-    body.dark-mode input[type="tel"],
-    body.dark-mode input[type="url"],
-    body.dark-mode input[type="number"],
-    body.dark-mode input[type="date"],
-    body.dark-mode select,
-    body.dark-mode textarea {
-        background-color: var(--bg-tertiary);
-        border-color: var(--border-secondary);
-        color: var(--text-primary);
-    }
-    
-    body.dark-mode input:focus,
-    body.dark-mode select:focus,
-    body.dark-mode textarea:focus {
-        border-color: #667eea;
-        background-color: var(--bg-secondary);
-    }
-    
-    /* Feature cards */
-    body.dark-mode .feature-card {
-        background-color: var(--bg-secondary);
-        border-color: var(--border-primary);
-    }
-    
-    body.dark-mode .feature-card:hover {
-        box-shadow: var(--shadow-lg);
-    }
-    
-    /* Shadows */
-    body.dark-mode .shadow-sm {
-        box-shadow: var(--shadow-sm);
-    }
-    
-    body.dark-mode .shadow-md {
-        box-shadow: var(--shadow-md);
-    }
-    
-    body.dark-mode .shadow-lg {
-        box-shadow: var(--shadow-lg);
-    }
-    
-    /* Footer */
-    body.dark-mode .bg-gray-900 {
-        background-color: #0f172a !important;
+    body.dark-mode .mobile-theme-label {
+        color: var(--text-secondary);
     }
     
     /* Smooth transitions */
     * {
         transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    }
-    
-    /* Gradients remain unchanged for branding */
-    .hero-gradient,
-    .btn-primary {
-        /* Keep original gradients for brand consistency */
-    }
-    
-    /* Mobile responsive toggle */
-    @media (max-width: 640px) {
-        .theme-toggle {
-            width: 50px;
-            height: 28px;
-        }
-        
-        .theme-toggle-slider {
-            width: 18px;
-            height: 18px;
-            top: 3px;
-            left: 3px;
-        }
-        
-        body.dark-mode .theme-toggle-slider {
-            transform: translateX(22px);
-        }
-        
-        .theme-toggle-slider svg {
-            width: 10px;
-            height: 10px;
-        }
     }
     </style>
     
@@ -343,21 +417,36 @@ function yoursite_add_dark_mode_assets() {
         // Apply initial theme
         applyTheme(theme);
         
-        // Theme toggle functionality
+        // Desktop theme toggle functionality
         const themeToggle = document.getElementById('theme-toggle');
         if (themeToggle) {
-            themeToggle.addEventListener('click', function() {
-                const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                applyTheme(newTheme);
-                localStorage.setItem('theme', newTheme);
-                
-                // Add a subtle animation
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 150);
+            themeToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleTheme(this);
+            });
+            
+            // Add touch event for mobile browsers accessing desktop element
+            themeToggle.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleTheme(this);
+            });
+        }
+        
+        // Mobile theme toggle functionality
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+        if (mobileThemeToggle) {
+            mobileThemeToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleTheme(this);
+            });
+            
+            mobileThemeToggle.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleTheme(this);
             });
         }
         
@@ -371,21 +460,56 @@ function yoursite_add_dark_mode_assets() {
         }
     }
     
+    function toggleTheme(toggleButton) {
+        const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        applyTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Add visual feedback
+        if (toggleButton) {
+            toggleButton.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                toggleButton.style.transform = 'scale(1)';
+            }, 150);
+        }
+        
+        console.log('Theme toggled to:', newTheme);
+    }
+    
     function applyTheme(theme) {
         const body = document.body;
         const themeToggle = document.getElementById('theme-toggle');
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
         
         if (theme === 'dark') {
             body.classList.add('dark-mode');
+            
+            // Update desktop toggle
             if (themeToggle) {
                 themeToggle.setAttribute('aria-label', 'Switch to light mode');
                 themeToggle.title = 'Switch to light mode';
             }
+            
+            // Update mobile toggle
+            if (mobileThemeToggle) {
+                mobileThemeToggle.setAttribute('aria-label', 'Switch to light mode');
+                mobileThemeToggle.title = 'Switch to light mode';
+            }
         } else {
             body.classList.remove('dark-mode');
+            
+            // Update desktop toggle
             if (themeToggle) {
                 themeToggle.setAttribute('aria-label', 'Switch to dark mode');
                 themeToggle.title = 'Switch to dark mode';
+            }
+            
+            // Update mobile toggle
+            if (mobileThemeToggle) {
+                mobileThemeToggle.setAttribute('aria-label', 'Switch to dark mode');
+                mobileThemeToggle.title = 'Switch to dark mode';
             }
         }
         
@@ -428,20 +552,6 @@ function yoursite_add_dark_mode_body_class($classes) {
     return $classes;
 }
 add_filter('body_class', 'yoursite_add_dark_mode_body_class');
-
-/**
- * Create theme toggle button HTML
- */
-function yoursite_get_theme_toggle_button() {
-    return '
-    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
-        <div class="theme-toggle-slider">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-            </svg>
-        </div>
-    </button>';
-}
 
 /**
  * Add prefers-color-scheme support

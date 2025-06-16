@@ -85,283 +85,6 @@ $hero_bg_style = $hero_bg_image ? 'background-image: url(' . esc_url($hero_bg_im
         </div>
     </div>
 </div>
-
-<style>
-/* Ensure primary button text is always visible */
-.btn-primary {
-    color: #7c3aed !important; /* Purple color for light mode */
-}
-.dark .btn-primary {
-    color: #6d28d9 !important; /* Darker purple for dark mode */
-}
-
-/* Final CTA buttons */
-.hero-gradient .btn-primary {
-    color: #7c3aed !important;
-}
-.dark .hero-gradient .btn-primary {
-    color: #6d28d9 !important;
-}
-.hero-gradient .btn-secondary:hover {
-    color: #7c3aed !important;
-}
-.dark .hero-gradient .btn-secondary:hover {
-    color: #6d28d9 !important;
-}
-
-/* Video Modal Styles */
-#video-modal {
-    display: none;
-}
-#video-modal.active {
-    display: block !important;
-}
-#video-modal .video-container {
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    overflow: hidden;
-    background: #000;
-    border-radius: 0.5rem;
-}
-#video-modal iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-</style>
-
-<script>
-// ==========================================================================
-// YOUTUBE MODAL - FIXED JAVASCRIPT
-// Replace the existing modal JavaScript in your homepage.php with this
-// ==========================================================================
-
-document.addEventListener('DOMContentLoaded', function() {
-    const videoModal = document.getElementById('video-modal');
-    const videoIframe = document.getElementById('video-iframe');
-    const closeButton = document.getElementById('close-video-modal');
-    const videoThumbnail = document.querySelector('.video-thumbnail');
-    
-    // Debug logging
-    console.log('Modal elements found:', {
-        videoModal: !!videoModal,
-        videoIframe: !!videoIframe,
-        closeButton: !!closeButton,
-        videoThumbnail: !!videoThumbnail
-    });
-    
-    if (videoThumbnail && videoModal) {
-        // Make the entire thumbnail clickable
-        videoThumbnail.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const videoUrl = this.getAttribute('data-video-url');
-            console.log('Video URL:', videoUrl);
-            
-            if (videoUrl && videoIframe) {
-                openVideoModal(videoUrl);
-            }
-        });
-    }
-    
-    function openVideoModal(videoUrl) {
-        // Convert YouTube URL to privacy-enhanced embed format
-        let embedUrl = convertToEmbedUrl(videoUrl);
-        console.log('Embed URL:', embedUrl);
-        
-        if (embedUrl) {
-            // Set loading state
-            videoModal.classList.add('loading');
-            
-            // Set iframe source
-            videoIframe.src = embedUrl;
-            
-            // Show modal
-            videoModal.classList.remove('hidden');
-            videoModal.classList.add('active');
-            document.body.classList.add('modal-open');
-            document.body.style.overflow = 'hidden';
-            
-            // Remove loading state after iframe loads
-            videoIframe.onload = function() {
-                videoModal.classList.remove('loading');
-            };
-            
-            // Focus close button for accessibility
-            if (closeButton) {
-                setTimeout(() => closeButton.focus(), 100);
-            }
-        }
-    }
-    
-    function closeVideoModal() {
-        console.log('Closing modal');
-        
-        if (videoModal && !videoModal.classList.contains('hidden')) {
-            // Hide modal
-            videoModal.classList.add('hidden');
-            videoModal.classList.remove('active', 'loading');
-            
-            // Clear iframe source to stop video
-            if (videoIframe) {
-                videoIframe.src = '';
-            }
-            
-            // Restore body scroll
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
-            
-            // Return focus to thumbnail for accessibility
-            if (videoThumbnail) {
-                videoThumbnail.focus();
-            }
-        }
-    }
-    
-    function convertToEmbedUrl(url) {
-        if (!url) return null;
-        
-        let videoId = null;
-        
-        // Extract video ID from different YouTube URL formats
-        if (url.includes('youtube.com/watch?v=')) {
-            videoId = url.split('v=')[1].split('&')[0];
-        } else if (url.includes('youtu.be/')) {
-            videoId = url.split('youtu.be/')[1].split('?')[0];
-        } else if (url.includes('youtube.com/embed/')) {
-            videoId = url.split('embed/')[1].split('?')[0];
-        } else if (url.includes('youtube-nocookie.com/embed/')) {
-            videoId = url.split('embed/')[1].split('?')[0];
-        }
-        
-        if (videoId) {
-            // Create privacy-enhanced embed URL with autoplay
-            return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
-        }
-        
-        return null;
-    }
-    
-    // Event listeners for closing modal
-    if (closeButton) {
-        closeButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            closeVideoModal();
-        });
-    }
-    
-    // Close when clicking on backdrop
-    if (videoModal) {
-        videoModal.addEventListener('click', function(e) {
-            // Only close if clicking on the modal backdrop, not the content
-            if (e.target === videoModal || e.target.classList.contains('bg-black')) {
-                closeVideoModal();
-            }
-        });
-    }
-    
-    // Close on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && videoModal && videoModal.classList.contains('active')) {
-            closeVideoModal();
-        }
-    });
-    
-    // Handle window resize to maintain modal positioning
-    let resizeTimeout;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(function() {
-            if (videoModal && videoModal.classList.contains('active')) {
-                // Force modal to recalculate positioning
-                videoModal.style.display = 'none';
-                videoModal.offsetHeight; // Force reflow
-                videoModal.style.display = 'flex';
-            }
-        }, 100);
-    });
-});
-
-// Alternative function if you prefer to call it manually
-function initYouTubeModal() {
-    // This function can be used if you need to reinitialize the modal
-    // after dynamic content changes
-    const event = new Event('DOMContentLoaded');
-    document.dispatchEvent(event);
-}    const videoModal = document.getElementById('video-modal');
-    const videoIframe = document.getElementById('video-iframe');
-    const closeButton = document.getElementById('close-video-modal');
-    const videoThumbnail = document.querySelector('.video-thumbnail');
-    
-    if (videoThumbnail && videoModal) {
-        // Make the entire thumbnail clickable
-        videoThumbnail.addEventListener('click', function(e) {
-            e.preventDefault();
-            const videoUrl = this.getAttribute('data-video-url');
-            if (videoUrl && videoIframe) {
-                // Convert YouTube URL to privacy-enhanced embed format
-                let embedUrl = videoUrl;
-                if (videoUrl.includes('youtube.com/watch?v=')) {
-                    const videoId = videoUrl.split('v=')[1].split('&')[0];
-                    embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
-                } else if (videoUrl.includes('youtu.be/')) {
-                    const videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
-                    embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
-                } else if (videoUrl.includes('youtube.com/embed/')) {
-                    // Already an embed URL, convert to privacy-enhanced
-                    embedUrl = videoUrl.replace('youtube.com', 'youtube-nocookie.com');
-                    if (!embedUrl.includes('?')) {
-                        embedUrl += '?autoplay=1&rel=0';
-                    }
-                }
-                
-                videoIframe.src = embedUrl;
-                videoModal.classList.remove('hidden');
-                videoModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        });
-    }
-    
-    function closeModal() {
-        if (videoModal && !videoModal.classList.contains('hidden')) {
-            videoModal.classList.add('hidden');
-            videoModal.classList.remove('active');
-            if (videoIframe) {
-                videoIframe.src = '';
-            }
-            document.body.style.overflow = '';
-        }
-    }
-    
-    if (closeButton) {
-        closeButton.addEventListener('click', closeModal);
-    }
-    
-    // Close when clicking outside the video
-    if (videoModal) {
-        videoModal.addEventListener('click', function(e) {
-            // Check if clicked on backdrop (first child) or the modal itself
-            if (e.target === videoModal || e.target === videoModal.querySelector('.absolute.inset-0.bg-black')) {
-                closeModal();
-            }
-        });
-    }
-    
-    // Close on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && videoModal && videoModal.classList.contains('active')) {
-            closeModal();
-        }
-    });
-});
-</script>
 <?php endif; ?>
 
 <?php if (get_theme_mod('social_proof_enable', true)) : ?>
@@ -412,31 +135,51 @@ function initYouTubeModal() {
                     'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'
                 );
                 
+                // Default benefits data
+                $default_benefits = array(
+                    array(
+                        'title' => __('Drag & Drop Builder', 'yoursite'),
+                        'description' => __('Build your store with our intuitive drag & drop interface. No coding required.', 'yoursite'),
+                        'color' => 'blue'
+                    ),
+                    array(
+                        'title' => __('Secure Payments', 'yoursite'),
+                        'description' => __('Accept payments safely with our secure checkout and multiple payment options.', 'yoursite'),
+                        'color' => 'green'
+                    ),
+                    array(
+                        'title' => __('Marketing & SEO', 'yoursite'),
+                        'description' => __('Built-in marketing tools and SEO optimization to grow your business.', 'yoursite'),
+                        'color' => 'purple'
+                    ),
+                    array(
+                        'title' => __('Shipping Made Simple', 'yoursite'),
+                        'description' => __('Manage inventory and shipping with automated tools and integrations.', 'yoursite'),
+                        'color' => 'orange'
+                    )
+                );
+                
                 for ($i = 1; $i <= 4; $i++) : 
-                    $title = get_theme_mod("benefit_{$i}_title");
-                    $description = get_theme_mod("benefit_{$i}_description");
-                    $color = get_theme_mod("benefit_{$i}_color", 'blue');
+                    // Get custom values or use defaults
+                    $title = get_theme_mod("benefit_{$i}_title", $default_benefits[$i-1]['title']);
+                    $description = get_theme_mod("benefit_{$i}_description", $default_benefits[$i-1]['description']);
+                    $color = get_theme_mod("benefit_{$i}_color", $default_benefits[$i-1]['color']);
                     $custom_image = get_theme_mod("benefit_{$i}_image");
-                    
-                    if ($title || $description) : ?>
-                        <div class="text-center feature-card p-6 rounded-lg">
-                            <div class="w-16 h-16 bg-<?php echo esc_attr($color); ?>-100 dark:bg-<?php echo esc_attr($color); ?>-900 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                                <?php if ($custom_image) : ?>
-                                    <img src="<?php echo esc_url($custom_image); ?>" alt="<?php echo esc_attr($title); ?>" class="w-8 h-8 object-contain">
-                                <?php else : ?>
-                                    <svg class="w-8 h-8 text-<?php echo esc_attr($color); ?>-600 dark:text-<?php echo esc_attr($color); ?>-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<?php echo esc_attr($benefit_icons[$i-1]); ?>"></path>
-                                    </svg>
-                                <?php endif; ?>
-                            </div>
-                            <?php if ($title) : ?>
-                                <h3 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white"><?php echo esc_html($title); ?></h3>
-                            <?php endif; ?>
-                            <?php if ($description) : ?>
-                                <p class="text-gray-600 dark:text-gray-300"><?php echo esc_html($description); ?></p>
+                    ?>
+                    <div class="text-center feature-card p-6 rounded-lg">
+                        <div class="w-16 h-16 bg-<?php echo esc_attr($color); ?>-100 dark:bg-<?php echo esc_attr($color); ?>-900 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                            <?php if ($custom_image) : ?>
+                                <img src="<?php echo esc_url($custom_image); ?>" alt="<?php echo esc_attr($title); ?>" class="w-8 h-8 object-contain">
+                            <?php else : ?>
+                                <svg class="w-8 h-8 text-<?php echo esc_attr($color); ?>-600 dark:text-<?php echo esc_attr($color); ?>-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<?php echo esc_attr($benefit_icons[$i-1]); ?>"></path>
+                                </svg>
                             <?php endif; ?>
                         </div>
-                    <?php endif;
+                        <h3 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white"><?php echo esc_html($title); ?></h3>
+                        <p class="text-gray-600 dark:text-gray-300"><?php echo esc_html($description); ?></p>
+                    </div>
+                    <?php
                 endfor; ?>
             </div>
         </div>
@@ -657,3 +400,157 @@ endif;
     </div>
 </section>
 <?php endif; ?>
+
+<script>
+// ==========================================================================
+// YOUTUBE MODAL - FIXED JAVASCRIPT
+// ==========================================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const videoModal = document.getElementById('video-modal');
+    const videoIframe = document.getElementById('video-iframe');
+    const closeButton = document.getElementById('close-video-modal');
+    const videoThumbnail = document.querySelector('.video-thumbnail');
+    
+    // Debug logging
+    console.log('Modal elements found:', {
+        videoModal: !!videoModal,
+        videoIframe: !!videoIframe,
+        closeButton: !!closeButton,
+        videoThumbnail: !!videoThumbnail
+    });
+    
+    if (videoThumbnail && videoModal) {
+        // Make the entire thumbnail clickable
+        videoThumbnail.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const videoUrl = this.getAttribute('data-video-url');
+            console.log('Video URL:', videoUrl);
+            
+            if (videoUrl && videoIframe) {
+                openVideoModal(videoUrl);
+            }
+        });
+    }
+    
+    function openVideoModal(videoUrl) {
+        // Convert YouTube URL to privacy-enhanced embed format
+        let embedUrl = convertToEmbedUrl(videoUrl);
+        console.log('Embed URL:', embedUrl);
+        
+        if (embedUrl) {
+            // Set loading state
+            videoModal.classList.add('loading');
+            
+            // Set iframe source
+            videoIframe.src = embedUrl;
+            
+            // Show modal
+            videoModal.classList.remove('hidden');
+            videoModal.classList.add('active');
+            document.body.classList.add('modal-open');
+            document.body.style.overflow = 'hidden';
+            
+            // Remove loading state after iframe loads
+            videoIframe.onload = function() {
+                videoModal.classList.remove('loading');
+            };
+            
+            // Focus close button for accessibility
+            if (closeButton) {
+                setTimeout(() => closeButton.focus(), 100);
+            }
+        }
+    }
+    
+    function closeVideoModal() {
+        console.log('Closing modal');
+        
+        if (videoModal && !videoModal.classList.contains('hidden')) {
+            // Hide modal
+            videoModal.classList.add('hidden');
+            videoModal.classList.remove('active', 'loading');
+            
+            // Clear iframe source to stop video
+            if (videoIframe) {
+                videoIframe.src = '';
+            }
+            
+            // Restore body scroll
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            
+            // Return focus to thumbnail for accessibility
+            if (videoThumbnail) {
+                videoThumbnail.focus();
+            }
+        }
+    }
+    
+    function convertToEmbedUrl(url) {
+        if (!url) return null;
+        
+        let videoId = null;
+        
+        // Extract video ID from different YouTube URL formats
+        if (url.includes('youtube.com/watch?v=')) {
+            videoId = url.split('v=')[1].split('&')[0];
+        } else if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+        } else if (url.includes('youtube.com/embed/')) {
+            videoId = url.split('embed/')[1].split('?')[0];
+        } else if (url.includes('youtube-nocookie.com/embed/')) {
+            videoId = url.split('embed/')[1].split('?')[0];
+        }
+        
+        if (videoId) {
+            // Create privacy-enhanced embed URL with autoplay
+            return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
+        }
+        
+        return null;
+    }
+    
+    // Event listeners for closing modal
+    if (closeButton) {
+        closeButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeVideoModal();
+        });
+    }
+    
+    // Close when clicking on backdrop
+    if (videoModal) {
+        videoModal.addEventListener('click', function(e) {
+            // Only close if clicking on the modal backdrop, not the content
+            if (e.target === videoModal || e.target.classList.contains('bg-black')) {
+                closeVideoModal();
+            }
+        });
+    }
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && videoModal && videoModal.classList.contains('active')) {
+            closeVideoModal();
+        }
+    });
+    
+    // Handle window resize to maintain modal positioning
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            if (videoModal && videoModal.classList.contains('active')) {
+                // Force modal to recalculate positioning
+                videoModal.style.display = 'none';
+                videoModal.offsetHeight; // Force reflow
+                videoModal.style.display = 'flex';
+            }
+        }, 100);
+    });
+});
+</script>

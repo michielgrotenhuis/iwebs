@@ -41,46 +41,6 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     line-height: 1.6;
     color: var(--text-color);
-}
-
-/* WordPress specific overrides */
-/*
-Theme Name: YourSite.biz - SaaS Store Builder
-Description: A modern WordPress theme for SaaS eCommerce platform businesses, inspired by Shopify's clean and conversion-focused design. Features include drag & drop customization, pricing tables, testimonials, and complete eCommerce integration.
-Version: 1.0.0
-Author: YourSite.biz
-Author URI: https://yoursite.biz
-License: GPL v2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: yoursite
-Tags: ecommerce, business, saas, modern, responsive, customizer-ready, block-styles, wide-blocks
-Requires at least: 5.0
-Tested up to: 6.4
-Requires PHP: 7.4
-*/
-
-/* Import Tailwind CSS */
-@import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
-
-/* Custom CSS Variables */
-:root {
-    --primary-color: #667eea;
-    --secondary-color: #764ba2;
-    --accent-color: #f093fb;
-    --text-color: #374151;
-    --text-light: #6b7280;
-    --background-color: #ffffff;
-    --border-color: #e5e7eb;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --error-color: #ef4444;
-}
-
-/* Base Typography */
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    line-height: 1.6;
-    color: var(--text-color);
     background-color: var(--background-color);
 }
 
@@ -150,40 +110,6 @@ body {
     text-decoration: none !important;
 }
 
-/* Footer Breadcrumbs - Subtle styling */
-.breadcrumbs-footer {
-    font-size: 0.75rem !important;
-    color: #9ca3af !important;
-    opacity: 0.8 !important;
-    text-align: center !important;
-}
-
-.breadcrumbs-footer a {
-    color: #9ca3af !important;
-    text-decoration: none !important;
-    transition: color 0.2s ease !important;
-}
-
-.breadcrumbs-footer a:hover {
-    color: #d1d5db !important;
-    text-decoration: none !important;
-}
-
-.breadcrumbs-footer .breadcrumb-separator {
-    margin: 0 8px !important;
-    color: #6b7280 !important;
-    opacity: 0.6 !important;
-}
-
-/* Responsive adjustments for breadcrumbs */
-@media (max-width: 768px) {
-    .breadcrumbs-footer {
-        font-size: 0.7rem !important;
-        text-align: center !important;
-        margin-bottom: 8px !important;
-    }
-}
-
 .btn-primary:visited {
     color: white !important;
 }
@@ -222,6 +148,157 @@ body {
 .hero-gradient span,
 .hero-gradient div {
     color: white !important;
+}
+
+/* ==========================================================================
+   LOGO AUTO-SCALING STYLES
+   ========================================================================== */
+
+/* Custom Logo Scaling */
+.custom-logo-link {
+    display: inline-block !important;
+    max-width: 200px !important; /* Maximum logo width */
+    width: auto !important;
+    height: auto !important;
+}
+
+.custom-logo {
+    max-width: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: 60px !important; /* Maximum logo height */
+    object-fit: contain !important;
+    display: block !important;
+}
+
+/* Mobile responsive logo */
+@media (max-width: 768px) {
+    .custom-logo-link {
+        max-width: 150px !important;
+    }
+    
+    .custom-logo {
+        max-height: 40px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-logo-link {
+        max-width: 120px !important;
+    }
+    
+    .custom-logo {
+        max-height: 32px !important;
+    }
+}
+
+/* Site branding container adjustments */
+.site-branding {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.site-logo {
+    flex-shrink: 0 !important;
+}
+
+.site-title-wrapper {
+    min-width: 0 !important; /* Allows text to wrap if needed */
+}
+
+/* Ensure logo doesn't interfere with navigation on smaller screens */
+@media (max-width: 1024px) {
+    .site-branding {
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+}
+
+/* High DPI display support */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .custom-logo {
+        image-rendering: -webkit-optimize-contrast !important;
+        image-rendering: crisp-edges !important;
+    }
+}
+
+/* Dark mode logo adjustments */
+body.dark-mode .custom-logo {
+    /* You can add filters here if your logo needs adjustment in dark mode */
+    /* filter: brightness(1.1) contrast(0.9); */
+}
+
+/* Logo loading state */
+.custom-logo {
+    transition: opacity 0.3s ease !important;
+}
+
+.custom-logo:not([src]) {
+    opacity: 0 !important;
+}
+
+/* Fix for logos with transparent backgrounds */
+.custom-logo {
+    background: transparent !important;
+}
+
+/* Ensure proper spacing in header */
+.site-header .container .flex {
+    align-items: center !important;
+    min-height: 64px !important; /* Minimum header height */
+}
+
+/* Logo hover effect (optional) */
+.custom-logo-link:hover .custom-logo {
+    opacity: 0.8 !important;
+    transition: opacity 0.2s ease !important;
+}
+
+/* Print styles for logo */
+@media print {
+    .custom-logo {
+        max-height: 40px !important;
+        max-width: 150px !important;
+    }
+}
+
+/* ==========================================================================
+   GENERAL STYLING CONTINUES
+   ========================================================================== */
+
+/* Footer Breadcrumbs - Subtle styling */
+.breadcrumbs-footer {
+    font-size: 0.75rem !important;
+    color: #9ca3af !important;
+    opacity: 0.8 !important;
+    text-align: center !important;
+}
+
+.breadcrumbs-footer a {
+    color: #9ca3af !important;
+    text-decoration: none !important;
+    transition: color 0.2s ease !important;
+}
+
+.breadcrumbs-footer a:hover {
+    color: #d1d5db !important;
+    text-decoration: none !important;
+}
+
+.breadcrumbs-footer .breadcrumb-separator {
+    margin: 0 8px !important;
+    color: #6b7280 !important;
+    opacity: 0.6 !important;
+}
+
+/* Responsive adjustments for breadcrumbs */
+@media (max-width: 768px) {
+    .breadcrumbs-footer {
+        font-size: 0.7rem !important;
+        text-align: center !important;
+        margin-bottom: 8px !important;
+    }
 }
 
 /* Ensure text is visible on gradients */
@@ -572,12 +649,6 @@ a:hover {
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* Debug styles - remove after testing */
-.debug-bg {
-    background: red !important;
-    color: white !important;
-}
-
 /* Ensure WordPress admin bar doesn't interfere */
 html {
     margin-top: 0 !important;
@@ -589,7 +660,6 @@ html {
 }
 
 /* Fix for sticky header on webinars page */
-
 /* Remove sticky positioning from header globally */
 .site-header,
 #masthead,
@@ -602,659 +672,8 @@ header,
     transform: none !important;
 }
 
-/* Specific fixes for webinars page */
-.archive-webinars .site-header,
-.page-template-webinars .site-header {
-    position: static !important;
-    position: relative !important;
-    top: 0 !important;
-    transform: translateY(0) !important;
-    box-shadow: none !important;
-}
-
-/* Remove any fixed positioning that might be applied */
-body:not(.admin-bar) .site-header {
-    top: 0 !important;
-}
-
-body.admin-bar .site-header {
-    top: 32px !important;
-}
-
-/* Ensure no JavaScript-applied sticky classes interfere */
-.site-header.sticky,
-.site-header.fixed,
-.site-header.is-sticky {
-    position: static !important;
-    top: auto !important;
-    transform: none !important;
-}
-
-/* Reset any potential sticky navigation */
-.main-navigation.sticky {
-    position: static !important;
-}
-
-/* Make sure body doesn't have padding-top for sticky header */
-body {
-    padding-top: 0 !important;
-}
-
-/* Remove any transforms that might be causing stickiness */
-.site-header * {
-    transform: none !important;
-}
-
-/* Specific webinars page body fixes */
-.archive-webinars,
-.page-template-webinars {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-}
-
-/* Override any theme sticky styles */
-@media (min-width: 768px) {
-    .site-header {
-        position: static !important;
-        position: relative !important;
-    }
-}
-
-/* If you have a specific header wrapper that's causing issues */
-.header-wrapper,
-.site-header-wrapper {
-    position: static !important;
-    top: auto !important;
-}
-
-/* Remove transition effects that might make it seem sticky */
-.site-header {
-    transition: none !important;
-}
-
-/* Make sure WordPress admin bar doesn't push content */
-html {
-    margin-top: 0 !important;
-}
-
-/* Override any Tailwind sticky classes */
-.sticky {
-    position: static !important;
-}
-
-.fixed {
-    position: static !important;
-}
-
-/* If using a specific navigation framework */
-.navbar-fixed-top {
-    position: static !important;
-}
-
-/* Additional safeguards */
-header[role="banner"] {
-    position: static !important;
-}
-
-#site-navigation {
-    position: static !important;
-}
-/* Add this CSS to your style.css file after the existing styles */
-
 /* ==========================================================================
-   GUIDE CONTENT STYLING - Enhanced Layout and Typography
-   ========================================================================== */
-
-/* Main guide content container */
-.guide-content {
-    line-height: 1.7;
-    color: #374151;
-    font-size: 16px;
-}
-
-/* Paragraph spacing and typography */
-.guide-content p,
-.guide-content .wp-block-paragraph {
-    margin-bottom: 1.5rem !important;
-    line-height: 1.7 !important;
-    color: #374151 !important;
-}
-
-/* Ensure last paragraph doesn't have extra margin */
-.guide-content p:last-child,
-.guide-content .wp-block-paragraph:last-child {
-    margin-bottom: 0 !important;
-}
-
-/* Heading spacing and hierarchy */
-.guide-content h1,
-.guide-content .wp-block-heading h1 {
-    font-size: 2.25rem !important;
-    line-height: 1.2 !important;
-    margin-top: 3rem !important;
-    margin-bottom: 1.5rem !important;
-    font-weight: 800 !important;
-    color: #111827 !important;
-}
-
-.guide-content h2,
-.guide-content .wp-block-heading h2 {
-    font-size: 1.875rem !important;
-    line-height: 1.3 !important;
-    margin-top: 2.5rem !important;
-    margin-bottom: 1.25rem !important;
-    font-weight: 700 !important;
-    color: #111827 !important;
-    border-bottom: 1px solid #e5e7eb !important;
-    padding-bottom: 0.5rem !important;
-}
-
-.guide-content h3,
-.guide-content .wp-block-heading h3 {
-    font-size: 1.5rem !important;
-    line-height: 1.4 !important;
-    margin-top: 2rem !important;
-    margin-bottom: 1rem !important;
-    font-weight: 600 !important;
-    color: #111827 !important;
-}
-
-.guide-content h4,
-.guide-content .wp-block-heading h4 {
-    font-size: 1.25rem !important;
-    line-height: 1.4 !important;
-    margin-top: 1.75rem !important;
-    margin-bottom: 0.875rem !important;
-    font-weight: 600 !important;
-    color: #111827 !important;
-}
-
-.guide-content h5,
-.guide-content .wp-block-heading h5 {
-    font-size: 1.125rem !important;
-    line-height: 1.4 !important;
-    margin-top: 1.5rem !important;
-    margin-bottom: 0.75rem !important;
-    font-weight: 600 !important;
-    color: #111827 !important;
-}
-
-.guide-content h6,
-.guide-content .wp-block-heading h6 {
-    font-size: 1rem !important;
-    line-height: 1.4 !important;
-    margin-top: 1.5rem !important;
-    margin-bottom: 0.75rem !important;
-    font-weight: 600 !important;
-    color: #111827 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-}
-
-/* List styling */
-.guide-content ul,
-.guide-content ol,
-.guide-content .wp-block-list {
-    margin: 1.5rem 0 !important;
-    padding-left: 1.5rem !important;
-}
-
-.guide-content ul {
-    list-style-type: disc !important;
-}
-
-.guide-content ol {
-    list-style-type: decimal !important;
-}
-
-.guide-content li {
-    margin-bottom: 0.5rem !important;
-    line-height: 1.6 !important;
-    padding-left: 0.5rem !important;
-}
-
-.guide-content li p {
-    margin-bottom: 0.5rem !important;
-}
-
-.guide-content li:last-child {
-    margin-bottom: 0 !important;
-}
-
-/* Nested lists */
-.guide-content li ul,
-.guide-content li ol {
-    margin-top: 0.5rem !important;
-    margin-bottom: 0.5rem !important;
-}
-
-.guide-content li ul {
-    list-style-type: circle !important;
-}
-
-.guide-content li ol {
-    list-style-type: lower-alpha !important;
-}
-
-/* Code blocks */
-.guide-content pre,
-.guide-content .wp-block-code {
-    background-color: #1f2937 !important;
-    color: #f9fafb !important;
-    padding: 1.5rem !important;
-    border-radius: 0.5rem !important;
-    overflow-x: auto !important;
-    margin: 2rem 0 !important;
-    font-size: 0.875rem !important;
-    line-height: 1.5 !important;
-    border: 1px solid #374151 !important;
-}
-
-.guide-content pre code {
-    background: none !important;
-    color: inherit !important;
-    padding: 0 !important;
-    font-size: inherit !important;
-}
-
-/* Inline code */
-.guide-content code {
-    background-color: #f3f4f6 !important;
-    color: #1f2937 !important;
-    padding: 0.25rem 0.5rem !important;
-    border-radius: 0.25rem !important;
-    font-size: 0.875em !important;
-    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
-    border: 1px solid #e5e7eb !important;
-}
-
-/* Blockquotes */
-.guide-content blockquote,
-.guide-content .wp-block-quote {
-    border-left: 4px solid #3b82f6 !important;
-    background-color: #f8fafc !important;
-    padding: 1.5rem !important;
-    margin: 2rem 0 !important;
-    border-radius: 0 0.5rem 0.5rem 0 !important;
-    position: relative !important;
-}
-
-.guide-content blockquote p {
-    margin-bottom: 0 !important;
-    font-style: italic !important;
-    color: #475569 !important;
-    font-size: 1.1em !important;
-}
-
-.guide-content blockquote::before {
-    content: '"' !important;
-    font-size: 3rem !important;
-    color: #3b82f6 !important;
-    position: absolute !important;
-    top: -0.5rem !important;
-    left: 1rem !important;
-    line-height: 1 !important;
-}
-
-/* Tables */
-.guide-content table,
-.guide-content .wp-block-table {
-    width: 100% !important;
-    border-collapse: collapse !important;
-    margin: 2rem 0 !important;
-    background-color: white !important;
-    border-radius: 0.5rem !important;
-    overflow: hidden !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-}
-
-.guide-content table thead {
-    background-color: #f9fafb !important;
-}
-
-.guide-content table th {
-    padding: 1rem !important;
-    text-align: left !important;
-    font-weight: 600 !important;
-    color: #374151 !important;
-    border-bottom: 2px solid #e5e7eb !important;
-    font-size: 0.875rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-}
-
-.guide-content table td {
-    padding: 1rem !important;
-    border-bottom: 1px solid #f3f4f6 !important;
-    color: #374151 !important;
-    vertical-align: top !important;
-}
-
-.guide-content table tr:last-child td {
-    border-bottom: none !important;
-}
-
-.guide-content table tr:hover {
-    background-color: #f8fafc !important;
-}
-
-/* Table wrapper for horizontal scrolling */
-.guide-content .table-wrapper {
-    overflow-x: auto !important;
-    margin: 2rem 0 !important;
-    border-radius: 0.5rem !important;
-    border: 1px solid #e5e7eb !important;
-}
-
-/* Images */
-.guide-content img {
-    max-width: 100% !important;
-    height: auto !important;
-    border-radius: 0.5rem !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-    margin: 2rem 0 !important;
-    display: block !important;
-}
-
-.guide-content figure {
-    margin: 2rem 0 !important;
-    text-align: center !important;
-}
-
-.guide-content figure img {
-    margin: 0 auto !important;
-}
-
-.guide-content figcaption {
-    margin-top: 0.5rem !important;
-    font-size: 0.875rem !important;
-    color: #6b7280 !important;
-    font-style: italic !important;
-    text-align: center !important;
-}
-
-/* Links */
-.guide-content a {
-    color: #3b82f6 !important;
-    text-decoration: none !important;
-    border-bottom: 1px solid transparent !important;
-    transition: all 0.2s ease !important;
-}
-
-.guide-content a:hover {
-    color: #1d4ed8 !important;
-    border-bottom-color: #3b82f6 !important;
-    text-decoration: none !important;
-}
-
-/* Horizontal rules */
-.guide-content hr,
-.guide-content .wp-block-separator {
-    border: none !important;
-    height: 1px !important;
-    background: linear-gradient(to right, transparent, #e5e7eb, transparent) !important;
-    margin: 3rem 0 !important;
-}
-
-/* Spacer blocks */
-.guide-content .wp-block-spacer {
-    margin: 0 !important;
-}
-
-/* Strong and emphasis */
-.guide-content strong {
-    font-weight: 600 !important;
-    color: #111827 !important;
-}
-
-.guide-content em {
-    font-style: italic !important;
-    color: #374151 !important;
-}
-
-.guide-content mark {
-    background-color: #fef3c7 !important;
-    color: #92400e !important;
-    padding: 0.125rem 0.25rem !important;
-    border-radius: 0.25rem !important;
-}
-
-/* Delete/strikethrough */
-.guide-content del {
-    text-decoration: line-through !important;
-    color: #6b7280 !important;
-}
-
-/* Ensure first element doesn't have top margin */
-.guide-content > *:first-child {
-    margin-top: 0 !important;
-}
-
-/* Ensure last element doesn't have bottom margin */
-.guide-content > *:last-child {
-    margin-bottom: 0 !important;
-}
-
-/* Dark mode adjustments */
-body.dark-mode .guide-content {
-    color: var(--text-secondary) !important;
-}
-
-body.dark-mode .guide-content h1,
-body.dark-mode .guide-content h2,
-body.dark-mode .guide-content h3,
-body.dark-mode .guide-content h4,
-body.dark-mode .guide-content h5,
-body.dark-mode .guide-content h6 {
-    color: var(--text-primary) !important;
-}
-
-body.dark-mode .guide-content h2 {
-    border-bottom-color: var(--border-primary) !important;
-}
-
-body.dark-mode .guide-content p {
-    color: var(--text-secondary) !important;
-}
-
-body.dark-mode .guide-content code {
-    background-color: var(--bg-tertiary) !important;
-    color: var(--text-primary) !important;
-    border-color: var(--border-secondary) !important;
-}
-
-body.dark-mode .guide-content blockquote {
-    background-color: var(--bg-tertiary) !important;
-    border-left-color: #3b82f6 !important;
-}
-
-body.dark-mode .guide-content blockquote p {
-    color: var(--text-secondary) !important;
-}
-
-body.dark-mode .guide-content table {
-    background-color: var(--bg-secondary) !important;
-}
-
-body.dark-mode .guide-content table thead {
-    background-color: var(--bg-tertiary) !important;
-}
-
-body.dark-mode .guide-content table th {
-    color: var(--text-primary) !important;
-    border-bottom-color: var(--border-primary) !important;
-}
-
-body.dark-mode .guide-content table td {
-    color: var(--text-secondary) !important;
-    border-bottom-color: var(--border-primary) !important;
-}
-
-body.dark-mode .guide-content table tr:hover {
-    background-color: var(--bg-tertiary) !important;
-}
-
-body.dark-mode .guide-content .table-wrapper {
-    border-color: var(--border-primary) !important;
-}
-
-body.dark-mode .guide-content a {
-    color: #60a5fa !important;
-}
-
-body.dark-mode .guide-content a:hover {
-    color: #93c5fd !important;
-    border-bottom-color: #60a5fa !important;
-}
-
-body.dark-mode .guide-content hr,
-body.dark-mode .guide-content .wp-block-separator {
-    background: linear-gradient(to right, transparent, var(--border-primary), transparent) !important;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .guide-content {
-        font-size: 15px !important;
-    }
-    
-    .guide-content h1,
-    .guide-content .wp-block-heading h1 {
-        font-size: 1.875rem !important;
-        margin-top: 2rem !important;
-    }
-    
-    .guide-content h2,
-    .guide-content .wp-block-heading h2 {
-        font-size: 1.5rem !important;
-        margin-top: 2rem !important;
-    }
-    
-    .guide-content h3,
-    .guide-content .wp-block-heading h3 {
-        font-size: 1.25rem !important;
-        margin-top: 1.5rem !important;
-    }
-    
-    .guide-content ul,
-    .guide-content ol {
-        padding-left: 1.25rem !important;
-    }
-    
-    .guide-content pre,
-    .guide-content .wp-block-code {
-        padding: 1rem !important;
-        font-size: 0.8rem !important;
-        margin: 1.5rem 0 !important;
-    }
-    
-    .guide-content blockquote {
-        padding: 1rem !important;
-        margin: 1.5rem 0 !important;
-    }
-    
-    .guide-content table th,
-    .guide-content table td {
-        padding: 0.75rem !important;
-        font-size: 0.875rem !important;
-    }
-}
-
-/* Print styles */
-@media print {
-    .guide-content {
-        color: #000 !important;
-        background: #fff !important;
-    }
-    
-    .guide-content h1,
-    .guide-content h2,
-    .guide-content h3,
-    .guide-content h4,
-    .guide-content h5,
-    .guide-content h6 {
-        color: #000 !important;
-        page-break-after: avoid !important;
-    }
-    
-    .guide-content pre,
-    .guide-content .wp-block-code {
-        background: #f5f5f5 !important;
-        color: #000 !important;
-        border: 1px solid #ccc !important;
-    }
-    
-    .guide-content blockquote {
-        background: #f9f9f9 !important;
-        border-left: 4px solid #ccc !important;
-    }
-    
-    .guide-content a {
-        color: #000 !important;
-        text-decoration: underline !important;
-    }
-    
-    .guide-content img {
-        max-width: 100% !important;
-        box-shadow: none !important;
-    }
-}
-
-/* Additional spacing utilities for guide content */
-.guide-content .wp-block-spacer[style*="height:20px"] {
-    height: 1.25rem !important;
-}
-
-.guide-content .wp-block-spacer[style*="height:40px"] {
-    height: 2.5rem !important;
-}
-
-/* Fix for WordPress core blocks that might have conflicting styles */
-.guide-content .wp-block-paragraph {
-    font-size: inherit !important;
-}
-
-.guide-content .wp-block-heading {
-    margin-block-start: 0 !important;
-    margin-block-end: 0 !important;
-}
-
-.guide-content .wp-block-list {
-    margin-block-start: 0 !important;
-    margin-block-end: 0 !important;
-    padding-inline-start: 0 !important;
-}
-
-.guide-content .wp-block-quote {
-    margin-block-start: 0 !important;
-    margin-block-end: 0 !important;
-    margin-inline-start: 0 !important;
-    margin-inline-end: 0 !important;
-}
-
-.guide-content .wp-block-code {
-    margin-block-start: 0 !important;
-    margin-block-end: 0 !important;
-}
-
-/* Ensure proper spacing between different block types */
-.guide-content .wp-block-paragraph + .wp-block-heading,
-.guide-content .wp-block-list + .wp-block-heading,
-.guide-content .wp-block-quote + .wp-block-heading,
-.guide-content .wp-block-code + .wp-block-heading {
-    margin-top: 2.5rem !important;
-}
-
-.guide-content .wp-block-heading + .wp-block-paragraph,
-.guide-content .wp-block-heading + .wp-block-list,
-.guide-content .wp-block-heading + .wp-block-quote,
-.guide-content .wp-block-heading + .wp-block-code {
-    margin-top: 1rem !important;
-}
-
-/* ==========================================================================
-   YOUTUBE MODAL - COMPLETE FIX
-   Add this to your style.css file, replacing the existing modal styles
+   YOUTUBE MODAL - COMPLETE STYLES
    ========================================================================== */
 
 /* Video Modal - Base Overlay */
@@ -1412,1034 +831,105 @@ body.modal-open {
     transform: scale(1) !important;
 }
 
-/* Override any conflicting Tailwind classes */
-#video-modal.fixed {
-    position: fixed !important;
-}
-
-#video-modal.inset-0 {
-    top: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-}
-
-#video-modal.z-50 {
-    z-index: 99999 !important;
-}
-
-/* Ensure backdrop click works */
-#video-modal > .absolute.inset-0.bg-black {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background-color: rgba(0, 0, 0, 0.9) !important;
-    cursor: pointer !important;
-}
-
 /* Loading state */
 #video-modal.loading #video-iframe {
     background: #000 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="none" stroke="%23fff" stroke-width="2" stroke-dasharray="31.416" stroke-dashoffset="31.416"><animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/><animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/></circle></svg>') center center no-repeat !important;
     background-size: 40px 40px !important;
 }
 
-/* Integration Page Specific Responsive Improvements */
-.single-integrations {
-    overflow-x: hidden;
-}
-
-/* Hero Section Responsive Improvements */
-.single-integrations .hero-section {
-    padding: 1rem 0 2rem;
-}
-
-@media (min-width: 768px) {
-    .single-integrations .hero-section {
-        padding: 2rem 0 4rem;
-    }
-}
-
-/* Integration Icon Responsive Scaling */
-.integration-icon {
-    width: 3rem;
-    height: 3rem;
-    flex-shrink: 0;
-}
-
-@media (min-width: 640px) {
-    .integration-icon {
-        width: 4rem;
-        height: 4rem;
-    }
-}
-
-/* Title and Badge Container */
-.integration-header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    min-width: 0;
-}
-
-@media (min-width: 640px) {
-    .integration-header {
-        flex-direction: row;
-        align-items: center;
-        gap: 0.75rem;
-    }
-}
-
-/* Title Responsive Typography */
-.integration-title {
-    font-size: 1.5rem;
-    line-height: 1.2;
-    word-break: break-word;
-    hyphens: auto;
-}
-
-@media (min-width: 640px) {
-    .integration-title {
-        font-size: 1.875rem;
-    }
-}
-
-@media (min-width: 1024px) {
-    .integration-title {
-        font-size: 2.25rem;
-    }
-}
-
-/* Status Badge Responsive */
-.integration-status-badge {
-    align-self: flex-start;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-/* Category and Rating Container */
-.integration-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-@media (min-width: 640px) {
-    .integration-meta {
-        flex-direction: row;
-        align-items: center;
-        gap: 1rem;
-    }
-}
-
-/* Action Panel Responsive */
-.integration-action-panel {
-    width: 100%;
-    margin-top: 1.5rem;
-}
-
-@media (min-width: 1280px) {
-    .integration-action-panel {
-        width: 20rem;
-        flex-shrink: 0;
-        margin-top: 0;
-    }
-}
-
-/* Action Links Responsive */
-.action-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem;
-    background-color: #f9fafb;
-    border-radius: 0.5rem;
-    transition: background-color 0.2s;
-    min-width: 0;
-}
-
-.action-link:hover {
-    background-color: #f3f4f6;
-}
-
-.action-link-content {
-    display: flex;
-    align-items: center;
-    min-width: 0;
-    flex: 1;
-}
-
-.action-link-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.action-link-icon {
-    flex-shrink: 0;
-    margin-right: 0.5rem;
-}
-
-.action-link-arrow {
-    flex-shrink: 0;
-    margin-left: 0.5rem;
-}
-
-/* Quick Info Responsive */
-.quick-info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-@media (min-width: 640px) {
-    .quick-info-item {
-        flex-direction: row;
-        justify-content: space-between;
-        gap: 0.5rem;
-    }
-}
-
-.quick-info-value {
-    word-break: break-word;
-    hyphens: auto;
-}
-
-/* Main Content Area Responsive */
-.integration-content-area {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-}
-
-@media (min-width: 1024px) {
-    .integration-content-area {
-        grid-template-columns: 2fr 1fr;
-        gap: 2rem;
-    }
-}
-
-/* Content Cards Responsive */
-.integration-content-card {
-    background-color: white;
-    border-radius: 0.75rem;
-    padding: 1rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e7eb;
-}
-
-@media (min-width: 640px) {
-    .integration-content-card {
-        padding: 1.5rem;
-    }
-}
-
-@media (min-width: 1024px) {
-    .integration-content-card {
-        padding: 2rem;
-    }
-}
-
-/* Features List Responsive */
-.features-list {
-    display: grid;
-    gap: 0.75rem;
-}
-
-@media (min-width: 640px) {
-    .features-list {
-        gap: 1rem;
-    }
-}
-
-.feature-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-}
-
-.feature-icon {
-    flex-shrink: 0;
-    margin-top: 0.125rem;
-}
-
-.feature-text {
-    flex: 1;
-    word-break: break-word;
-    hyphens: auto;
-    font-size: 0.875rem;
-}
-
-@media (min-width: 640px) {
-    .feature-text {
-        font-size: 1rem;
-    }
-}
-
-/* Sidebar Responsive */
-.integration-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-@media (min-width: 640px) {
-    .integration-sidebar {
-        gap: 1.5rem;
-    }
-}
-
-/* Sidebar Cards */
-.sidebar-card {
-    background-color: white;
-    border-radius: 0.75rem;
-    padding: 1rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e7eb;
-}
-
-@media (min-width: 640px) {
-    .sidebar-card {
-        padding: 1.5rem;
-    }
-}
-
-/* Support Links Responsive */
-.support-links {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.support-link {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem;
-    background-color: #f9fafb;
-    border-radius: 0.5rem;
-    transition: background-color 0.2s;
-    font-size: 0.875rem;
-    min-width: 0;
-}
-
-.support-link:hover {
-    background-color: #f3f4f6;
-}
-
-.support-link-icon {
-    flex-shrink: 0;
-    margin-right: 0.5rem;
-}
-
-.support-link-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Related Integrations Responsive */
-.related-integrations-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.related-integration-item {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem;
-    background-color: #f9fafb;
-    border-radius: 0.5rem;
-    transition: background-color 0.2s;
-    min-width: 0;
-}
-
-.related-integration-item:hover {
-    background-color: #f3f4f6;
-}
-
-.related-integration-icon {
-    flex-shrink: 0;
-    margin-right: 0.75rem;
-}
-
-.related-integration-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.related-integration-title {
-    font-weight: 500;
-    color: #111827;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 0.875rem;
-    margin-bottom: 0.125rem;
-}
-
-.related-integration-excerpt {
-    font-size: 0.75rem;
-    color: #6b7280;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Prose Content Responsive */
-.integration-prose {
-    max-width: none;
-}
-
-.integration-prose p {
-    margin-bottom: 1rem;
-    line-height: 1.6;
-}
-
-.integration-prose h1,
-.integration-prose h2,
-.integration-prose h3,
-.integration-prose h4,
-.integration-prose h5,
-.integration-prose h6 {
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-    font-weight: 600;
-    line-height: 1.3;
-    word-break: break-word;
-}
-
-.integration-prose h1 {
-    font-size: 1.5rem;
-}
-
-.integration-prose h2 {
-    font-size: 1.25rem;
-}
-
-.integration-prose h3 {
-    font-size: 1.125rem;
-}
-
-@media (min-width: 640px) {
-    .integration-prose h1 {
-        font-size: 1.875rem;
-    }
-    
-    .integration-prose h2 {
-        font-size: 1.5rem;
-    }
-    
-    .integration-prose h3 {
-        font-size: 1.25rem;
-    }
-}
-
-@media (min-width: 1024px) {
-    .integration-prose h1 {
-        font-size: 2.25rem;
-    }
-    
-    .integration-prose h2 {
-        font-size: 1.875rem;
-    }
-    
-    .integration-prose h3 {
-        font-size: 1.5rem;
-    }
-}
-
-/* Button Responsive */
-.integration-btn {
-    width: 100%;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    text-align: center;
-    transition: all 0.2s;
-    font-size: 1rem;
-}
-
-@media (min-width: 640px) {
-    .integration-btn {
-        font-size: 1.125rem;
-    }
-}
-
-/* Breadcrumb Responsive */
-.integration-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: #6b7280;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.integration-breadcrumb::-webkit-scrollbar {
-    display: none;
-}
-
-.integration-breadcrumb-item {
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.integration-breadcrumb-separator {
-    flex-shrink: 0;
-}
-
-/* Container Responsive Improvements */
-.integration-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-@media (min-width: 1536px) {
-    .integration-container {
-        max-width: 1536px;
-    }
-}
-
-/* Spacing Utilities for Integration Pages */
-.integration-section-spacing {
-    padding: 2rem 0;
-}
-
-@media (min-width: 768px) {
-    .integration-section-spacing {
-        padding: 4rem 0;
-    }
-}
-
-/* Fix for text overflow on small screens */
-.text-break {
-    word-break: break-word;
-    hyphens: auto;
-    overflow-wrap: break-word;
-}
-
-/* Ensure proper spacing on mobile */
-@media (max-width: 639px) {
-    .integration-mobile-spacing {
-        padding: 0.5rem;
-    }
-    
-    .integration-mobile-margin {
-        margin-bottom: 1rem;
-    }
-    
-    /* Smaller text on mobile for better fit */
-    .integration-mobile-text {
-        font-size: 0.875rem;
-    }
-    
-    /* Reduce padding on cards for mobile */
-    .integration-card-mobile {
-        padding: 1rem;
-    }
-}
-
-/* Fix for button text wrapping */
-.integration-btn-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Utility classes for responsive visibility */
-.show-mobile {
-    display: block;
-}
-
-.hide-mobile {
-    display: none;
-}
-
-@media (min-width: 640px) {
-    .show-mobile {
-        display: none;
-    }
-    
-    .hide-mobile {
-        display: block;
-    }
-}
-
-/* Grid responsive improvements */
-.integration-grid {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: 1fr;
-}
-
-@media (min-width: 768px) {
-    .integration-grid {
-        gap: 1.5rem;
-    }
-}
-
-@media (min-width: 1024px) {
-    .integration-grid {
-        grid-template-columns: 2fr 1fr;
-        gap: 2rem;
-    }
-}
-
-/* Ensure images are responsive */
-.integration-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 0.5rem;
-}
-
-/* Table responsive wrapper */
-.integration-table-wrapper {
-    overflow-x: auto;
-    margin: 1rem 0;
-    border-radius: 0.5rem;
-    border: 1px solid #e5e7eb;
-}
-
-.integration-table-wrapper table {
-    min-width: 600px;
-    width: 100%;
-}
-
-/* Fix for long URLs in content */
-.integration-content a {
-    word-break: break-all;
-    overflow-wrap: break-word;
-}
-
-/* Ensure proper line height for readability */
-.integration-text {
-    line-height: 1.6;
-}
-
-.integration-heading {
-    line-height: 1.3;
-}
-
-/* Animation for better UX */
-.integration-fade-in {
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Focus states for accessibility */
-.integration-focusable:focus {
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-    .integration-content-card {
-        border: 2px solid #000;
-    }
-    
-    .sidebar-card {
-        border: 2px solid #000;
-    }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-    .integration-fade-in {
-        animation: none;
-    }
-    
-    .action-link,
-    .support-link,
-    .related-integration-item {
-        transition: none;
-    }
-}
-
-/* Print styles for integration pages */
-@media print {
-    .integration-action-panel,
-    .integration-sidebar,
-    .integration-breadcrumb {
-        display: none;
-    }
-    
-    .integration-content-area {
-        grid-template-columns: 1fr;
-    }
-    
-    .integration-content-card {
-        box-shadow: none;
-        border: 1px solid #000;
-    }
-}
-
 /* ==========================================================================
-   INTEGRATION DARK MODE FIXES - Add to your style.css
-   These styles ensure proper dark mode visibility for all elements
+   GUIDE CONTENT STYLING - Enhanced Layout and Typography
    ========================================================================== */
 
-/* Global dark mode selectors - works with most dark mode implementations */
-.dark .bg-gray-50,
-[data-theme="dark"] .bg-gray-50,
-body.dark-mode .bg-gray-50 {
-    background-color: #374151 !important;
-    color: #ffffff !important;
+/* Main guide content container */
+.guide-content {
+    line-height: 1.7;
+    color: #374151;
+    font-size: 16px;
 }
 
-.dark .bg-gray-100,
-[data-theme="dark"] .bg-gray-100,
-body.dark-mode .bg-gray-100 {
-    background-color: #4b5563 !important;
-    color: #ffffff !important;
+/* Paragraph spacing and typography */
+.guide-content p,
+.guide-content .wp-block-paragraph {
+    margin-bottom: 1.5rem !important;
+    line-height: 1.7 !important;
+    color: #374151 !important;
 }
 
-.dark .bg-white,
-[data-theme="dark"] .bg-white,
-body.dark-mode .bg-white {
-    background-color: #1f2937 !important;
-    color: #ffffff !important;
+/* Ensure last paragraph doesn't have extra margin */
+.guide-content p:last-child,
+.guide-content .wp-block-paragraph:last-child {
+    margin-bottom: 0 !important;
 }
 
-/* Ensure all text in gray backgrounds is white in dark mode */
-.dark .bg-gray-50 *,
-.dark .bg-gray-100 *,
-[data-theme="dark"] .bg-gray-50 *,
-[data-theme="dark"] .bg-gray-100 *,
-body.dark-mode .bg-gray-50 *,
-body.dark-mode .bg-gray-100 * {
-    color: #ffffff !important;
+/* Heading spacing and hierarchy */
+.guide-content h1,
+.guide-content .wp-block-heading h1 {
+    font-size: 2.25rem !important;
+    line-height: 1.2 !important;
+    margin-top: 3rem !important;
+    margin-bottom: 1.5rem !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
 }
 
-/* Dark mode for specific integration classes */
-.dark .action-link,
-.dark .support-link,
-.dark .related-integration-item,
-[data-theme="dark"] .action-link,
-[data-theme="dark"] .support-link,
-[data-theme="dark"] .related-integration-item,
-body.dark-mode .action-link,
-body.dark-mode .support-link,
-body.dark-mode .related-integration-item {
-    background-color: #374151 !important;
-    color: #ffffff !important;
-    border: 1px solid #4b5563 !important;
+.guide-content h2,
+.guide-content .wp-block-heading h2 {
+    font-size: 1.875rem !important;
+    line-height: 1.3 !important;
+    margin-top: 2.5rem !important;
+    margin-bottom: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding-bottom: 0.5rem !important;
 }
 
-.dark .action-link:hover,
-.dark .support-link:hover,
-.dark .related-integration-item:hover,
-[data-theme="dark"] .action-link:hover,
-[data-theme="dark"] .support-link:hover,
-[data-theme="dark"] .related-integration-item:hover,
-body.dark-mode .action-link:hover,
-body.dark-mode .support-link:hover,
-body.dark-mode .related-integration-item:hover {
-    background-color: #4b5563 !important;
-    color: #ffffff !important;
+.guide-content h3,
+.guide-content .wp-block-heading h3 {
+    font-size: 1.5rem !important;
+    line-height: 1.4 !important;
+    margin-top: 2rem !important;
+    margin-bottom: 1rem !important;
+    font-weight: 600 !important;
+    color: #111827 !important;
 }
 
-/* Dark mode for border colors */
-.dark .border-gray-200,
-[data-theme="dark"] .border-gray-200,
-body.dark-mode .border-gray-200 {
-    border-color: #374151 !important;
+/* Dark mode adjustments */
+body.dark-mode .guide-content {
+    color: var(--text-secondary) !important;
 }
 
-.dark .border-gray-300,
-[data-theme="dark"] .border-gray-300,
-body.dark-mode .border-gray-300 {
-    border-color: #4b5563 !important;
+body.dark-mode .guide-content h1,
+body.dark-mode .guide-content h2,
+body.dark-mode .guide-content h3,
+body.dark-mode .guide-content h4,
+body.dark-mode .guide-content h5,
+body.dark-mode .guide-content h6 {
+    color: var(--text-primary) !important;
 }
 
-/* Dark mode text colors */
-.dark .text-gray-500,
-[data-theme="dark"] .text-gray-500,
-body.dark-mode .text-gray-500 {
-    color: #d1d5db !important;
-}
-
-.dark .text-gray-400,
-[data-theme="dark"] .text-gray-400,
-body.dark-mode .text-gray-400 {
-    color: #9ca3af !important;
-}
-
-.dark .text-gray-600,
-[data-theme="dark"] .text-gray-600,
-body.dark-mode .text-gray-600 {
-    color: #d1d5db !important;
-}
-
-.dark .text-gray-700,
-[data-theme="dark"] .text-gray-700,
-body.dark-mode .text-gray-700 {
-    color: #f3f4f6 !important;
-}
-
-.dark .text-gray-900,
-[data-theme="dark"] .text-gray-900,
-body.dark-mode .text-gray-900 {
-    color: #ffffff !important;
-}
-
-/* Dark mode for icons */
-.dark svg.text-gray-500,
-.dark svg.text-gray-400,
-[data-theme="dark"] svg.text-gray-500,
-[data-theme="dark"] svg.text-gray-400,
-body.dark-mode svg.text-gray-500,
-body.dark-mode svg.text-gray-400 {
-    color: #d1d5db !important;
-}
-
-/* Ensure buttons remain visible in dark mode */
-.dark .btn-primary,
-[data-theme="dark"] .btn-primary,
-body.dark-mode .btn-primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
-    color: #ffffff !important;
-}
-
-.dark .btn-secondary,
-[data-theme="dark"] .btn-secondary,
-body.dark-mode .btn-secondary {
-    background-color: transparent !important;
-    border: 2px solid #374151 !important;
-    color: #ffffff !important;
-}
-
-.dark .btn-secondary:hover,
-[data-theme="dark"] .btn-secondary:hover,
-body.dark-mode .btn-secondary:hover {
-    background-color: #374151 !important;
-    border-color: #3b82f6 !important;
-    color: #3b82f6 !important;
-}
-
-/* Dark mode for integration-specific elements */
-.dark .integration-content-card,
-.dark .sidebar-card,
-[data-theme="dark"] .integration-content-card,
-[data-theme="dark"] .sidebar-card,
-body.dark-mode .integration-content-card,
-body.dark-mode .sidebar-card {
-    background-color: #1f2937 !important;
-    border-color: #374151 !important;
-    color: #ffffff !important;
-}
-
-/* Dark mode for headings in content */
-.dark .integration-content h1,
-.dark .integration-content h2,
-.dark .integration-content h3,
-.dark .integration-content h4,
-.dark .integration-content h5,
-.dark .integration-content h6,
-[data-theme="dark"] .integration-content h1,
-[data-theme="dark"] .integration-content h2,
-[data-theme="dark"] .integration-content h3,
-[data-theme="dark"] .integration-content h4,
-[data-theme="dark"] .integration-content h5,
-[data-theme="dark"] .integration-content h6,
-body.dark-mode .integration-content h1,
-body.dark-mode .integration-content h2,
-body.dark-mode .integration-content h3,
-body.dark-mode .integration-content h4,
-body.dark-mode .integration-content h5,
-body.dark-mode .integration-content h6 {
-    color: #ffffff !important;
-}
-
-/* Dark mode for prose content */
-.dark .prose,
-[data-theme="dark"] .prose,
-body.dark-mode .prose {
-    color: #d1d5db !important;
-}
-
-.dark .prose h1,
-.dark .prose h2,
-.dark .prose h3,
-.dark .prose h4,
-.dark .prose h5,
-.dark .prose h6,
-[data-theme="dark"] .prose h1,
-[data-theme="dark"] .prose h2,
-[data-theme="dark"] .prose h3,
-[data-theme="dark"] .prose h4,
-[data-theme="dark"] .prose h5,
-[data-theme="dark"] .prose h6,
-body.dark-mode .prose h1,
-body.dark-mode .prose h2,
-body.dark-mode .prose h3,
-body.dark-mode .prose h4,
-body.dark-mode .prose h5,
-body.dark-mode .prose h6 {
-    color: #ffffff !important;
-}
-
-.dark .prose a,
-[data-theme="dark"] .prose a,
-body.dark-mode .prose a {
-    color: #60a5fa !important;
-}
-
-.dark .prose a:hover,
-[data-theme="dark"] .prose a:hover,
-body.dark-mode .prose a:hover {
-    color: #93c5fd !important;
-}
-
-/* Dark mode for breadcrumbs */
-.dark .integration-breadcrumb,
-.dark .integration-breadcrumb a,
-[data-theme="dark"] .integration-breadcrumb,
-[data-theme="dark"] .integration-breadcrumb a,
-body.dark-mode .integration-breadcrumb,
-body.dark-mode .integration-breadcrumb a {
-    color: #d1d5db !important;
-}
-
-.dark .integration-breadcrumb a:hover,
-[data-theme="dark"] .integration-breadcrumb a:hover,
-body.dark-mode .integration-breadcrumb a:hover {
-    color: #60a5fa !important;
-}
-
-/* Force visibility for text that might be hidden */
-.dark .bg-gray-50 span,
-.dark .bg-gray-50 div,
-.dark .bg-gray-50 p,
-.dark .bg-gray-100 span,
-.dark .bg-gray-100 div,
-.dark .bg-gray-100 p,
-[data-theme="dark"] .bg-gray-50 span,
-[data-theme="dark"] .bg-gray-50 div,
-[data-theme="dark"] .bg-gray-50 p,
-[data-theme="dark"] .bg-gray-100 span,
-[data-theme="dark"] .bg-gray-100 div,
-[data-theme="dark"] .bg-gray-100 p,
-body.dark-mode .bg-gray-50 span,
-body.dark-mode .bg-gray-50 div,
-body.dark-mode .bg-gray-50 p,
-body.dark-mode .bg-gray-100 span,
-body.dark-mode .bg-gray-100 div,
-body.dark-mode .bg-gray-100 p {
-    color: #ffffff !important;
-}
-
-/* Dark mode for page background */
-.dark .min-h-screen,
-[data-theme="dark"] .min-h-screen,
-body.dark-mode .min-h-screen {
-    background-color: #111827 !important;
-}
-
-/* Dark mode for section backgrounds */
-.dark section,
-[data-theme="dark"] section,
-body.dark-mode section {
-    background-color: inherit !important;
-}
-
-/* Ensure proper contrast for all integration elements */
-.dark .integration-title,
-.dark .related-integration-title,
-.dark .feature-text,
-[data-theme="dark"] .integration-title,
-[data-theme="dark"] .related-integration-title,
-[data-theme="dark"] .feature-text,
-body.dark-mode .integration-title,
-body.dark-mode .related-integration-title,
-body.dark-mode .feature-text {
-    color: #ffffff !important;
-}
-
-.dark .related-integration-excerpt,
-[data-theme="dark"] .related-integration-excerpt,
-body.dark-mode .related-integration-excerpt {
-    color: #9ca3af !important;
-}
-
-/* Dark mode for quick info labels and values */
-.dark .quick-info-item span,
-[data-theme="dark"] .quick-info-item span,
-body.dark-mode .quick-info-item span {
-    color: #d1d5db !important;
-}
-
-.dark .quick-info-value,
-[data-theme="dark"] .quick-info-value,
-body.dark-mode .quick-info-value {
-    color: #ffffff !important;
-}
-
-/* Override any conflicting styles */
-.dark .text-gray-900:not(.no-dark-override),
-.dark .text-gray-800:not(.no-dark-override),
-.dark .text-gray-700:not(.no-dark-override),
-[data-theme="dark"] .text-gray-900:not(.no-dark-override),
-[data-theme="dark"] .text-gray-800:not(.no-dark-override),
-[data-theme="dark"] .text-gray-700:not(.no-dark-override),
-body.dark-mode .text-gray-900:not(.no-dark-override),
-body.dark-mode .text-gray-800:not(.no-dark-override),
-body.dark-mode .text-gray-700:not(.no-dark-override) {
-    color: #ffffff !important;
-}
-
-/* Ensure status badges remain visible */
-.dark .bg-green-100,
-[data-theme="dark"] .bg-green-100,
-body.dark-mode .bg-green-100 {
-    background-color: #064e3b !important;
-}
-
-.dark .text-green-800,
-[data-theme="dark"] .text-green-800,
-body.dark-mode .text-green-800 {
-    color: #6ee7b7 !important;
-}
-
-.dark .bg-yellow-100,
-[data-theme="dark"] .bg-yellow-100,
-body.dark-mode .bg-yellow-100 {
-    background-color: #78350f !important;
-}
-
-.dark .text-yellow-800,
-[data-theme="dark"] .text-yellow-800,
-body.dark-mode .text-yellow-800 {
-    color: #fcd34d !important;
-}
-
-.dark .bg-blue-100,
-[data-theme="dark"] .bg-blue-100,
-body.dark-mode .bg-blue-100 {
-    background-color: #1e3a8a !important;
-}
-
-.dark .text-blue-800,
-[data-theme="dark"] .text-blue-800,
-body.dark-mode .text-blue-800 {
-    color: #93c5fd !important;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .guide-content {
+        font-size: 15px !important;
+    }
+    
+    .guide-content h1,
+    .guide-content .wp-block-heading h1 {
+        font-size: 1.875rem !important;
+        margin-top: 2rem !important;
+    }
+    
+    .guide-content h2,
+    .guide-content .wp-block-heading h2 {
+        font-size: 1.5rem !important;
+        margin-top: 2rem !important;
+    }
+    
+    .guide-content h3,
+    .guide-content .wp-block-heading h3 {
+        font-size: 1.25rem !important;
+        margin-top: 1.5rem !important;
+    }
 }

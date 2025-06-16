@@ -13,15 +13,25 @@
 <div id="page" class="site">
     <a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e('Skip to content', 'yoursite'); ?></a>
 
-    <header id="masthead" class="site-header bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50" style="margin-top: <?php echo is_admin_bar_showing() ? '32px' : '0'; ?>;">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between py-4 h-16">
+    <header id="masthead" class="site-header bg-white shadow-sm border-b border-gray-200" style="margin-top: <?php echo is_admin_bar_showing() ? '32px' : '0'; ?>;">
+        <div class="container mx-auto px-4 py-2">
+            <div class="flex items-center justify-between py-6 h-20">
                 
                 <!-- Logo -->
                 <div class="site-branding flex items-center">
                     <?php if (has_custom_logo()) : ?>
                         <div class="site-logo">
-                            <?php the_custom_logo(); ?>
+                            <?php 
+                            $custom_logo_id = get_theme_mod('custom_logo');
+                            $logo = wp_get_attachment_image_src($custom_logo_id, 'full');
+                            if ($logo) :
+                            ?>
+                                <a href="<?php echo esc_url(home_url('/')); ?>" rel="home" class="custom-logo-link">
+                                    <img src="<?php echo esc_url($logo[0]); ?>" 
+                                         alt="<?php echo esc_attr(get_bloginfo('name')); ?>" 
+                                         class="custom-logo">
+                                </a>
+                            <?php endif; ?>
                         </div>
                     <?php else : ?>
                         <div class="site-title-wrapper">
@@ -90,7 +100,7 @@
             </div>
 
             <!-- Mobile Navigation -->
-            <nav id="mobile-navigation" class="mobile-navigation lg:hidden hidden border-t border-gray-200 py-4">
+            <nav id="mobile-navigation" class="mobile-navigation hidden lg:hidden border-t border-gray-200 py-4">
                 <?php
                 wp_nav_menu(array(
                     'theme_location' => 'primary',
@@ -103,11 +113,11 @@
                 
                 <!-- Mobile Actions -->
                 <div class="mobile-actions mt-4 pt-4 border-t border-gray-200 space-y-3">
-                    <!-- Mobile Theme Toggle -->
+                    <!-- Mobile Theme Toggle - FIXED -->
                     <?php if (get_theme_mod('show_theme_toggle', true)) : ?>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-gray-700">Dark Mode</span>
-                            <?php echo yoursite_get_theme_toggle_button(); ?>
+                        <div class="mobile-theme-toggle-row">
+                            <span class="mobile-theme-label"><?php esc_html_e('Dark Mode', 'yoursite'); ?></span>
+                            <?php echo yoursite_get_mobile_theme_toggle_button(); ?>
                         </div>
                         <div class="border-t border-gray-200 pt-3"></div>
                     <?php endif; ?>
@@ -138,6 +148,7 @@
     .site-header {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
+        position: relative; /* Ensure not sticky */
     }
     
     /* Logo - No hover effect */
@@ -151,6 +162,49 @@
     
     .no-hover-effect a:hover {
         color: inherit !important;
+    }
+    
+    /* Custom Logo Styles - Inline for immediate effect */
+    .custom-logo-link {
+        display: inline-block !important;
+        max-width: 200px !important;
+        width: auto !important;
+        height: auto !important;
+    }
+
+    .custom-logo {
+        max-width: 100% !important;
+        width: auto !important;
+        height: auto !important;
+        max-height: 60px !important;
+        object-fit: contain !important;
+        display: block !important;
+        transition: opacity 0.3s ease !important;
+    }
+
+    .custom-logo-link:hover .custom-logo {
+        opacity: 0.8 !important;
+    }
+
+    /* Mobile responsive logo */
+    @media (max-width: 768px) {
+        .custom-logo-link {
+            max-width: 150px !important;
+        }
+        
+        .custom-logo {
+            max-height: 40px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .custom-logo-link {
+            max-width: 120px !important;
+        }
+        
+        .custom-logo {
+            max-height: 32px !important;
+        }
     }
     
     /* Navigation Menu Styling */
@@ -210,20 +264,58 @@
         text-decoration: none !important;
     }
     
+    /* Mobile Navigation Responsive Visibility */
+    #mobile-navigation {
+        display: none;
+    }
+    
+    @media (max-width: 1023px) {
+        #mobile-navigation.hidden {
+            display: none !important;
+        }
+        
+        #mobile-navigation:not(.hidden) {
+            display: block !important;
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        #mobile-navigation {
+            display: none !important;
+        }
+    }
+    
     /* Admin Bar Adjustment */
     body.admin-bar .site-header {
-        top: 32px;
+        margin-top: 32px !important;
     }
     
     @media screen and (max-width: 782px) {
         body.admin-bar .site-header {
-            top: 46px;
+            margin-top: 46px !important;
         }
     }
     
     /* Better CTA Button Hover */
     .cta-btn:hover {
         transform: translateY(-1px) !important;
+    }
+    
+    /* Mobile Menu Toggle Button - Ensure it's hidden on desktop */
+    .mobile-menu-toggle {
+        display: none;
+    }
+    
+    @media (max-width: 1023px) {
+        .mobile-menu-toggle {
+            display: flex !important;
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        .mobile-menu-toggle {
+            display: none !important;
+        }
     }
     
     /* Mobile Menu Toggle */
@@ -249,6 +341,27 @@
         border-radius: 8px;
         padding: 1rem;
         margin-top: 1rem;
+    }
+    
+    /* Site branding flex adjustments */
+    .site-branding {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+    }
+
+    .site-logo {
+        flex-shrink: 0 !important;
+    }
+
+    .site-title-wrapper {
+        min-width: 0 !important;
+    }
+
+    /* Ensure proper header height and alignment */
+    .site-header .container .flex {
+        align-items: center !important;
+        min-height: 80px !important;
     }
     </style>
 

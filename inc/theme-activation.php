@@ -105,6 +105,48 @@ if (!defined("ABSPATH")) {
 }
 
 /**
+ * Set default benefit values for homepage
+ */
+function yoursite_set_default_benefits() {
+    // Default benefits data
+    $default_benefits = array(
+        1 => array(
+            'title' => __('Drag & Drop Builder', 'yoursite'),
+            'description' => __('Build your store with our intuitive drag & drop interface. No coding required.', 'yoursite'),
+            'color' => 'blue'
+        ),
+        2 => array(
+            'title' => __('Secure Payments', 'yoursite'),
+            'description' => __('Accept payments safely with our secure checkout and multiple payment options.', 'yoursite'),
+            'color' => 'green'
+        ),
+        3 => array(
+            'title' => __('Marketing & SEO', 'yoursite'),
+            'description' => __('Built-in marketing tools and SEO optimization to grow your business.', 'yoursite'),
+            'color' => 'purple'
+        ),
+        4 => array(
+            'title' => __('Shipping Made Simple', 'yoursite'),
+            'description' => __('Manage inventory and shipping with automated tools and integrations.', 'yoursite'),
+            'color' => 'orange'
+        )
+    );
+    
+    // Set default values for each benefit if not already set
+    foreach ($default_benefits as $i => $benefit) {
+        if (!get_theme_mod("benefit_{$i}_title")) {
+            set_theme_mod("benefit_{$i}_title", $benefit['title']);
+        }
+        if (!get_theme_mod("benefit_{$i}_description")) {
+            set_theme_mod("benefit_{$i}_description", $benefit['description']);
+        }
+        if (!get_theme_mod("benefit_{$i}_color")) {
+            set_theme_mod("benefit_{$i}_color", $benefit['color']);
+        }
+    }
+}
+
+/**
  * Create demo case studies
  */
 function yoursite_create_demo_case_studies() {
@@ -424,6 +466,9 @@ function yoursite_create_integration_categories() {
 function yoursite_theme_activation() {
     // Create customizer files first
     yoursite_create_customizer_files();
+    
+    // Set default benefit values
+    yoursite_set_default_benefits();
     
     // Create default pages
     yoursite_create_default_pages();
@@ -899,10 +944,10 @@ function yoursite_create_template_parts() {
                 <?php echo get_theme_mod("hero_subtitle", __("No code. No hassle. Just launch and sell.", "yoursite")); ?>
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="<?php echo get_theme_mod("cta_primary_url", "#"); ?>" class="btn-primary text-lg px-8 py-4 rounded-lg font-semibold hover-lift">
+                <a href="<?php echo esc_url(get_theme_mod("cta_primary_url", "#")); ?>" class="btn-primary text-lg px-8 py-4 rounded-lg font-semibold hover-lift">
                     <?php echo get_theme_mod("cta_primary_text", __("Start Free Trial", "yoursite")); ?>
                 </a>
-                <a href="<?php echo get_theme_mod("cta_secondary_url", "#demo"); ?>" class="btn-secondary text-lg px-8 py-4 rounded-lg font-semibold hover-lift">
+                <a href="<?php echo esc_url(get_theme_mod("cta_secondary_url", "#demo")); ?>" class="btn-secondary text-lg px-8 py-4 rounded-lg font-semibold hover-lift">
                     <?php echo get_theme_mod("cta_secondary_text", __("View Demo", "yoursite")); ?>
                 </a>
             </div>
