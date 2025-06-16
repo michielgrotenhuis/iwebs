@@ -1,7 +1,7 @@
 <?php
 /**
- * Template for displaying single guide posts
- * Save as: single-guide.php
+ * Template for displaying single guide posts - IMPROVED VERSION
+ * Save as: single-guide.php (replace existing)
  */
 
 get_header();
@@ -26,18 +26,28 @@ if (have_posts()) :
                 <div class="container mx-auto px-4">
                     <div class="max-w-4xl mx-auto">
                         <!-- Breadcrumb -->
-                        <nav class="text-sm text-gray-600 mb-6">
-                            <a href="<?php echo home_url(); ?>" class="hover:text-blue-600">Home</a>
-                            <span class="mx-2">/</span>
-                            <a href="<?php echo get_post_type_archive_link('guide'); ?>" class="hover:text-blue-600">Guides</a>
-                            <?php if ($categories && !is_wp_error($categories)) : ?>
-                                <span class="mx-2">/</span>
-                                <a href="<?php echo get_term_link($categories[0]); ?>" class="hover:text-blue-600">
-                                    <?php echo esc_html($categories[0]->name); ?>
-                                </a>
-                            <?php endif; ?>
-                            <span class="mx-2">/</span>
-                            <span class="text-gray-400"><?php the_title(); ?></span>
+                        <nav class="text-sm text-gray-600 mb-6" aria-label="Breadcrumb">
+                            <ol class="flex flex-wrap items-center space-x-2">
+                                <li>
+                                    <a href="<?php echo home_url(); ?>" class="hover:text-blue-600 transition-colors">Home</a>
+                                </li>
+                                <li class="text-gray-400">/</li>
+                                <li>
+                                    <a href="<?php echo get_post_type_archive_link('guide'); ?>" class="hover:text-blue-600 transition-colors">Guides</a>
+                                </li>
+                                <?php if ($categories && !is_wp_error($categories)) : ?>
+                                    <li class="text-gray-400">/</li>
+                                    <li>
+                                        <a href="<?php echo get_term_link($categories[0]); ?>" class="hover:text-blue-600 transition-colors">
+                                            <?php echo esc_html($categories[0]->name); ?>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                                <li class="text-gray-400">/</li>
+                                <li class="text-gray-400 truncate">
+                                    <?php the_title(); ?>
+                                </li>
+                            </ol>
                         </nav>
                         
                         <!-- Guide Meta -->
@@ -102,7 +112,7 @@ if (have_posts()) :
                                     <?php 
                                     $tag_links = array();
                                     foreach ($tags as $tag) {
-                                        $tag_links[] = '<a href="' . get_term_link($tag) . '" class="hover:text-blue-600">' . esc_html($tag->name) . '</a>';
+                                        $tag_links[] = '<a href="' . get_term_link($tag) . '" class="hover:text-blue-600 transition-colors">' . esc_html($tag->name) . '</a>';
                                     }
                                     echo implode(', ', $tag_links);
                                     ?>
@@ -132,8 +142,18 @@ if (have_posts()) :
                             <!-- Guide Content -->
                             <div class="guide-content prose prose-lg max-w-none">
                                 <?php 
+                                // Get the content and format it properly
                                 $content = get_the_content();
+                                
+                                // Apply WordPress content filters (important for blocks)
+                                $content = apply_filters('the_content', $content);
+                                
+                                // Apply our custom formatting
                                 $content = yoursite_format_guide_content($content);
+                                
+                                // Ensure proper paragraph breaks and spacing
+                                $content = wpautop($content);
+                                
                                 echo $content;
                                 ?>
                             </div>
@@ -154,19 +174,19 @@ if (have_posts()) :
                             
                             <!-- Guide Navigation -->
                             <?php if ($navigation['prev'] || $navigation['next']) : ?>
-                                <nav class="mt-12 pt-8 border-t border-gray-200">
+                                <nav class="mt-12 pt-8 border-t border-gray-200" aria-label="Guide navigation">
                                     <div class="grid md:grid-cols-2 gap-6">
                                         <!-- Previous Guide -->
                                         <?php if ($navigation['prev']) : ?>
                                             <a href="<?php echo get_permalink($navigation['prev']->ID); ?>" class="group flex items-center p-6 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors">
                                                 <div class="flex-shrink-0 mr-4">
-                                                    <svg class="w-8 h-8 text-gray-400 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg class="w-8 h-8 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                                     </svg>
                                                 </div>
                                                 <div>
                                                     <div class="text-sm text-gray-500 mb-1">Previous Guide</div>
-                                                    <div class="font-semibold text-gray-900 group-hover:text-blue-600"><?php echo esc_html($navigation['prev']->post_title); ?></div>
+                                                    <div class="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors"><?php echo esc_html($navigation['prev']->post_title); ?></div>
                                                 </div>
                                             </a>
                                         <?php endif; ?>
@@ -176,10 +196,10 @@ if (have_posts()) :
                                             <a href="<?php echo get_permalink($navigation['next']->ID); ?>" class="group flex items-center justify-end p-6 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors <?php echo !$navigation['prev'] ? 'md:col-start-2' : ''; ?>">
                                                 <div class="text-right mr-4">
                                                     <div class="text-sm text-gray-500 mb-1">Next Guide</div>
-                                                    <div class="font-semibold text-gray-900 group-hover:text-blue-600"><?php echo esc_html($navigation['next']->post_title); ?></div>
+                                                    <div class="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors"><?php echo esc_html($navigation['next']->post_title); ?></div>
                                                 </div>
                                                 <div class="flex-shrink-0">
-                                                    <svg class="w-8 h-8 text-gray-400 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg class="w-8 h-8 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                                     </svg>
                                                 </div>
@@ -260,45 +280,13 @@ if (have_posts()) :
             </div>
         </article>
         
-        <!-- Custom CSS for guide styling -->
-        <style>
-        .guide-content h2, .guide-content h3, .guide-content h4 {
-            scroll-margin-top: 100px;
-        }
-        
-        .guide-content img {
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        
-        .guide-content blockquote {
-            border-left: 4px solid #3B82F6;
-            background: #F8FAFC;
-            padding: 1rem 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .line-clamp-3 {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        </style>
-        
-        <!-- JavaScript for table of contents and scroll tracking -->
+        <!-- Enhanced JavaScript for guide functionality -->
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             generateTableOfContents();
             trackReadingProgress();
+            improveLinkTargets();
+            addCopyCodeButtons();
         });
         
         function generateTableOfContents() {
@@ -321,15 +309,18 @@ if (have_posts()) :
                     heading.tagName === 'H3' ? 'pl-4' : heading.tagName === 'H4' ? 'pl-8' : ''
                 }`;
                 
+                // Smooth scroll
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    window.history.pushState(null, null, `#${id}`);
+                });
+                
                 tocList.appendChild(link);
             });
         }
         
         function trackReadingProgress() {
-            // Track view count (you'd implement this with AJAX in production)
-            const guideId = <?php echo $guide_id; ?>;
-            
-            // Simple progress tracking based on scroll
             let maxScroll = 0;
             window.addEventListener('scroll', function() {
                 const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
@@ -349,6 +340,44 @@ if (have_posts()) :
                         }
                     }
                 }
+            });
+        }
+        
+        function improveLinkTargets() {
+            // Open external links in new tab
+            const links = document.querySelectorAll('.guide-content a[href^="http"]');
+            links.forEach(link => {
+                if (!link.href.includes(window.location.hostname)) {
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                }
+            });
+        }
+        
+        function addCopyCodeButtons() {
+            const codeBlocks = document.querySelectorAll('.guide-content pre code');
+            codeBlocks.forEach(code => {
+                const pre = code.parentElement;
+                pre.style.position = 'relative';
+                
+                const button = document.createElement('button');
+                button.className = 'copy-code-btn absolute top-2 right-2 bg-gray-700 text-white px-2 py-1 rounded text-xs hover:bg-gray-600 transition-colors opacity-75 hover:opacity-100';
+                button.textContent = 'Copy';
+                button.setAttribute('aria-label', 'Copy code to clipboard');
+                
+                button.addEventListener('click', function() {
+                    const text = code.textContent;
+                    navigator.clipboard.writeText(text).then(function() {
+                        button.textContent = 'Copied!';
+                        button.className = button.className.replace('bg-gray-700 hover:bg-gray-600', 'bg-green-600 hover:bg-green-700');
+                        setTimeout(function() {
+                            button.textContent = 'Copy';
+                            button.className = button.className.replace('bg-green-600 hover:bg-green-700', 'bg-gray-700 hover:bg-gray-600');
+                        }, 2000);
+                    });
+                });
+                
+                pre.appendChild(button);
             });
         }
         </script>

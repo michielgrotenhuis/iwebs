@@ -699,3 +699,555 @@ header[role="banner"] {
 #site-navigation {
     position: static !important;
 }
+/* Add this CSS to your style.css file after the existing styles */
+
+/* ==========================================================================
+   GUIDE CONTENT STYLING - Enhanced Layout and Typography
+   ========================================================================== */
+
+/* Main guide content container */
+.guide-content {
+    line-height: 1.7;
+    color: #374151;
+    font-size: 16px;
+}
+
+/* Paragraph spacing and typography */
+.guide-content p,
+.guide-content .wp-block-paragraph {
+    margin-bottom: 1.5rem !important;
+    line-height: 1.7 !important;
+    color: #374151 !important;
+}
+
+/* Ensure last paragraph doesn't have extra margin */
+.guide-content p:last-child,
+.guide-content .wp-block-paragraph:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Heading spacing and hierarchy */
+.guide-content h1,
+.guide-content .wp-block-heading h1 {
+    font-size: 2.25rem !important;
+    line-height: 1.2 !important;
+    margin-top: 3rem !important;
+    margin-bottom: 1.5rem !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+}
+
+.guide-content h2,
+.guide-content .wp-block-heading h2 {
+    font-size: 1.875rem !important;
+    line-height: 1.3 !important;
+    margin-top: 2.5rem !important;
+    margin-bottom: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.guide-content h3,
+.guide-content .wp-block-heading h3 {
+    font-size: 1.5rem !important;
+    line-height: 1.4 !important;
+    margin-top: 2rem !important;
+    margin-bottom: 1rem !important;
+    font-weight: 600 !important;
+    color: #111827 !important;
+}
+
+.guide-content h4,
+.guide-content .wp-block-heading h4 {
+    font-size: 1.25rem !important;
+    line-height: 1.4 !important;
+    margin-top: 1.75rem !important;
+    margin-bottom: 0.875rem !important;
+    font-weight: 600 !important;
+    color: #111827 !important;
+}
+
+.guide-content h5,
+.guide-content .wp-block-heading h5 {
+    font-size: 1.125rem !important;
+    line-height: 1.4 !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+    font-weight: 600 !important;
+    color: #111827 !important;
+}
+
+.guide-content h6,
+.guide-content .wp-block-heading h6 {
+    font-size: 1rem !important;
+    line-height: 1.4 !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+    font-weight: 600 !important;
+    color: #111827 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* List styling */
+.guide-content ul,
+.guide-content ol,
+.guide-content .wp-block-list {
+    margin: 1.5rem 0 !important;
+    padding-left: 1.5rem !important;
+}
+
+.guide-content ul {
+    list-style-type: disc !important;
+}
+
+.guide-content ol {
+    list-style-type: decimal !important;
+}
+
+.guide-content li {
+    margin-bottom: 0.5rem !important;
+    line-height: 1.6 !important;
+    padding-left: 0.5rem !important;
+}
+
+.guide-content li p {
+    margin-bottom: 0.5rem !important;
+}
+
+.guide-content li:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Nested lists */
+.guide-content li ul,
+.guide-content li ol {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.guide-content li ul {
+    list-style-type: circle !important;
+}
+
+.guide-content li ol {
+    list-style-type: lower-alpha !important;
+}
+
+/* Code blocks */
+.guide-content pre,
+.guide-content .wp-block-code {
+    background-color: #1f2937 !important;
+    color: #f9fafb !important;
+    padding: 1.5rem !important;
+    border-radius: 0.5rem !important;
+    overflow-x: auto !important;
+    margin: 2rem 0 !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    border: 1px solid #374151 !important;
+}
+
+.guide-content pre code {
+    background: none !important;
+    color: inherit !important;
+    padding: 0 !important;
+    font-size: inherit !important;
+}
+
+/* Inline code */
+.guide-content code {
+    background-color: #f3f4f6 !important;
+    color: #1f2937 !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 0.25rem !important;
+    font-size: 0.875em !important;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+/* Blockquotes */
+.guide-content blockquote,
+.guide-content .wp-block-quote {
+    border-left: 4px solid #3b82f6 !important;
+    background-color: #f8fafc !important;
+    padding: 1.5rem !important;
+    margin: 2rem 0 !important;
+    border-radius: 0 0.5rem 0.5rem 0 !important;
+    position: relative !important;
+}
+
+.guide-content blockquote p {
+    margin-bottom: 0 !important;
+    font-style: italic !important;
+    color: #475569 !important;
+    font-size: 1.1em !important;
+}
+
+.guide-content blockquote::before {
+    content: '"' !important;
+    font-size: 3rem !important;
+    color: #3b82f6 !important;
+    position: absolute !important;
+    top: -0.5rem !important;
+    left: 1rem !important;
+    line-height: 1 !important;
+}
+
+/* Tables */
+.guide-content table,
+.guide-content .wp-block-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 2rem 0 !important;
+    background-color: white !important;
+    border-radius: 0.5rem !important;
+    overflow: hidden !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.guide-content table thead {
+    background-color: #f9fafb !important;
+}
+
+.guide-content table th {
+    padding: 1rem !important;
+    text-align: left !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    border-bottom: 2px solid #e5e7eb !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+.guide-content table td {
+    padding: 1rem !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+    color: #374151 !important;
+    vertical-align: top !important;
+}
+
+.guide-content table tr:last-child td {
+    border-bottom: none !important;
+}
+
+.guide-content table tr:hover {
+    background-color: #f8fafc !important;
+}
+
+/* Table wrapper for horizontal scrolling */
+.guide-content .table-wrapper {
+    overflow-x: auto !important;
+    margin: 2rem 0 !important;
+    border-radius: 0.5rem !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+/* Images */
+.guide-content img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    margin: 2rem 0 !important;
+    display: block !important;
+}
+
+.guide-content figure {
+    margin: 2rem 0 !important;
+    text-align: center !important;
+}
+
+.guide-content figure img {
+    margin: 0 auto !important;
+}
+
+.guide-content figcaption {
+    margin-top: 0.5rem !important;
+    font-size: 0.875rem !important;
+    color: #6b7280 !important;
+    font-style: italic !important;
+    text-align: center !important;
+}
+
+/* Links */
+.guide-content a {
+    color: #3b82f6 !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid transparent !important;
+    transition: all 0.2s ease !important;
+}
+
+.guide-content a:hover {
+    color: #1d4ed8 !important;
+    border-bottom-color: #3b82f6 !important;
+    text-decoration: none !important;
+}
+
+/* Horizontal rules */
+.guide-content hr,
+.guide-content .wp-block-separator {
+    border: none !important;
+    height: 1px !important;
+    background: linear-gradient(to right, transparent, #e5e7eb, transparent) !important;
+    margin: 3rem 0 !important;
+}
+
+/* Spacer blocks */
+.guide-content .wp-block-spacer {
+    margin: 0 !important;
+}
+
+/* Strong and emphasis */
+.guide-content strong {
+    font-weight: 600 !important;
+    color: #111827 !important;
+}
+
+.guide-content em {
+    font-style: italic !important;
+    color: #374151 !important;
+}
+
+.guide-content mark {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+    padding: 0.125rem 0.25rem !important;
+    border-radius: 0.25rem !important;
+}
+
+/* Delete/strikethrough */
+.guide-content del {
+    text-decoration: line-through !important;
+    color: #6b7280 !important;
+}
+
+/* Ensure first element doesn't have top margin */
+.guide-content > *:first-child {
+    margin-top: 0 !important;
+}
+
+/* Ensure last element doesn't have bottom margin */
+.guide-content > *:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Dark mode adjustments */
+body.dark-mode .guide-content {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .guide-content h1,
+body.dark-mode .guide-content h2,
+body.dark-mode .guide-content h3,
+body.dark-mode .guide-content h4,
+body.dark-mode .guide-content h5,
+body.dark-mode .guide-content h6 {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .guide-content h2 {
+    border-bottom-color: var(--border-primary) !important;
+}
+
+body.dark-mode .guide-content p {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .guide-content code {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-secondary) !important;
+}
+
+body.dark-mode .guide-content blockquote {
+    background-color: var(--bg-tertiary) !important;
+    border-left-color: #3b82f6 !important;
+}
+
+body.dark-mode .guide-content blockquote p {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .guide-content table {
+    background-color: var(--bg-secondary) !important;
+}
+
+body.dark-mode .guide-content table thead {
+    background-color: var(--bg-tertiary) !important;
+}
+
+body.dark-mode .guide-content table th {
+    color: var(--text-primary) !important;
+    border-bottom-color: var(--border-primary) !important;
+}
+
+body.dark-mode .guide-content table td {
+    color: var(--text-secondary) !important;
+    border-bottom-color: var(--border-primary) !important;
+}
+
+body.dark-mode .guide-content table tr:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+body.dark-mode .guide-content .table-wrapper {
+    border-color: var(--border-primary) !important;
+}
+
+body.dark-mode .guide-content a {
+    color: #60a5fa !important;
+}
+
+body.dark-mode .guide-content a:hover {
+    color: #93c5fd !important;
+    border-bottom-color: #60a5fa !important;
+}
+
+body.dark-mode .guide-content hr,
+body.dark-mode .guide-content .wp-block-separator {
+    background: linear-gradient(to right, transparent, var(--border-primary), transparent) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .guide-content {
+        font-size: 15px !important;
+    }
+    
+    .guide-content h1,
+    .guide-content .wp-block-heading h1 {
+        font-size: 1.875rem !important;
+        margin-top: 2rem !important;
+    }
+    
+    .guide-content h2,
+    .guide-content .wp-block-heading h2 {
+        font-size: 1.5rem !important;
+        margin-top: 2rem !important;
+    }
+    
+    .guide-content h3,
+    .guide-content .wp-block-heading h3 {
+        font-size: 1.25rem !important;
+        margin-top: 1.5rem !important;
+    }
+    
+    .guide-content ul,
+    .guide-content ol {
+        padding-left: 1.25rem !important;
+    }
+    
+    .guide-content pre,
+    .guide-content .wp-block-code {
+        padding: 1rem !important;
+        font-size: 0.8rem !important;
+        margin: 1.5rem 0 !important;
+    }
+    
+    .guide-content blockquote {
+        padding: 1rem !important;
+        margin: 1.5rem 0 !important;
+    }
+    
+    .guide-content table th,
+    .guide-content table td {
+        padding: 0.75rem !important;
+        font-size: 0.875rem !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    .guide-content {
+        color: #000 !important;
+        background: #fff !important;
+    }
+    
+    .guide-content h1,
+    .guide-content h2,
+    .guide-content h3,
+    .guide-content h4,
+    .guide-content h5,
+    .guide-content h6 {
+        color: #000 !important;
+        page-break-after: avoid !important;
+    }
+    
+    .guide-content pre,
+    .guide-content .wp-block-code {
+        background: #f5f5f5 !important;
+        color: #000 !important;
+        border: 1px solid #ccc !important;
+    }
+    
+    .guide-content blockquote {
+        background: #f9f9f9 !important;
+        border-left: 4px solid #ccc !important;
+    }
+    
+    .guide-content a {
+        color: #000 !important;
+        text-decoration: underline !important;
+    }
+    
+    .guide-content img {
+        max-width: 100% !important;
+        box-shadow: none !important;
+    }
+}
+
+/* Additional spacing utilities for guide content */
+.guide-content .wp-block-spacer[style*="height:20px"] {
+    height: 1.25rem !important;
+}
+
+.guide-content .wp-block-spacer[style*="height:40px"] {
+    height: 2.5rem !important;
+}
+
+/* Fix for WordPress core blocks that might have conflicting styles */
+.guide-content .wp-block-paragraph {
+    font-size: inherit !important;
+}
+
+.guide-content .wp-block-heading {
+    margin-block-start: 0 !important;
+    margin-block-end: 0 !important;
+}
+
+.guide-content .wp-block-list {
+    margin-block-start: 0 !important;
+    margin-block-end: 0 !important;
+    padding-inline-start: 0 !important;
+}
+
+.guide-content .wp-block-quote {
+    margin-block-start: 0 !important;
+    margin-block-end: 0 !important;
+    margin-inline-start: 0 !important;
+    margin-inline-end: 0 !important;
+}
+
+.guide-content .wp-block-code {
+    margin-block-start: 0 !important;
+    margin-block-end: 0 !important;
+}
+
+/* Ensure proper spacing between different block types */
+.guide-content .wp-block-paragraph + .wp-block-heading,
+.guide-content .wp-block-list + .wp-block-heading,
+.guide-content .wp-block-quote + .wp-block-heading,
+.guide-content .wp-block-code + .wp-block-heading {
+    margin-top: 2.5rem !important;
+}
+
+.guide-content .wp-block-heading + .wp-block-paragraph,
+.guide-content .wp-block-heading + .wp-block-list,
+.guide-content .wp-block-heading + .wp-block-quote,
+.guide-content .wp-block-heading + .wp-block-code {
+    margin-top: 1rem !important;
+}
