@@ -1251,3 +1251,1195 @@ body.dark-mode .guide-content .wp-block-separator {
 .guide-content .wp-block-heading + .wp-block-code {
     margin-top: 1rem !important;
 }
+
+/* ==========================================================================
+   YOUTUBE MODAL - COMPLETE FIX
+   Add this to your style.css file, replacing the existing modal styles
+   ========================================================================== */
+
+/* Video Modal - Base Overlay */
+#video-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    z-index: 99999 !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* When modal is active */
+#video-modal.active {
+    display: flex !important;
+}
+
+/* Video Modal Container */
+#video-modal .absolute.inset-0.flex {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+}
+
+/* Video wrapper with proper aspect ratio */
+#video-modal .relative.max-w-4xl {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+}
+
+/* Video container with 16:9 aspect ratio */
+#video-modal .bg-black.rounded-lg {
+    background-color: #000 !important;
+    border-radius: 8px !important;
+    position: relative !important;
+    width: 100% !important;
+    height: 0 !important;
+    padding-bottom: 56.25% !important; /* 16:9 aspect ratio */
+    overflow: hidden !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Video iframe positioning */
+#video-modal #video-iframe {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    border-radius: 8px !important;
+    background: #000 !important;
+}
+
+/* Close button positioning */
+#video-modal #close-video-modal {
+    position: absolute !important;
+    top: -50px !important;
+    right: 0 !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    padding: 12px !important;
+    cursor: pointer !important;
+    z-index: 100000 !important;
+    transition: background-color 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#video-modal #close-video-modal:hover {
+    background: rgba(0, 0, 0, 0.9) !important;
+}
+
+#video-modal #close-video-modal svg {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    #video-modal {
+        padding: 10px !important;
+    }
+    
+    #video-modal .relative.max-w-4xl {
+        max-width: 100% !important;
+    }
+    
+    #video-modal #close-video-modal {
+        top: -40px !important;
+        right: -10px !important;
+        padding: 10px !important;
+    }
+    
+    #video-modal #close-video-modal svg {
+        width: 20px !important;
+        height: 20px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #video-modal {
+        padding: 5px !important;
+    }
+    
+    #video-modal #close-video-modal {
+        top: -35px !important;
+        right: -5px !important;
+        padding: 8px !important;
+    }
+}
+
+/* Animation for modal appearance */
+#video-modal {
+    opacity: 0 !important;
+    transition: opacity 0.3s ease-out !important;
+}
+
+#video-modal.active {
+    opacity: 1 !important;
+}
+
+#video-modal .relative.max-w-4xl {
+    transform: scale(0.9) !important;
+    transition: transform 0.3s ease-out !important;
+}
+
+#video-modal.active .relative.max-w-4xl {
+    transform: scale(1) !important;
+}
+
+/* Override any conflicting Tailwind classes */
+#video-modal.fixed {
+    position: fixed !important;
+}
+
+#video-modal.inset-0 {
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+}
+
+#video-modal.z-50 {
+    z-index: 99999 !important;
+}
+
+/* Ensure backdrop click works */
+#video-modal > .absolute.inset-0.bg-black {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    cursor: pointer !important;
+}
+
+/* Loading state */
+#video-modal.loading #video-iframe {
+    background: #000 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="none" stroke="%23fff" stroke-width="2" stroke-dasharray="31.416" stroke-dashoffset="31.416"><animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/><animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/></circle></svg>') center center no-repeat !important;
+    background-size: 40px 40px !important;
+}
+
+/* Integration Page Specific Responsive Improvements */
+.single-integrations {
+    overflow-x: hidden;
+}
+
+/* Hero Section Responsive Improvements */
+.single-integrations .hero-section {
+    padding: 1rem 0 2rem;
+}
+
+@media (min-width: 768px) {
+    .single-integrations .hero-section {
+        padding: 2rem 0 4rem;
+    }
+}
+
+/* Integration Icon Responsive Scaling */
+.integration-icon {
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+    .integration-icon {
+        width: 4rem;
+        height: 4rem;
+    }
+}
+
+/* Title and Badge Container */
+.integration-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+@media (min-width: 640px) {
+    .integration-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.75rem;
+    }
+}
+
+/* Title Responsive Typography */
+.integration-title {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+@media (min-width: 640px) {
+    .integration-title {
+        font-size: 1.875rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .integration-title {
+        font-size: 2.25rem;
+    }
+}
+
+/* Status Badge Responsive */
+.integration-status-badge {
+    align-self: flex-start;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Category and Rating Container */
+.integration-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+    .integration-meta {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+}
+
+/* Action Panel Responsive */
+.integration-action-panel {
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+@media (min-width: 1280px) {
+    .integration-action-panel {
+        width: 20rem;
+        flex-shrink: 0;
+        margin-top: 0;
+    }
+}
+
+/* Action Links Responsive */
+.action-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+    min-width: 0;
+}
+
+.action-link:hover {
+    background-color: #f3f4f6;
+}
+
+.action-link-content {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    flex: 1;
+}
+
+.action-link-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.action-link-icon {
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+}
+
+.action-link-arrow {
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+}
+
+/* Quick Info Responsive */
+.quick-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+@media (min-width: 640px) {
+    .quick-info-item {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+}
+
+.quick-info-value {
+    word-break: break-word;
+    hyphens: auto;
+}
+
+/* Main Content Area Responsive */
+.integration-content-area {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+    .integration-content-area {
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+}
+
+/* Content Cards Responsive */
+.integration-content-card {
+    background-color: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+
+@media (min-width: 640px) {
+    .integration-content-card {
+        padding: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .integration-content-card {
+        padding: 2rem;
+    }
+}
+
+/* Features List Responsive */
+.features-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .features-list {
+        gap: 1rem;
+    }
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.feature-icon {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.feature-text {
+    flex: 1;
+    word-break: break-word;
+    hyphens: auto;
+    font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .feature-text {
+        font-size: 1rem;
+    }
+}
+
+/* Sidebar Responsive */
+.integration-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .integration-sidebar {
+        gap: 1.5rem;
+    }
+}
+
+/* Sidebar Cards */
+.sidebar-card {
+    background-color: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+
+@media (min-width: 640px) {
+    .sidebar-card {
+        padding: 1.5rem;
+    }
+}
+
+/* Support Links Responsive */
+.support-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.support-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+    font-size: 0.875rem;
+    min-width: 0;
+}
+
+.support-link:hover {
+    background-color: #f3f4f6;
+}
+
+.support-link-icon {
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+}
+
+.support-link-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Related Integrations Responsive */
+.related-integrations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.related-integration-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+    min-width: 0;
+}
+
+.related-integration-item:hover {
+    background-color: #f3f4f6;
+}
+
+.related-integration-icon {
+    flex-shrink: 0;
+    margin-right: 0.75rem;
+}
+
+.related-integration-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.related-integration-title {
+    font-weight: 500;
+    color: #111827;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.875rem;
+    margin-bottom: 0.125rem;
+}
+
+.related-integration-excerpt {
+    font-size: 0.75rem;
+    color: #6b7280;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Prose Content Responsive */
+.integration-prose {
+    max-width: none;
+}
+
+.integration-prose p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.integration-prose h1,
+.integration-prose h2,
+.integration-prose h3,
+.integration-prose h4,
+.integration-prose h5,
+.integration-prose h6 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.integration-prose h1 {
+    font-size: 1.5rem;
+}
+
+.integration-prose h2 {
+    font-size: 1.25rem;
+}
+
+.integration-prose h3 {
+    font-size: 1.125rem;
+}
+
+@media (min-width: 640px) {
+    .integration-prose h1 {
+        font-size: 1.875rem;
+    }
+    
+    .integration-prose h2 {
+        font-size: 1.5rem;
+    }
+    
+    .integration-prose h3 {
+        font-size: 1.25rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .integration-prose h1 {
+        font-size: 2.25rem;
+    }
+    
+    .integration-prose h2 {
+        font-size: 1.875rem;
+    }
+    
+    .integration-prose h3 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Button Responsive */
+.integration-btn {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+@media (min-width: 640px) {
+    .integration-btn {
+        font-size: 1.125rem;
+    }
+}
+
+/* Breadcrumb Responsive */
+.integration-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.integration-breadcrumb::-webkit-scrollbar {
+    display: none;
+}
+
+.integration-breadcrumb-item {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.integration-breadcrumb-separator {
+    flex-shrink: 0;
+}
+
+/* Container Responsive Improvements */
+.integration-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+@media (min-width: 1536px) {
+    .integration-container {
+        max-width: 1536px;
+    }
+}
+
+/* Spacing Utilities for Integration Pages */
+.integration-section-spacing {
+    padding: 2rem 0;
+}
+
+@media (min-width: 768px) {
+    .integration-section-spacing {
+        padding: 4rem 0;
+    }
+}
+
+/* Fix for text overflow on small screens */
+.text-break {
+    word-break: break-word;
+    hyphens: auto;
+    overflow-wrap: break-word;
+}
+
+/* Ensure proper spacing on mobile */
+@media (max-width: 639px) {
+    .integration-mobile-spacing {
+        padding: 0.5rem;
+    }
+    
+    .integration-mobile-margin {
+        margin-bottom: 1rem;
+    }
+    
+    /* Smaller text on mobile for better fit */
+    .integration-mobile-text {
+        font-size: 0.875rem;
+    }
+    
+    /* Reduce padding on cards for mobile */
+    .integration-card-mobile {
+        padding: 1rem;
+    }
+}
+
+/* Fix for button text wrapping */
+.integration-btn-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Utility classes for responsive visibility */
+.show-mobile {
+    display: block;
+}
+
+.hide-mobile {
+    display: none;
+}
+
+@media (min-width: 640px) {
+    .show-mobile {
+        display: none;
+    }
+    
+    .hide-mobile {
+        display: block;
+    }
+}
+
+/* Grid responsive improvements */
+.integration-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .integration-grid {
+        gap: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .integration-grid {
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+}
+
+/* Ensure images are responsive */
+.integration-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+}
+
+/* Table responsive wrapper */
+.integration-table-wrapper {
+    overflow-x: auto;
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+.integration-table-wrapper table {
+    min-width: 600px;
+    width: 100%;
+}
+
+/* Fix for long URLs in content */
+.integration-content a {
+    word-break: break-all;
+    overflow-wrap: break-word;
+}
+
+/* Ensure proper line height for readability */
+.integration-text {
+    line-height: 1.6;
+}
+
+.integration-heading {
+    line-height: 1.3;
+}
+
+/* Animation for better UX */
+.integration-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Focus states for accessibility */
+.integration-focusable:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .integration-content-card {
+        border: 2px solid #000;
+    }
+    
+    .sidebar-card {
+        border: 2px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .integration-fade-in {
+        animation: none;
+    }
+    
+    .action-link,
+    .support-link,
+    .related-integration-item {
+        transition: none;
+    }
+}
+
+/* Print styles for integration pages */
+@media print {
+    .integration-action-panel,
+    .integration-sidebar,
+    .integration-breadcrumb {
+        display: none;
+    }
+    
+    .integration-content-area {
+        grid-template-columns: 1fr;
+    }
+    
+    .integration-content-card {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}
+
+/* ==========================================================================
+   INTEGRATION DARK MODE FIXES - Add to your style.css
+   These styles ensure proper dark mode visibility for all elements
+   ========================================================================== */
+
+/* Global dark mode selectors - works with most dark mode implementations */
+.dark .bg-gray-50,
+[data-theme="dark"] .bg-gray-50,
+body.dark-mode .bg-gray-50 {
+    background-color: #374151 !important;
+    color: #ffffff !important;
+}
+
+.dark .bg-gray-100,
+[data-theme="dark"] .bg-gray-100,
+body.dark-mode .bg-gray-100 {
+    background-color: #4b5563 !important;
+    color: #ffffff !important;
+}
+
+.dark .bg-white,
+[data-theme="dark"] .bg-white,
+body.dark-mode .bg-white {
+    background-color: #1f2937 !important;
+    color: #ffffff !important;
+}
+
+/* Ensure all text in gray backgrounds is white in dark mode */
+.dark .bg-gray-50 *,
+.dark .bg-gray-100 *,
+[data-theme="dark"] .bg-gray-50 *,
+[data-theme="dark"] .bg-gray-100 *,
+body.dark-mode .bg-gray-50 *,
+body.dark-mode .bg-gray-100 * {
+    color: #ffffff !important;
+}
+
+/* Dark mode for specific integration classes */
+.dark .action-link,
+.dark .support-link,
+.dark .related-integration-item,
+[data-theme="dark"] .action-link,
+[data-theme="dark"] .support-link,
+[data-theme="dark"] .related-integration-item,
+body.dark-mode .action-link,
+body.dark-mode .support-link,
+body.dark-mode .related-integration-item {
+    background-color: #374151 !important;
+    color: #ffffff !important;
+    border: 1px solid #4b5563 !important;
+}
+
+.dark .action-link:hover,
+.dark .support-link:hover,
+.dark .related-integration-item:hover,
+[data-theme="dark"] .action-link:hover,
+[data-theme="dark"] .support-link:hover,
+[data-theme="dark"] .related-integration-item:hover,
+body.dark-mode .action-link:hover,
+body.dark-mode .support-link:hover,
+body.dark-mode .related-integration-item:hover {
+    background-color: #4b5563 !important;
+    color: #ffffff !important;
+}
+
+/* Dark mode for border colors */
+.dark .border-gray-200,
+[data-theme="dark"] .border-gray-200,
+body.dark-mode .border-gray-200 {
+    border-color: #374151 !important;
+}
+
+.dark .border-gray-300,
+[data-theme="dark"] .border-gray-300,
+body.dark-mode .border-gray-300 {
+    border-color: #4b5563 !important;
+}
+
+/* Dark mode text colors */
+.dark .text-gray-500,
+[data-theme="dark"] .text-gray-500,
+body.dark-mode .text-gray-500 {
+    color: #d1d5db !important;
+}
+
+.dark .text-gray-400,
+[data-theme="dark"] .text-gray-400,
+body.dark-mode .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+.dark .text-gray-600,
+[data-theme="dark"] .text-gray-600,
+body.dark-mode .text-gray-600 {
+    color: #d1d5db !important;
+}
+
+.dark .text-gray-700,
+[data-theme="dark"] .text-gray-700,
+body.dark-mode .text-gray-700 {
+    color: #f3f4f6 !important;
+}
+
+.dark .text-gray-900,
+[data-theme="dark"] .text-gray-900,
+body.dark-mode .text-gray-900 {
+    color: #ffffff !important;
+}
+
+/* Dark mode for icons */
+.dark svg.text-gray-500,
+.dark svg.text-gray-400,
+[data-theme="dark"] svg.text-gray-500,
+[data-theme="dark"] svg.text-gray-400,
+body.dark-mode svg.text-gray-500,
+body.dark-mode svg.text-gray-400 {
+    color: #d1d5db !important;
+}
+
+/* Ensure buttons remain visible in dark mode */
+.dark .btn-primary,
+[data-theme="dark"] .btn-primary,
+body.dark-mode .btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    color: #ffffff !important;
+}
+
+.dark .btn-secondary,
+[data-theme="dark"] .btn-secondary,
+body.dark-mode .btn-secondary {
+    background-color: transparent !important;
+    border: 2px solid #374151 !important;
+    color: #ffffff !important;
+}
+
+.dark .btn-secondary:hover,
+[data-theme="dark"] .btn-secondary:hover,
+body.dark-mode .btn-secondary:hover {
+    background-color: #374151 !important;
+    border-color: #3b82f6 !important;
+    color: #3b82f6 !important;
+}
+
+/* Dark mode for integration-specific elements */
+.dark .integration-content-card,
+.dark .sidebar-card,
+[data-theme="dark"] .integration-content-card,
+[data-theme="dark"] .sidebar-card,
+body.dark-mode .integration-content-card,
+body.dark-mode .sidebar-card {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+    color: #ffffff !important;
+}
+
+/* Dark mode for headings in content */
+.dark .integration-content h1,
+.dark .integration-content h2,
+.dark .integration-content h3,
+.dark .integration-content h4,
+.dark .integration-content h5,
+.dark .integration-content h6,
+[data-theme="dark"] .integration-content h1,
+[data-theme="dark"] .integration-content h2,
+[data-theme="dark"] .integration-content h3,
+[data-theme="dark"] .integration-content h4,
+[data-theme="dark"] .integration-content h5,
+[data-theme="dark"] .integration-content h6,
+body.dark-mode .integration-content h1,
+body.dark-mode .integration-content h2,
+body.dark-mode .integration-content h3,
+body.dark-mode .integration-content h4,
+body.dark-mode .integration-content h5,
+body.dark-mode .integration-content h6 {
+    color: #ffffff !important;
+}
+
+/* Dark mode for prose content */
+.dark .prose,
+[data-theme="dark"] .prose,
+body.dark-mode .prose {
+    color: #d1d5db !important;
+}
+
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose h5,
+.dark .prose h6,
+[data-theme="dark"] .prose h1,
+[data-theme="dark"] .prose h2,
+[data-theme="dark"] .prose h3,
+[data-theme="dark"] .prose h4,
+[data-theme="dark"] .prose h5,
+[data-theme="dark"] .prose h6,
+body.dark-mode .prose h1,
+body.dark-mode .prose h2,
+body.dark-mode .prose h3,
+body.dark-mode .prose h4,
+body.dark-mode .prose h5,
+body.dark-mode .prose h6 {
+    color: #ffffff !important;
+}
+
+.dark .prose a,
+[data-theme="dark"] .prose a,
+body.dark-mode .prose a {
+    color: #60a5fa !important;
+}
+
+.dark .prose a:hover,
+[data-theme="dark"] .prose a:hover,
+body.dark-mode .prose a:hover {
+    color: #93c5fd !important;
+}
+
+/* Dark mode for breadcrumbs */
+.dark .integration-breadcrumb,
+.dark .integration-breadcrumb a,
+[data-theme="dark"] .integration-breadcrumb,
+[data-theme="dark"] .integration-breadcrumb a,
+body.dark-mode .integration-breadcrumb,
+body.dark-mode .integration-breadcrumb a {
+    color: #d1d5db !important;
+}
+
+.dark .integration-breadcrumb a:hover,
+[data-theme="dark"] .integration-breadcrumb a:hover,
+body.dark-mode .integration-breadcrumb a:hover {
+    color: #60a5fa !important;
+}
+
+/* Force visibility for text that might be hidden */
+.dark .bg-gray-50 span,
+.dark .bg-gray-50 div,
+.dark .bg-gray-50 p,
+.dark .bg-gray-100 span,
+.dark .bg-gray-100 div,
+.dark .bg-gray-100 p,
+[data-theme="dark"] .bg-gray-50 span,
+[data-theme="dark"] .bg-gray-50 div,
+[data-theme="dark"] .bg-gray-50 p,
+[data-theme="dark"] .bg-gray-100 span,
+[data-theme="dark"] .bg-gray-100 div,
+[data-theme="dark"] .bg-gray-100 p,
+body.dark-mode .bg-gray-50 span,
+body.dark-mode .bg-gray-50 div,
+body.dark-mode .bg-gray-50 p,
+body.dark-mode .bg-gray-100 span,
+body.dark-mode .bg-gray-100 div,
+body.dark-mode .bg-gray-100 p {
+    color: #ffffff !important;
+}
+
+/* Dark mode for page background */
+.dark .min-h-screen,
+[data-theme="dark"] .min-h-screen,
+body.dark-mode .min-h-screen {
+    background-color: #111827 !important;
+}
+
+/* Dark mode for section backgrounds */
+.dark section,
+[data-theme="dark"] section,
+body.dark-mode section {
+    background-color: inherit !important;
+}
+
+/* Ensure proper contrast for all integration elements */
+.dark .integration-title,
+.dark .related-integration-title,
+.dark .feature-text,
+[data-theme="dark"] .integration-title,
+[data-theme="dark"] .related-integration-title,
+[data-theme="dark"] .feature-text,
+body.dark-mode .integration-title,
+body.dark-mode .related-integration-title,
+body.dark-mode .feature-text {
+    color: #ffffff !important;
+}
+
+.dark .related-integration-excerpt,
+[data-theme="dark"] .related-integration-excerpt,
+body.dark-mode .related-integration-excerpt {
+    color: #9ca3af !important;
+}
+
+/* Dark mode for quick info labels and values */
+.dark .quick-info-item span,
+[data-theme="dark"] .quick-info-item span,
+body.dark-mode .quick-info-item span {
+    color: #d1d5db !important;
+}
+
+.dark .quick-info-value,
+[data-theme="dark"] .quick-info-value,
+body.dark-mode .quick-info-value {
+    color: #ffffff !important;
+}
+
+/* Override any conflicting styles */
+.dark .text-gray-900:not(.no-dark-override),
+.dark .text-gray-800:not(.no-dark-override),
+.dark .text-gray-700:not(.no-dark-override),
+[data-theme="dark"] .text-gray-900:not(.no-dark-override),
+[data-theme="dark"] .text-gray-800:not(.no-dark-override),
+[data-theme="dark"] .text-gray-700:not(.no-dark-override),
+body.dark-mode .text-gray-900:not(.no-dark-override),
+body.dark-mode .text-gray-800:not(.no-dark-override),
+body.dark-mode .text-gray-700:not(.no-dark-override) {
+    color: #ffffff !important;
+}
+
+/* Ensure status badges remain visible */
+.dark .bg-green-100,
+[data-theme="dark"] .bg-green-100,
+body.dark-mode .bg-green-100 {
+    background-color: #064e3b !important;
+}
+
+.dark .text-green-800,
+[data-theme="dark"] .text-green-800,
+body.dark-mode .text-green-800 {
+    color: #6ee7b7 !important;
+}
+
+.dark .bg-yellow-100,
+[data-theme="dark"] .bg-yellow-100,
+body.dark-mode .bg-yellow-100 {
+    background-color: #78350f !important;
+}
+
+.dark .text-yellow-800,
+[data-theme="dark"] .text-yellow-800,
+body.dark-mode .text-yellow-800 {
+    color: #fcd34d !important;
+}
+
+.dark .bg-blue-100,
+[data-theme="dark"] .bg-blue-100,
+body.dark-mode .bg-blue-100 {
+    background-color: #1e3a8a !important;
+}
+
+.dark .text-blue-800,
+[data-theme="dark"] .text-blue-800,
+body.dark-mode .text-blue-800 {
+    color: #93c5fd !important;
+}

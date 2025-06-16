@@ -1,369 +1,516 @@
 // Main JavaScript file for YourSite.biz theme
+// Enhanced with better error handling, performance, and maintainability
 
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // Mobile menu functionality
-    initMobileMenu();
-    
-    // Smooth scrolling for anchor links
-    initSmoothScrolling();
-    
-    // Intersection Observer for animations
-    initScrollAnimations();
-    
-    // Form handling
-    initFormHandling();
-    
-    // Lazy loading for images
-    initLazyLoading();
-    
-    // Pricing table interactions
-    initPricingInteractions();
-    
-    // Testimonial carousel
-    initTestimonialCarousel();
-});
+class SiteManager {
+    constructor() {
+        this.config = {
+            animationDelay: 5000,
+            formMessageTimeout: 5000,
+            observerThreshold: 0.1,
+            scrollOffset: 20
+        };
+        
+        this.observers = [];
+        this.eventListeners = [];
+        
+        this.init();
+    }
 
-/**
- * Initialize mobile menu functionality
- */
-function initMobileMenu() {
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    
-    if (mobileMenuButton && mobileMenu) {
-        mobileMenuButton.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
+    init() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.initializeComponents());
+        } else {
+            this.initializeComponents();
+        }
+    }
+
+    initializeComponents() {
+        try {
+            this.initMobileMenu();
+            this.initSmoothScrolling();
+            this.initScrollAnimations();
+            this.initFormHandling();
+            this.initLazyLoading();
+            this.initPricingInteractions();
+            this.initTestimonialCarousel();
+            this.injectStyles();
+        } catch (error) {
+            console.error('Error initializing components:', error);
+        }
+    }
+
+    /**
+     * Initialize mobile menu functionality with accessibility features
+     */
+    initMobileMenu() {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (!mobileMenuButton || !mobileMenu) return;
+
+        const toggleMenu = () => {
+            const isHidden = mobileMenu.classList.toggle('hidden');
+            const isExpanded = !isHidden;
+            
+            // Update ARIA attributes for accessibility
+            mobileMenuButton.setAttribute('aria-expanded', isExpanded);
+            mobileMenu.setAttribute('aria-hidden', isHidden);
             
             // Toggle hamburger icon
-            const icon = this.querySelector('svg');
-            if (mobileMenu.classList.contains('hidden')) {
-                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
-            } else {
-                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
+            this.updateMenuIcon(mobileMenuButton, isExpanded);
+        };
+
+        const closeMenu = () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', 'false');
+            mobileMenu.setAttribute('aria-hidden', 'true');
+            this.updateMenuIcon(mobileMenuButton, false);
+        };
+
+        // Event listeners
+        this.addEventListener(mobileMenuButton, 'click', toggleMenu);
+        
+        this.addEventListener(document, 'click', (event) => {
+            if (!mobileMenu.contains(event.target) && 
+                !mobileMenuButton.contains(event.target) && 
+                !mobileMenu.classList.contains('hidden')) {
+                closeMenu();
             }
         });
         
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
-                mobileMenu.classList.add('hidden');
-            }
-        });
-        
-        // Close mobile menu on escape key
-        document.addEventListener('keydown', function(event) {
+        this.addEventListener(document, 'keydown', (event) => {
             if (event.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
-                mobileMenu.classList.add('hidden');
+                closeMenu();
+                mobileMenuButton.focus(); // Return focus for accessibility
             }
         });
     }
-}
 
-/**
- * Initialize smooth scrolling for anchor links
- */
-function initSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
-            if (href === '#') return;
-            
-            e.preventDefault();
-            const target = document.querySelector(href);
-            
-            if (target) {
-                const headerHeight = document.querySelector('header').offsetHeight;
-                const targetPosition = target.offsetTop - headerHeight - 20;
+    updateMenuIcon(button, isExpanded) {
+        const icon = button.querySelector('svg');
+        if (!icon) return;
+        
+        const hamburgerPath = 'M4 6h16M4 12h16M4 18h16';
+        const closePath = 'M6 18L18 6M6 6l12 12';
+        
+        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isExpanded ? closePath : hamburgerPath}"></path>`;
+    }
+
+    /**
+     * Initialize smooth scrolling for anchor links
+     */
+    initSmoothScrolling() {
+        const anchorLinks = document.querySelectorAll('a[href^="#"]:not([href="#"])');
+        
+        anchorLinks.forEach(anchor => {
+            this.addEventListener(anchor, 'click', (e) => {
+                const href = anchor.getAttribute('href');
+                const target = document.querySelector(href);
+                
+                if (!target) return;
+                
+                e.preventDefault();
+                
+                const header = document.querySelector('header');
+                const headerHeight = header ? header.offsetHeight : 0;
+                const targetPosition = target.offsetTop - headerHeight - this.config.scrollOffset;
                 
                 window.scrollTo({
-                    top: targetPosition,
+                    top: Math.max(0, targetPosition),
                     behavior: 'smooth'
                 });
-            }
+            });
         });
-    });
-}
+    }
 
-/**
- * Initialize scroll animations using Intersection Observer
- */
-function initScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in-up');
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
+    /**
+     * Initialize scroll animations using Intersection Observer
+     */
+    initScrollAnimations() {
+        const observerOptions = {
+            threshold: this.config.observerThreshold,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const element = entry.target;
+                    element.classList.add('fade-in-up');
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                    observer.unobserve(element); // Stop observing once animated
+                }
+            });
+        }, observerOptions);
+        
+        this.observers.push(observer);
+        
+        // Observe elements for animation
+        const animateElements = document.querySelectorAll('.feature-card, .hero-gradient > div, .fade-in-up');
+        animateElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
         });
-    }, observerOptions);
-    
-    // Observe elements for animation
-    const animateElements = document.querySelectorAll('.feature-card, .hero-gradient > div, .fade-in-up');
-    animateElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-        observer.observe(el);
-    });
-}
+    }
 
-/**
- * Initialize form handling
- */
-function initFormHandling() {
-    // Newsletter signup forms
-    const newsletterForms = document.querySelectorAll('form[action*="newsletter"], form[action*="subscribe"]');
-    
-    newsletterForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
+    /**
+     * Initialize form handling with better error management
+     */
+    initFormHandling() {
+        // Newsletter signup forms
+        const newsletterForms = document.querySelectorAll('form[action*="newsletter"], form[action*="subscribe"]');
+        newsletterForms.forEach(form => this.setupNewsletterForm(form));
+        
+        // Contact forms
+        const contactForms = document.querySelectorAll('form[action*="contact"]');
+        contactForms.forEach(form => this.setupContactForm(form));
+    }
+
+    setupNewsletterForm(form) {
+        this.addEventListener(form, 'submit', async (e) => {
             e.preventDefault();
             
-            const email = this.querySelector('input[type="email"]').value;
-            const button = this.querySelector('button[type="submit"]');
+            const emailInput = form.querySelector('input[type="email"]');
+            const button = form.querySelector('button[type="submit"]');
+            
+            if (!emailInput || !button) return;
+            
+            const email = emailInput.value.trim();
             const originalText = button.textContent;
             
-            if (!isValidEmail(email)) {
-                showFormMessage(this, 'Please enter a valid email address.', 'error');
+            if (!this.isValidEmail(email)) {
+                this.showFormMessage(form, 'Please enter a valid email address.', 'error');
                 return;
             }
             
-            // Show loading state
-            button.textContent = 'Subscribing...';
-            button.disabled = true;
-            
-            // Simulate API call (replace with actual implementation)
-            setTimeout(() => {
-                showFormMessage(this, 'Thank you for subscribing!', 'success');
-                this.reset();
-                button.textContent = originalText;
-                button.disabled = false;
-            }, 1500);
+            try {
+                this.setButtonLoading(button, 'Subscribing...');
+                
+                // Simulate API call (replace with actual implementation)
+                await this.delay(1500);
+                
+                this.showFormMessage(form, 'Thank you for subscribing!', 'success');
+                form.reset();
+            } catch (error) {
+                this.showFormMessage(form, 'Something went wrong. Please try again.', 'error');
+            } finally {
+                this.resetButton(button, originalText);
+            }
         });
-    });
-    
-    // Contact forms
-    const contactForms = document.querySelectorAll('form[action*="contact"]');
-    
-    contactForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
+    }
+
+    setupContactForm(form) {
+        this.addEventListener(form, 'submit', async (e) => {
             e.preventDefault();
             
-            const button = this.querySelector('button[type="submit"]');
+            const button = form.querySelector('button[type="submit"]');
+            if (!button) return;
+            
             const originalText = button.textContent;
             
-            // Show loading state
-            button.textContent = 'Sending...';
-            button.disabled = true;
-            
-            // Simulate API call (replace with actual implementation)
-            setTimeout(() => {
-                showFormMessage(this, 'Message sent successfully! We\'ll get back to you soon.', 'success');
-                this.reset();
-                button.textContent = originalText;
-                button.disabled = false;
-            }, 2000);
+            try {
+                this.setButtonLoading(button, 'Sending...');
+                
+                // Simulate API call (replace with actual implementation)
+                await this.delay(2000);
+                
+                this.showFormMessage(form, 'Message sent successfully! We\'ll get back to you soon.', 'success');
+                form.reset();
+            } catch (error) {
+                this.showFormMessage(form, 'Failed to send message. Please try again.', 'error');
+            } finally {
+                this.resetButton(button, originalText);
+            }
         });
-    });
-}
-
-/**
- * Show form message
- */
-function showFormMessage(form, message, type) {
-    // Remove existing message
-    const existingMessage = form.querySelector('.form-message');
-    if (existingMessage) {
-        existingMessage.remove();
     }
-    
-    // Create new message
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `form-message mt-4 p-3 rounded-lg text-sm ${
-        type === 'error' ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-green-100 text-green-700 border border-green-200'
-    }`;
-    messageDiv.textContent = message;
-    
-    // Insert message after form
-    form.appendChild(messageDiv);
-    
-    // Remove message after 5 seconds
-    setTimeout(() => {
-        messageDiv.remove();
-    }, 5000);
-}
 
-/**
- * Validate email address
- */
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
+    setButtonLoading(button, text) {
+        button.textContent = text;
+        button.disabled = true;
+        button.classList.add('loading');
+    }
 
-/**
- * Initialize lazy loading for images
- */
-function initLazyLoading() {
-    const images = document.querySelectorAll('img[data-src]');
-    
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.classList.remove('lazy');
-                    imageObserver.unobserve(img);
+    resetButton(button, originalText) {
+        button.textContent = originalText;
+        button.disabled = false;
+        button.classList.remove('loading');
+    }
+
+    /**
+     * Show form message with auto-removal
+     */
+    showFormMessage(form, message, type) {
+        // Remove existing message
+        const existingMessage = form.querySelector('.form-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+        
+        // Create new message
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `form-message mt-4 p-3 rounded-lg text-sm ${
+            type === 'error' 
+                ? 'bg-red-100 text-red-700 border border-red-200' 
+                : 'bg-green-100 text-green-700 border border-green-200'
+        }`;
+        messageDiv.textContent = message;
+        messageDiv.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        
+        form.appendChild(messageDiv);
+        
+        // Auto-remove message
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.remove();
+            }
+        }, this.config.formMessageTimeout);
+    }
+
+    /**
+     * Validate email address
+     */
+    isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    /**
+     * Initialize lazy loading for images
+     */
+    initLazyLoading() {
+        const images = document.querySelectorAll('img[data-src]');
+        if (images.length === 0) return;
+        
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy');
+                        img.addEventListener('load', () => {
+                            img.classList.add('loaded');
+                        });
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+            
+            this.observers.push(imageObserver);
+            images.forEach(img => imageObserver.observe(img));
+        } else {
+            // Fallback for browsers without Intersection Observer
+            images.forEach(img => {
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+            });
+        }
+    }
+
+    /**
+     * Initialize pricing interactions
+     */
+    initPricingInteractions() {
+        const pricingCards = document.querySelectorAll('.pricing-card, .feature-card');
+        
+        pricingCards.forEach(card => {
+            this.addEventListener(card, 'mouseenter', () => {
+                card.style.transform = 'translateY(-8px)';
+                card.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.15)';
+            });
+            
+            this.addEventListener(card, 'mouseleave', () => {
+                if (!card.classList.contains('scale-105')) {
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = '';
                 }
             });
         });
         
-        images.forEach(img => imageObserver.observe(img));
-    } else {
-        // Fallback for browsers without Intersection Observer
-        images.forEach(img => {
-            img.src = img.dataset.src;
+        // CTA button interactions
+        const ctaButtons = document.querySelectorAll('.btn-primary, .btn-secondary');
+        ctaButtons.forEach(button => {
+            this.addEventListener(button, 'click', (e) => this.createRippleEffect(e, button));
         });
     }
-}
 
-/**
- * Initialize pricing interactions
- */
-function initPricingInteractions() {
-    // Pricing plan hover effects
-    const pricingCards = document.querySelectorAll('.pricing-card, .feature-card');
-    
-    pricingCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-8px)';
-            this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.15)';
+    createRippleEffect(event, button) {
+        const ripple = document.createElement('span');
+        const rect = button.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = event.clientX - rect.left - size / 2;
+        const y = event.clientY - rect.top - size / 2;
+        
+        Object.assign(ripple.style, {
+            width: size + 'px',
+            height: size + 'px',
+            left: x + 'px',
+            top: y + 'px'
         });
         
-        card.addEventListener('mouseleave', function() {
-            if (!this.classList.contains('scale-105')) { // Don't reset featured cards
-                this.style.transform = 'translateY(0)';
-                this.style.boxShadow = '';
-            }
-        });
-    });
-    
-    // CTA button interactions
-    const ctaButtons = document.querySelectorAll('.btn-primary, .btn-secondary');
-    
-    ctaButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            // Add ripple effect
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            ripple.classList.add('ripple');
-            
-            this.appendChild(ripple);
-            
-            setTimeout(() => {
+        ripple.classList.add('ripple');
+        button.appendChild(ripple);
+        
+        setTimeout(() => {
+            if (ripple.parentNode) {
                 ripple.remove();
-            }, 600);
-        });
-    });
-}
-
-/**
- * Initialize testimonial carousel
- */
-function initTestimonialCarousel() {
-    const testimonialContainer = document.querySelector('.testimonial-carousel');
-    if (!testimonialContainer) return;
-    
-    const testimonials = testimonialContainer.querySelectorAll('.testimonial-item');
-    let currentIndex = 0;
-    
-    function showTestimonial(index) {
-        testimonials.forEach((testimonial, i) => {
-            testimonial.style.display = i === index ? 'block' : 'none';
-        });
+            }
+        }, 600);
     }
-    
-    function nextTestimonial() {
-        currentIndex = (currentIndex + 1) % testimonials.length;
-        showTestimonial(currentIndex);
-    }
-    
-    // Auto-rotate testimonials every 5 seconds
-    if (testimonials.length > 1) {
-        setInterval(nextTestimonial, 5000);
-        showTestimonial(0);
-    }
-}
 
-/**
- * Utility functions
- */
-
-// Debounce function for performance optimization
-function debounce(func, wait, immediate) {
-    let timeout;
-    return function executedFunction() {
-        const context = this;
-        const args = arguments;
-        const later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
+    /**
+     * Initialize testimonial carousel
+     */
+    initTestimonialCarousel() {
+        const testimonialContainer = document.querySelector('.testimonial-carousel');
+        if (!testimonialContainer) return;
+        
+        const testimonials = testimonialContainer.querySelectorAll('.testimonial-item');
+        if (testimonials.length <= 1) return;
+        
+        let currentIndex = 0;
+        let carouselInterval;
+        
+        const showTestimonial = (index) => {
+            testimonials.forEach((testimonial, i) => {
+                testimonial.style.display = i === index ? 'block' : 'none';
+                testimonial.setAttribute('aria-hidden', i !== index);
+            });
         };
-        const callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-}
+        
+        const nextTestimonial = () => {
+            currentIndex = (currentIndex + 1) % testimonials.length;
+            showTestimonial(currentIndex);
+        };
+        
+        const startCarousel = () => {
+            carouselInterval = setInterval(nextTestimonial, this.config.animationDelay);
+        };
+        
+        const stopCarousel = () => {
+            if (carouselInterval) {
+                clearInterval(carouselInterval);
+                carouselInterval = null;
+            }
+        };
+        
+        // Initialize carousel
+        showTestimonial(0);
+        startCarousel();
+        
+        // Pause on hover
+        this.addEventListener(testimonialContainer, 'mouseenter', stopCarousel);
+        this.addEventListener(testimonialContainer, 'mouseleave', startCarousel);
+        
+        // Store interval for cleanup
+        this.carouselInterval = carouselInterval;
+    }
 
-// Throttle function for scroll events
-function throttle(func, limit) {
-    let inThrottle;
-    return function() {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-            func.apply(context, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
+    /**
+     * Utility method for adding event listeners with cleanup tracking
+     */
+    addEventListener(element, event, handler) {
+        element.addEventListener(event, handler);
+        this.eventListeners.push({ element, event, handler });
+    }
+
+    /**
+     * Promise-based delay utility
+     */
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    /**
+     * Inject required CSS styles
+     */
+    injectStyles() {
+        const styles = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+                pointer-events: none;
+            }
+
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+
+            .btn-primary.loading,
+            .btn-secondary.loading {
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+
+            img.lazy {
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            img.loaded {
+                opacity: 1;
+            }
+
+            .fade-in-up {
+                animation: fadeInUp 0.6s ease-out;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = styles;
+        document.head.appendChild(styleSheet);
+    }
+
+    /**
+     * Cleanup method for removing event listeners and observers
+     */
+    cleanup() {
+        // Remove event listeners
+        this.eventListeners.forEach(({ element, event, handler }) => {
+            element.removeEventListener(event, handler);
+        });
+        this.eventListeners = [];
+        
+        // Disconnect observers
+        this.observers.forEach(observer => observer.disconnect());
+        this.observers = [];
+        
+        // Clear carousel interval
+        if (this.carouselInterval) {
+            clearInterval(this.carouselInterval);
         }
-    };
-}
-
-// Add CSS for ripple effect
-const rippleCSS = `
-.ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.6);
-    transform: scale(0);
-    animation: ripple-animation 0.6s linear;
-    pointer-events: none;
-}
-
-@keyframes ripple-animation {
-    to {
-        transform: scale(4);
-        opacity: 0;
     }
 }
-`;
 
-// Inject ripple CSS
-const style = document.createElement('style');
-style.textContent = rippleCSS;
-document.head.appendChild(style);
+// Initialize the site manager
+const siteManager = new SiteManager();
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    siteManager.cleanup();
+});
+
+// Export for potential module usage
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = SiteManager;
+}

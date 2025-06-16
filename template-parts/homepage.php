@@ -135,8 +135,166 @@ $hero_bg_style = $hero_bg_image ? 'background-image: url(' . esc_url($hero_bg_im
 </style>
 
 <script>
+// ==========================================================================
+// YOUTUBE MODAL - FIXED JAVASCRIPT
+// Replace the existing modal JavaScript in your homepage.php with this
+// ==========================================================================
+
 document.addEventListener('DOMContentLoaded', function() {
     const videoModal = document.getElementById('video-modal');
+    const videoIframe = document.getElementById('video-iframe');
+    const closeButton = document.getElementById('close-video-modal');
+    const videoThumbnail = document.querySelector('.video-thumbnail');
+    
+    // Debug logging
+    console.log('Modal elements found:', {
+        videoModal: !!videoModal,
+        videoIframe: !!videoIframe,
+        closeButton: !!closeButton,
+        videoThumbnail: !!videoThumbnail
+    });
+    
+    if (videoThumbnail && videoModal) {
+        // Make the entire thumbnail clickable
+        videoThumbnail.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const videoUrl = this.getAttribute('data-video-url');
+            console.log('Video URL:', videoUrl);
+            
+            if (videoUrl && videoIframe) {
+                openVideoModal(videoUrl);
+            }
+        });
+    }
+    
+    function openVideoModal(videoUrl) {
+        // Convert YouTube URL to privacy-enhanced embed format
+        let embedUrl = convertToEmbedUrl(videoUrl);
+        console.log('Embed URL:', embedUrl);
+        
+        if (embedUrl) {
+            // Set loading state
+            videoModal.classList.add('loading');
+            
+            // Set iframe source
+            videoIframe.src = embedUrl;
+            
+            // Show modal
+            videoModal.classList.remove('hidden');
+            videoModal.classList.add('active');
+            document.body.classList.add('modal-open');
+            document.body.style.overflow = 'hidden';
+            
+            // Remove loading state after iframe loads
+            videoIframe.onload = function() {
+                videoModal.classList.remove('loading');
+            };
+            
+            // Focus close button for accessibility
+            if (closeButton) {
+                setTimeout(() => closeButton.focus(), 100);
+            }
+        }
+    }
+    
+    function closeVideoModal() {
+        console.log('Closing modal');
+        
+        if (videoModal && !videoModal.classList.contains('hidden')) {
+            // Hide modal
+            videoModal.classList.add('hidden');
+            videoModal.classList.remove('active', 'loading');
+            
+            // Clear iframe source to stop video
+            if (videoIframe) {
+                videoIframe.src = '';
+            }
+            
+            // Restore body scroll
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            
+            // Return focus to thumbnail for accessibility
+            if (videoThumbnail) {
+                videoThumbnail.focus();
+            }
+        }
+    }
+    
+    function convertToEmbedUrl(url) {
+        if (!url) return null;
+        
+        let videoId = null;
+        
+        // Extract video ID from different YouTube URL formats
+        if (url.includes('youtube.com/watch?v=')) {
+            videoId = url.split('v=')[1].split('&')[0];
+        } else if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+        } else if (url.includes('youtube.com/embed/')) {
+            videoId = url.split('embed/')[1].split('?')[0];
+        } else if (url.includes('youtube-nocookie.com/embed/')) {
+            videoId = url.split('embed/')[1].split('?')[0];
+        }
+        
+        if (videoId) {
+            // Create privacy-enhanced embed URL with autoplay
+            return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
+        }
+        
+        return null;
+    }
+    
+    // Event listeners for closing modal
+    if (closeButton) {
+        closeButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeVideoModal();
+        });
+    }
+    
+    // Close when clicking on backdrop
+    if (videoModal) {
+        videoModal.addEventListener('click', function(e) {
+            // Only close if clicking on the modal backdrop, not the content
+            if (e.target === videoModal || e.target.classList.contains('bg-black')) {
+                closeVideoModal();
+            }
+        });
+    }
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && videoModal && videoModal.classList.contains('active')) {
+            closeVideoModal();
+        }
+    });
+    
+    // Handle window resize to maintain modal positioning
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            if (videoModal && videoModal.classList.contains('active')) {
+                // Force modal to recalculate positioning
+                videoModal.style.display = 'none';
+                videoModal.offsetHeight; // Force reflow
+                videoModal.style.display = 'flex';
+            }
+        }, 100);
+    });
+});
+
+// Alternative function if you prefer to call it manually
+function initYouTubeModal() {
+    // This function can be used if you need to reinitialize the modal
+    // after dynamic content changes
+    const event = new Event('DOMContentLoaded');
+    document.dispatchEvent(event);
+}    const videoModal = document.getElementById('video-modal');
     const videoIframe = document.getElementById('video-iframe');
     const closeButton = document.getElementById('close-video-modal');
     const videoThumbnail = document.querySelector('.video-thumbnail');
