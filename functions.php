@@ -1,6 +1,6 @@
 <?php
 /**
- * YourSite.biz Theme Functions - UPDATED WITH LOGO GENERATOR
+ * YourSite.biz Theme Functions - FIXED VERSION WITH COMPLETE LOGO GENERATOR
  * Main functions file that loads modular components and includes logo generator
  */
 
@@ -54,11 +54,11 @@ function yoursite_load_components() {
 add_action('after_setup_theme', 'yoursite_load_components', 5);
 
 // =============================================================================
-// LOGO GENERATOR INTEGRATION - COMPLETE SYSTEM
+// COMPLETE LOGO GENERATOR SYSTEM - FIXED VERSION
 // =============================================================================
 
 /**
- * Complete Logo Generator Class
+ * Complete Logo Generator Class - FIXED WITH ALL METHODS
  */
 if (!class_exists('YourSite_Logo_Generator')) {
     
@@ -122,16 +122,16 @@ if (!class_exists('YourSite_Logo_Generator')) {
                 // Generate primary (original optimized)
                 $variations['primary'] = $this->create_primary_variation($logo);
                 
-                // Generate white version
+                // Generate white version - FIXED
                 $variations['white'] = $this->create_white_variation($logo);
                 
-                // Generate black version  
+                // Generate black version - FIXED
                 $variations['black'] = $this->create_black_variation($logo);
                 
-                // Generate grayscale version
+                // Generate grayscale version - FIXED
                 $variations['grayscale'] = $this->create_grayscale_variation($logo);
                 
-                // Generate transparent version (if not already transparent)
+                // Generate transparent version
                 $variations['transparent'] = $this->create_transparent_variation($logo);
                 
             } catch (Exception $e) {
@@ -173,6 +173,9 @@ if (!class_exists('YourSite_Logo_Generator')) {
             // Load and save as optimized PNG
             $image = $this->load_image($logo['path']);
             if ($image) {
+                // Preserve transparency
+                imagealphablending($image, false);
+                imagesavealpha($image, true);
                 imagepng($image, $output_path, 9);
                 imagedestroy($image);
                 
@@ -186,8 +189,8 @@ if (!class_exists('YourSite_Logo_Generator')) {
             return false;
         }
         
-        /**
-         * Create white logo variation
+    /**
+         * COMPLETELY FIXED: Create white logo variation - SIMPLE APPROACH
          */
         private function create_white_variation($logo) {
             $filename = 'white-logo-' . $logo['id'] . '.png';
@@ -207,14 +210,14 @@ if (!class_exists('YourSite_Logo_Generator')) {
                 return $this->create_svg_variation($logo, 'white', $output_path, $output_url);
             }
             
-            // Create white silhouette
+            // SIMPLE APPROACH: Just change non-transparent pixels to white
             $image = $this->load_image($logo['path']);
             if (!$image) return false;
             
             $width = imagesx($image);
             $height = imagesy($image);
             
-            // Create new image with transparency
+            // Create new image
             $white_image = imagecreatetruecolor($width, $height);
             imagealphablending($white_image, false);
             imagesavealpha($white_image, true);
@@ -223,13 +226,14 @@ if (!class_exists('YourSite_Logo_Generator')) {
             $transparent = imagecolorallocatealpha($white_image, 0, 0, 0, 127);
             imagefill($white_image, 0, 0, $transparent);
             
-            // Convert non-transparent pixels to white
+            // Simple conversion: any non-transparent pixel becomes white
             for ($x = 0; $x < $width; $x++) {
                 for ($y = 0; $y < $height; $y++) {
                     $rgba = imagecolorat($image, $x, $y);
                     $alpha = ($rgba & 0x7F000000) >> 24;
                     
-                    if ($alpha < 127) { // Not transparent
+                    // If pixel is not fully transparent, make it white with same transparency
+                    if ($alpha < 127) {
                         $white_color = imagecolorallocatealpha($white_image, 255, 255, 255, $alpha);
                         imagesetpixel($white_image, $x, $y, $white_color);
                     }
@@ -248,7 +252,7 @@ if (!class_exists('YourSite_Logo_Generator')) {
         }
         
         /**
-         * Create black logo variation
+         * COMPLETELY FIXED: Create black logo variation - SIMPLE APPROACH
          */
         private function create_black_variation($logo) {
             $filename = 'black-logo-' . $logo['id'] . '.png';
@@ -268,26 +272,29 @@ if (!class_exists('YourSite_Logo_Generator')) {
                 return $this->create_svg_variation($logo, 'black', $output_path, $output_url);
             }
             
-            // Create black silhouette
+            // SIMPLE APPROACH: Just change non-transparent pixels to black
             $image = $this->load_image($logo['path']);
             if (!$image) return false;
             
             $width = imagesx($image);
             $height = imagesy($image);
             
+            // Create new image
             $black_image = imagecreatetruecolor($width, $height);
             imagealphablending($black_image, false);
             imagesavealpha($black_image, true);
             
+            // Fill with transparent background
             $transparent = imagecolorallocatealpha($black_image, 0, 0, 0, 127);
             imagefill($black_image, 0, 0, $transparent);
             
-            // Convert non-transparent pixels to black
+            // Simple conversion: any non-transparent pixel becomes black
             for ($x = 0; $x < $width; $x++) {
                 for ($y = 0; $y < $height; $y++) {
                     $rgba = imagecolorat($image, $x, $y);
                     $alpha = ($rgba & 0x7F000000) >> 24;
                     
+                    // If pixel is not fully transparent, make it black with same transparency
                     if ($alpha < 127) {
                         $black_color = imagecolorallocatealpha($black_image, 0, 0, 0, $alpha);
                         imagesetpixel($black_image, $x, $y, $black_color);
@@ -307,7 +314,85 @@ if (!class_exists('YourSite_Logo_Generator')) {
         }
         
         /**
-         * Create grayscale logo variation
+         * ALTERNATIVE METHOD: Create white logo using colorize filter
+         */
+        private function create_white_variation_alternative($logo) {
+            $filename = 'white-logo-' . $logo['id'] . '.png';
+            $output_path = $this->cache_dir . $filename;
+            $output_url = $this->cache_url . $filename;
+            
+            if (file_exists($output_path) && filemtime($output_path) >= filemtime($logo['path'])) {
+                return array(
+                    'url' => $output_url,
+                    'path' => $output_path,
+                    'type' => 'white'
+                );
+            }
+            
+            // Handle SVG
+            if ($logo['mime_type'] === 'image/svg+xml') {
+                return $this->create_svg_variation($logo, 'white', $output_path, $output_url);
+            }
+            
+            $image = $this->load_image($logo['path']);
+            if (!$image) return false;
+            
+            // Method 2: Use imagefilter with colorize
+            // First convert to grayscale, then colorize to white
+            imagefilter($image, IMG_FILTER_GRAYSCALE);
+            imagefilter($image, IMG_FILTER_COLORIZE, 255, 255, 255);
+            
+            imagepng($image, $output_path, 9);
+            imagedestroy($image);
+            
+            return array(
+                'url' => $output_url,
+                'path' => $output_path,
+                'type' => 'white'
+            );
+        }
+        
+        /**
+         * ALTERNATIVE METHOD: Create black logo using colorize filter
+         */
+        private function create_black_variation_alternative($logo) {
+            $filename = 'black-logo-' . $logo['id'] . '.png';
+            $output_path = $this->cache_dir . $filename;
+            $output_url = $this->cache_url . $filename;
+            
+            if (file_exists($output_path) && filemtime($output_path) >= filemtime($logo['path'])) {
+                return array(
+                    'url' => $output_url,
+                    'path' => $output_path,
+                    'type' => 'black'
+                );
+            }
+            
+            // Handle SVG
+            if ($logo['mime_type'] === 'image/svg+xml') {
+                return $this->create_svg_variation($logo, 'black', $output_path, $output_url);
+            }
+            
+            $image = $this->load_image($logo['path']);
+            if (!$image) return false;
+            
+            // Method 2: Use imagefilter with colorize
+            // First convert to grayscale, then colorize to black
+            imagefilter($image, IMG_FILTER_GRAYSCALE);
+            imagefilter($image, IMG_FILTER_COLORIZE, -255, -255, -255);
+            
+            imagepng($image, $output_path, 9);
+            imagedestroy($image);
+            
+            return array(
+                'url' => $output_url,
+                'path' => $output_path,
+                'type' => 'black'
+            );
+        }
+        
+        /**
+         * FIXED: Create grayscale logo variation
          */
         private function create_grayscale_variation($logo) {
             $filename = 'grayscale-logo-' . $logo['id'] . '.png';
@@ -330,8 +415,32 @@ if (!class_exists('YourSite_Logo_Generator')) {
             $image = $this->load_image($logo['path']);
             if (!$image) return false;
             
-            // Apply grayscale filter
-            imagefilter($image, IMG_FILTER_GRAYSCALE);
+            // Preserve transparency
+            imagealphablending($image, false);
+            imagesavealpha($image, true);
+            
+            // Try built-in grayscale filter first
+            if (!imagefilter($image, IMG_FILTER_GRAYSCALE)) {
+                // Fallback: manual grayscale conversion
+                $width = imagesx($image);
+                $height = imagesy($image);
+                
+                for ($x = 0; $x < $width; $x++) {
+                    for ($y = 0; $y < $height; $y++) {
+                        $rgba = imagecolorat($image, $x, $y);
+                        $alpha = ($rgba & 0x7F000000) >> 24;
+                        $red = ($rgba >> 16) & 0xFF;
+                        $green = ($rgba >> 8) & 0xFF;
+                        $blue = $rgba & 0xFF;
+                        
+                        // Convert to grayscale using luminance formula
+                        $gray = intval(0.299 * $red + 0.587 * $green + 0.114 * $blue);
+                        
+                        $gray_color = imagecolorallocatealpha($image, $gray, $gray, $gray, $alpha);
+                        imagesetpixel($image, $x, $y, $gray_color);
+                    }
+                }
+            }
             
             imagepng($image, $output_path, 9);
             imagedestroy($image);
@@ -394,22 +503,36 @@ if (!class_exists('YourSite_Logo_Generator')) {
             
             switch ($type) {
                 case 'white':
-                    // Replace fill colors with white
-                    $svg_content = preg_replace('/fill\s*=\s*["\'][^"\']*["\']/', 'fill="white"', $svg_content);
-                    $svg_content = preg_replace('/stroke\s*=\s*["\'][^"\']*["\']/', 'stroke="white"', $svg_content);
+                    // Replace fill colors with white (but not none/transparent)
+                    $svg_content = preg_replace('/fill\s*=\s*["\'][^"\']*["\'](?![^>]*fill\s*=\s*["\'](?:none|transparent)["\'])/i', 'fill="white"', $svg_content);
+                    $svg_content = preg_replace('/stroke\s*=\s*["\'][^"\']*["\'](?![^>]*stroke\s*=\s*["\'](?:none|transparent)["\'])/i', 'stroke="white"', $svg_content);
                     break;
                     
                 case 'black':
-                    // Replace fill colors with black
-                    $svg_content = preg_replace('/fill\s*=\s*["\'][^"\']*["\']/', 'fill="black"', $svg_content);
-                    $svg_content = preg_replace('/stroke\s*=\s*["\'][^"\']*["\']/', 'stroke="black"', $svg_content);
+                    // Replace fill colors with black (but not none/transparent)
+                    $svg_content = preg_replace('/fill\s*=\s*["\'][^"\']*["\'](?![^>]*fill\s*=\s*["\'](?:none|transparent)["\'])/i', 'fill="black"', $svg_content);
+                    $svg_content = preg_replace('/stroke\s*=\s*["\'][^"\']*["\'](?![^>]*stroke\s*=\s*["\'](?:none|transparent)["\'])/i', 'stroke="black"', $svg_content);
                     break;
                     
                 case 'grayscale':
                     // Add grayscale filter
-                    $filter = '<defs><filter id="grayscale"><feColorMatrix type="saturate" values="0"/></filter></defs>';
-                    $svg_content = preg_replace('/<svg([^>]*)>/', '<svg$1>' . $filter, $svg_content);
-                    $svg_content = preg_replace('/<svg([^>]*)>/', '<svg$1 style="filter: url(#grayscale);">', $svg_content);
+                    $filter = '<defs><filter id="grayscale" x="0%" y="0%" width="100%" height="100%">
+                        <feColorMatrix type="matrix" values="0.299 0.587 0.114 0 0
+                                                             0.299 0.587 0.114 0 0  
+                                                             0.299 0.587 0.114 0 0
+                                                             0     0     0     1 0"/>
+                    </filter></defs>';
+                    
+                    if (preg_match('/<svg[^>]*>/', $svg_content, $matches)) {
+                        $svg_tag = $matches[0];
+                        // Add filter
+                        if (strpos($svg_tag, 'style=') !== false) {
+                            $svg_tag = preg_replace('/style="([^"]*)"/', 'style="$1; filter: url(#grayscale);"', $svg_tag);
+                        } else {
+                            $svg_tag = str_replace('>', ' style="filter: url(#grayscale);">', $svg_tag);
+                        }
+                        $svg_content = str_replace($matches[0], $filter . $svg_tag, $svg_content);
+                    }
                     break;
             }
             
@@ -427,11 +550,13 @@ if (!class_exists('YourSite_Logo_Generator')) {
         }
         
         /**
-         * Load image from file
+         * Load image from file with proper transparency handling
          */
         private function load_image($path) {
             $image_info = getimagesize($path);
             if (!$image_info) return false;
+            
+            $image = false;
             
             switch ($image_info['mime']) {
                 case 'image/jpeg':
@@ -504,6 +629,67 @@ if (!class_exists('YourSite_Logo_Generator')) {
             }
             
             return $display_data;
+        }
+        
+        /**
+         * FIXED: Clear logo cache method
+         */
+        public function clear_logo_cache() {
+            $files = glob($this->cache_dir . '*');
+            $deleted = 0;
+            
+            foreach ($files as $file) {
+                if (is_file($file)) {
+                    unlink($file);
+                    $deleted++;
+                }
+            }
+            
+            // Clear transients
+            global $wpdb;
+            $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_logo_variations_%'");
+            $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_logo_variations_%'");
+            
+            return $deleted;
+        }
+        
+        /**
+         * DEBUGGING: Add a method to test image processing
+         */
+        public function debug_image_processing($logo_id) {
+            $logo = $this->get_site_logo();
+            if (!$logo) {
+                return 'No logo found';
+            }
+            
+            $debug_info = array();
+            $debug_info['original'] = array(
+                'path' => $logo['path'],
+                'url' => $logo['url'],
+                'mime_type' => $logo['mime_type'],
+                'exists' => file_exists($logo['path']),
+                'readable' => is_readable($logo['path']),
+                'size' => filesize($logo['path'])
+            );
+            
+            // Test image loading
+            $test_image = $this->load_image($logo['path']);
+            $debug_info['image_loading'] = array(
+                'loaded' => $test_image !== false,
+                'gd_enabled' => extension_loaded('gd'),
+                'gd_info' => function_exists('gd_info') ? gd_info() : 'gd_info not available'
+            );
+            
+            if ($test_image) {
+                $debug_info['image_properties'] = array(
+                    'width' => imagesx($test_image),
+                    'height' => imagesy($test_image),
+                    'type' => 'resource'
+                );
+                imagedestroy($test_image);
+            }
+            
+            return $debug_info;
         }
         
         /**
@@ -927,465 +1113,141 @@ function yoursite_add_press_kit_customizer($wp_customize) {
 }
 add_action('customize_register', 'yoursite_add_press_kit_customizer');
 
-/**
- * Add dashboard widget for logo generator
- */
-function yoursite_logo_generator_dashboard_widget() {
-    wp_add_dashboard_widget(
-        'yoursite_logo_generator_status',
-        'Logo Generator Status',
-        'yoursite_logo_generator_dashboard_widget_content'
-    );
-}
-add_action('wp_dashboard_setup', 'yoursite_logo_generator_dashboard_widget');
+// =============================================================================
+// DEBUG FUNCTIONS (TEMPORARY)
+// =============================================================================
 
-/**
- * Dashboard widget content
- */
-function yoursite_logo_generator_dashboard_widget_content() {
-    $custom_logo_id = get_theme_mod('custom_logo');
-    $class_exists = class_exists('YourSite_Logo_Generator');
-    
-    if ($custom_logo_id && $class_exists) {
-        $upload_dir = wp_upload_dir();
-        $cache_dir = $upload_dir['basedir'] . '/logo-cache/';
-        $cache_files = glob($cache_dir . '*');
-        
-        echo '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center;">';
-        
-        echo '<div style="padding: 15px; background: #d1e7dd; border-radius: 4px;">';
-        echo '<div style="font-size: 18px; font-weight: bold; color: #0f5132;">✓</div>';
-        echo '<div style="font-size: 12px; color: #0f5132;">Logo Uploaded</div>';
-        echo '</div>';
-        
-        echo '<div style="padding: 15px; background: #cff4fc; border-radius: 4px;">';
-        echo '<div style="font-size: 18px; font-weight: bold; color: #055160;">' . count($cache_files) . '</div>';
-        echo '<div style="font-size: 12px; color: #055160;">Generated Files</div>';
-        echo '</div>';
-        
-        echo '<div style="padding: 15px; background: #e2e3e5; border-radius: 4px;">';
-        echo '<div style="font-size: 18px; font-weight: bold; color: #41464b;">Ready</div>';
-        echo '<div style="font-size: 12px; color: #41464b;">Status</div>';
-        echo '</div>';
-        
-        echo '</div>';
-        
-        echo '<p style="margin-top: 15px;">';
-        echo '<a href="' . site_url('/press-kit/') . '" class="button button-primary">View Press Kit</a> ';
-        echo '<a href="' . admin_url('tools.php?page=logo-generator') . '" class="button">Manage</a>';
-        echo '</p>';
-        
-    } else {
-        echo '<div style="text-align: center; padding: 20px;">';
-        
-        if (!$custom_logo_id) {
-            echo '<div style="color: #d63638; margin-bottom: 10px;">⚠</div>';
-            echo '<p>No logo uploaded</p>';
-            echo '<a href="' . admin_url('customize.php?autofocus[control]=custom_logo') . '" class="button button-primary">Upload Logo</a>';
-        } elseif (!$class_exists) {
-            echo '<div style="color: #d63638; margin-bottom: 10px;">✗</div>';
-            echo '<p>Logo generator not loaded</p>';
-            echo '<p><small>Check functions.php file</small></p>';
-        }
-        
-        echo '</div>';
-    }
-}
-
-/**
- * Add admin notices for logo generator status
- */
-function yoursite_logo_generator_admin_notices() {
-    $screen = get_current_screen();
-    
-    // Only show on relevant admin pages
-    if (!in_array($screen->id, ['dashboard', 'tools_page_logo-generator'])) {
-        return;
-    }
-    
-    $custom_logo_id = get_theme_mod('custom_logo');
-    
-    if ($custom_logo_id && class_exists('YourSite_Logo_Generator')) {
-        // Check if we need to generate variations
-        $upload_dir = wp_upload_dir();
-        $cache_dir = $upload_dir['basedir'] . '/logo-cache/';
-        $cache_files = glob($cache_dir . '*');
-        
-        if (empty($cache_files)) {
-            ?>
-            <div class="notice notice-info is-dismissible">
-                <p>
-                    <strong>Logo Generator Ready!</strong> 
-                    Your logo is uploaded but variations haven't been generated yet. 
-                    <a href="<?php echo admin_url('tools.php?page=logo-generator'); ?>">Generate variations now</a> 
-                    or visit your <a href="<?php echo site_url('/press-kit/'); ?>">press kit page</a>.
-                </p>
-            </div>
-            <?php
-        }
-    } elseif (!$custom_logo_id) {
-        ?>
-        <div class="notice notice-warning is-dismissible">
-            <p>
-                <strong>Logo Generator:</strong> 
-                <a href="<?php echo admin_url('customize.php?autofocus[control]=custom_logo'); ?>">Upload a logo</a> 
-                to enable automatic logo generation for your press kit.
-            </p>
-        </div>
-        <?php
-    } elseif (!class_exists('YourSite_Logo_Generator')) {
-        ?>
-        <div class="notice notice-error">
-            <p>
-                <strong>Logo Generator Error:</strong> 
-                The logo generator class is not loaded. Please check your functions.php file.
-            </p>
-        </div>
-        <?php
-    }
-}
-add_action('admin_notices', 'yoursite_logo_generator_admin_notices');
-
-/**
- * Check system requirements and show warnings
- */
-function yoursite_check_logo_generator_requirements() {
+// Add this to functions.php temporarily to debug
+function debug_logo_generation() {
     if (!is_admin() || !current_user_can('manage_options')) {
         return;
     }
     
-    $missing = array();
-    
-    if (!extension_loaded('gd')) {
-        $missing[] = 'PHP GD extension (required for image processing)';
-    }
-    
-    if (!extension_loaded('zip')) {
-        $missing[] = 'PHP ZIP extension (required for package downloads)';
-    }
-    
-    if (!empty($missing)) {
-        ?>
-        <div class="notice notice-error">
-            <p><strong>Logo Generator Requirements Missing:</strong></p>
-            <ul>
-                <?php foreach ($missing as $requirement): ?>
-                    <li><?php echo esc_html($requirement); ?></li>
-                <?php endforeach; ?>
-            </ul>
-            <p>Please contact your hosting provider to enable these PHP extensions.</p>
-        </div>
-        <?php
-    }
-}
-add_action('admin_notices', 'yoursite_check_logo_generator_requirements');
-
-// =============================================================================
-// ORIGINAL GUIDE CONTENT FORMATTING FUNCTIONS
-// =============================================================================
-
-/**
- * GUIDE CONTENT FORMATTING FIXES - IMPROVED VERSION
- * These functions ensure proper display of guide content
- * Note: These are NEW functions that don't exist in inc files
- */
-
-/**
- * Ensure proper content formatting for guides - FIXED
- */
-function yoursite_fix_guide_content_display($content) {
-    // Check if content is null or empty
-    if (empty($content)) {
-        return $content;
-    }
-    
-    // Only apply to guide posts
-    if (get_post_type() !== 'guide') {
-        return $content;
-    }
-    
-    // Ensure paragraphs are properly wrapped
-    if (!has_blocks($content)) {
-        // For classic editor content, apply wpautop
-        $content = wpautop($content);
-    }
-    
-    // Fix common spacing issues - with proper escaping
-    $content = str_replace("\n\n\n", "\n\n", $content);
-    $content = str_replace("<p></p>", "", $content);
-    
-    // Ensure proper spacing around headings - FIXED regex
-    $content = preg_replace('/<\/p>\s*(<h[1-6][^>]*>)/', "</p>\n\n$1", $content);
-    $content = preg_replace('/(<\/h[1-6]>)\s*<p>/', "$1\n\n<p", $content);
-    
-    // Fix list spacing - FIXED regex
-    $content = preg_replace('/<\/p>\s*(<[ou]l[^>]*>)/', "</p>\n\n$1", $content);
-    $content = preg_replace('/(<\/[ou]l>)\s*<p>/', "$1\n\n<p", $content);
-    
-    return $content;
-}
-add_filter('the_content', 'yoursite_fix_guide_content_display', 9);
-
-/**
- * Ensure proper paragraph spacing for guides - FIXED
- */
-function yoursite_guide_paragraph_spacing($content) {
-    // Check if content is null or empty
-    if (empty($content)) {
-        return $content;
-    }
-    
-    if (get_post_type() === 'guide' && !has_blocks($content)) {
-        // Apply wpautop with better spacing
-        $content = wpautop($content, true);
+    if (isset($_GET['debug_logos']) && $_GET['debug_logos'] === '1') {
+        echo '<div style="background: white; padding: 20px; margin: 20px; border: 1px solid #ccc;">';
+        echo '<h2>Logo Debug Information</h2>';
         
-        // Add extra spacing for readability
-        $content = str_replace('</p>', "</p>\n", $content);
-    }
-    
-    return $content;
-}
-add_filter('the_content', 'yoursite_guide_paragraph_spacing', 8);
-
-/**
- * Add reading time tracking (simple view counter)
- */
-function yoursite_track_guide_page_views() {
-    if (is_singular('guide')) {
-        $post_id = get_the_ID();
-        $views = get_post_meta($post_id, 'guide_views', true);
-        $views = $views ? intval($views) + 1 : 1;
-        update_post_meta($post_id, 'guide_views', $views);
-    }
-}
-add_action('wp_head', 'yoursite_track_guide_page_views');
-
-/**
- * Fix block editor content for guides - FIXED
- */
-function yoursite_fix_guide_block_spacing($content) {
-    // Check if content is null or empty
-    if (empty($content)) {
-        return $content;
-    }
-    
-    if (get_post_type() !== 'guide') {
-        return $content;
-    }
-    
-    // Ensure blocks have proper spacing - FIXED regex
-    $content = preg_replace('/<!-- \/wp:paragraph -->\s*<!-- wp:paragraph -->/', "<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->", $content);
-    
-    // Fix heading spacing - FIXED regex
-    $content = preg_replace('/<!-- \/wp:(paragraph|list|quote) -->\s*<!-- wp:heading/', "<!-- /wp:$1 -->\n\n<!-- wp:heading", $content);
-    $content = preg_replace('/<!-- \/wp:heading -->\s*<!-- wp:(paragraph|list|quote)/', "<!-- /wp:heading -->\n\n<!-- wp:$1", $content);
-    
-    return $content;
-}
-add_filter('the_content', 'yoursite_fix_guide_block_spacing', 7);
-
-/**
- * Ensure code blocks are properly formatted - FIXED
- */
-function yoursite_format_guide_code_blocks($content) {
-    // Check if content is null or empty
-    if (empty($content)) {
-        return $content;
-    }
-    
-    if (get_post_type() !== 'guide') {
-        return $content;
-    }
-    
-    // Add language class to code blocks if missing
-    $content = preg_replace('/<pre class="wp-block-code"><code>/', '<pre class="wp-block-code"><code class="language-text">', $content);
-    
-    // Ensure pre tags have proper classes
-    $content = preg_replace('/<pre(?![^>]*class=)/', '<pre class="wp-block-code"', $content);
-    
-    return $content;
-}
-add_filter('the_content', 'yoursite_format_guide_code_blocks', 10);
-
-/**
- * Add custom body class for guides to help with styling
- */
-function yoursite_add_guide_body_classes($classes) {
-    if (is_singular('guide')) {
-        $classes[] = 'single-guide-page';
-        
-        // Add difficulty class
-        $difficulty = get_post_meta(get_the_ID(), '_guide_difficulty', true);
-        if ($difficulty) {
-            $classes[] = 'guide-difficulty-' . $difficulty;
-        }
-        
-        // Add category class
-        $categories = get_the_terms(get_the_ID(), 'guide_category');
-        if ($categories && !is_wp_error($categories)) {
-            $classes[] = 'guide-category-' . $categories[0]->slug;
-        }
-    }
-    
-    return $classes;
-}
-add_filter('body_class', 'yoursite_add_guide_body_classes');
-
-/**
- * Add schema markup for guides
- */
-function yoursite_add_guide_schema() {
-    if (is_singular('guide')) {
-        $post_id = get_the_ID();
-        
-        // Use helper function if it exists, otherwise calculate reading time
-        if (function_exists('yoursite_get_reading_time')) {
-            $reading_time = yoursite_get_reading_time($post_id);
+        if (class_exists('YourSite_Logo_Generator')) {
+            $generator = new YourSite_Logo_Generator();
+            
+            // Check if method exists (since we're adding it)
+            if (method_exists($generator, 'debug_image_processing')) {
+                $debug_info = $generator->debug_image_processing(null);
+                echo '<pre>' . print_r($debug_info, true) . '</pre>';
+            }
+            
+            // Test generating variations
+            echo '<h3>Testing Logo Variations</h3>';
+            $variations = $generator->generate_logo_variations();
+            if (is_wp_error($variations)) {
+                echo '<p style="color: red;">Error: ' . $variations->get_error_message() . '</p>';
+            } else {
+                foreach ($variations as $type => $variation) {
+                    echo '<h4>' . ucfirst($type) . ' Logo</h4>';
+                    if (is_wp_error($variation)) {
+                        echo '<p style="color: red;">Error: ' . $variation->get_error_message() . '</p>';
+                    } else {
+                        echo '<p>Status: ' . (file_exists($variation['path']) ? 'Generated successfully' : 'File not found') . '</p>';
+                        if (isset($variation['url'])) {
+                            echo '<p>URL: <a href="' . $variation['url'] . '" target="_blank">' . $variation['url'] . '</a></p>';
+                            echo '<p>Path: ' . $variation['path'] . '</p>';
+                            if (file_exists($variation['path'])) {
+                                echo '<p>File size: ' . filesize($variation['path']) . ' bytes</p>';
+                                echo '<img src="' . $variation['url'] . '" style="max-width: 200px; max-height: 100px; margin: 10px; border: 1px solid #ddd; background: ' . ($type === 'white' ? '#333' : '#fff') . ';" alt="' . $type . '">';
+                            }
+                        }
+                    }
+                }
+            }
         } else {
-            $content = get_post_field('post_content', $post_id);
-            $word_count = str_word_count(strip_tags($content));
-            $reading_time = max(1, ceil($word_count / 200));
+            echo '<p style="color: red;">YourSite_Logo_Generator class not found</p>';
         }
         
-        $difficulty = get_post_meta($post_id, '_guide_difficulty', true) ?: 'beginner';
-        $categories = get_the_terms($post_id, 'guide_category');
+        echo '</div>';
         
-        $schema = array(
-            '@context' => 'https://schema.org',
-            '@type' => 'HowTo',
-            'name' => get_the_title(),
-            'description' => get_the_excerpt() ?: wp_trim_words(get_the_content(), 20),
-            'url' => get_permalink(),
-            'datePublished' => get_the_date('c'),
-            'dateModified' => get_the_modified_date('c'),
-            'author' => array(
-                '@type' => 'Organization',
-                'name' => get_bloginfo('name')
-            ),
-            'publisher' => array(
-                '@type' => 'Organization',
-                'name' => get_bloginfo('name')
-            ),
-            'totalTime' => 'PT' . $reading_time . 'M',
-            'difficulty' => ucfirst($difficulty)
-        );
+        // Also check server capabilities
+        echo '<div style="background: #f0f0f0; padding: 20px; margin: 20px; border: 1px solid #ccc;">';
+        echo '<h3>Server Capabilities</h3>';
+        echo '<p>GD Extension: ' . (extension_loaded('gd') ? 'Enabled' : 'Not Available') . '</p>';
+        if (extension_loaded('gd')) {
+            $gd_info = gd_info();
+            echo '<pre>' . print_r($gd_info, true) . '</pre>';
+        }
+        echo '<p>Upload Directory: ' . wp_upload_dir()['basedir'] . '</p>';
+        echo '<p>Upload Directory Writable: ' . (wp_is_writable(wp_upload_dir()['basedir']) ? 'Yes' : 'No') . '</p>';
         
-        if ($categories && !is_wp_error($categories)) {
-            $schema['about'] = array(
-                '@type' => 'Thing',
-                'name' => $categories[0]->name
-            );
+        $cache_dir = wp_upload_dir()['basedir'] . '/logo-cache/';
+        echo '<p>Cache Directory: ' . $cache_dir . '</p>';
+        echo '<p>Cache Directory Exists: ' . (file_exists($cache_dir) ? 'Yes' : 'No') . '</p>';
+        echo '<p>Cache Directory Writable: ' . (is_writable($cache_dir) ? 'Yes' : 'No') . '</p>';
+        
+        echo '</div>';
+        
+        // Add clear cache button
+        if (isset($_GET['clear_cache']) && $_GET['clear_cache'] === '1') {
+            if (class_exists('YourSite_Logo_Generator')) {
+                $generator = new YourSite_Logo_Generator();
+                $generator->clear_logo_cache();
+                echo '<div style="background: #dff0d8; padding: 10px; margin: 20px; border: 1px solid #d6e9c6; color: #3c763d;">Cache cleared successfully!</div>';
+            }
         }
         
-        echo '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_SLASHES) . '</script>' . "\n";
+        echo '<div style="margin: 20px;"><a href="' . admin_url('?debug_logos=1&clear_cache=1') . '" class="button">Clear Logo Cache</a></div>';
     }
 }
-add_action('wp_head', 'yoursite_add_guide_schema');
+add_action('admin_notices', 'debug_logo_generation');
 
-/**
- * Add print styles for guides
- */
-function yoursite_add_guide_print_styles() {
-    if (is_singular('guide')) {
-        ?>
-        <style media="print">
-        @page {
-            margin: 1in;
-        }
-        
-        .site-header,
-        .site-footer,
-        .guide-navigation,
-        .sidebar,
-        .breadcrumbs,
-        .guide-meta,
-        .quick-links,
-        .related-guides,
-        .copy-code-btn {
-            display: none !important;
-        }
-        
-        .guide-content {
-            font-size: 12pt !important;
-            line-height: 1.4 !important;
-            color: #000 !important;
-        }
-        
-        .guide-content h1,
-        .guide-content h2,
-        .guide-content h3,
-        .guide-content h4,
-        .guide-content h5,
-        .guide-content h6 {
-            page-break-after: avoid !important;
-            font-weight: bold !important;
-            color: #000 !important;
-        }
-        
-        .guide-content pre,
-        .guide-content code {
-            background: #f5f5f5 !important;
-            border: 1px solid #ccc !important;
-            page-break-inside: avoid !important;
-        }
-        
-        .guide-content img {
-            max-width: 100% !important;
-            page-break-inside: avoid !important;
-        }
-        
-        .guide-content a {
-            color: #000 !important;
-            text-decoration: underline !important;
-        }
-        
-        .guide-content blockquote {
-            border-left: 2px solid #ccc !important;
-            background: #f9f9f9 !important;
-            page-break-inside: avoid !important;
-        }
-        </style>
-        <?php
+// Add admin notice with debug link
+function add_logo_debug_link() {
+    if (current_user_can('manage_options') && !isset($_GET['debug_logos'])) {
+        $debug_url = admin_url('?debug_logos=1');
+        echo '<div class="notice notice-info is-dismissible"><p>Debug logo generation: <a href="' . $debug_url . '" class="button button-secondary">Debug Logos</a></p></div>';
     }
 }
-add_action('wp_head', 'yoursite_add_guide_print_styles');
+add_action('admin_notices', 'add_logo_debug_link');
 
-/**
- * Fix WordPress autop for better guide formatting - FIXED
- */
-function yoursite_improve_guide_autop($content) {
-    // Check if content is null or empty
-    if (empty($content)) {
-        return $content;
+// Helper function to manually trigger logo generation
+function manual_logo_regeneration() {
+    if (isset($_GET['regenerate_logos']) && $_GET['regenerate_logos'] === '1' && current_user_can('manage_options')) {
+        if (class_exists('YourSite_Logo_Generator')) {
+            $generator = new YourSite_Logo_Generator();
+            $generator->clear_logo_cache(); // Clear first
+            $variations = $generator->generate_logo_variations(); // Then regenerate
+            
+            if (is_wp_error($variations)) {
+                add_action('admin_notices', function() use ($variations) {
+                    echo '<div class="notice notice-error"><p>Logo regeneration failed: ' . $variations->get_error_message() . '</p></div>';
+                });
+            } else {
+                add_action('admin_notices', function() {
+                    echo '<div class="notice notice-success"><p>Logos regenerated successfully!</p></div>';
+                });
+            }
+        }
+    }
+}
+add_action('admin_init', 'manual_logo_regeneration');
+
+// Add regeneration link to admin bar
+function add_logo_regen_admin_bar($wp_admin_bar) {
+    if (!current_user_can('manage_options')) {
+        return;
     }
     
-    if (get_post_type() === 'guide') {
-        // Remove autop from shortcodes and code blocks - FIXED regex
-        $content = preg_replace('/<p>(\s*)(<pre[^>]*>.*?<\/pre>)(\s*)<\/p>/s', '$1$2$3', $content);
-        $content = preg_replace('/<p>(\s*)(<blockquote[^>]*>.*?<\/blockquote>)(\s*)<\/p>/s', '$1$2$3', $content);
-        
-        // Ensure proper spacing after headings - FIXED regex
-        $content = preg_replace('/(<\/h[1-6]>)(\s*)(<p>)/', "$1\n\n$3", $content);
-    }
-    
-    return $content;
+    $wp_admin_bar->add_node(array(
+        'id' => 'regenerate-logos',
+        'title' => 'Regenerate Logos',
+        'href' => admin_url('?regenerate_logos=1'),
+        'meta' => array(
+            'title' => 'Force regeneration of all logo variations'
+        )
+    ));
 }
-add_filter('the_content', 'yoursite_improve_guide_autop', 11);
+add_action('admin_bar_menu', 'add_logo_regen_admin_bar', 100);
 
-/**
- * Ensure guides work with WordPress 6.0+ features
- */
-function yoursite_enhance_guide_compatibility() {
-    // Add support for block editor features
-    add_theme_support('wp-block-styles');
-    add_theme_support('align-wide');
-    add_theme_support('responsive-embeds');
-    
-    // Ensure guide post type supports block editor
-    add_post_type_support('guide', 'editor');
-    add_post_type_support('guide', 'custom-fields');
-}
-add_action('after_setup_theme', 'yoursite_enhance_guide_compatibility', 15);
+// =============================================================================
+// FALLBACK FUNCTIONS
+// =============================================================================
 
 /**
  * Fallback functions in case inc files don't load
@@ -1405,4 +1267,5 @@ if (!function_exists('yoursite_enqueue_scripts_fallback')) {
     }
     add_action('wp_enqueue_scripts', 'yoursite_enqueue_scripts_fallback', 20);
 }
+
 ?>

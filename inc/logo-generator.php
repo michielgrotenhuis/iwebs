@@ -1,6 +1,6 @@
 <?php
 /**
- * Dynamic Logo Generator for Press Kit
+ * Dynamic Logo Generator for Press Kit - FIXED VERSION
  * Generates different logo formats and variations automatically
  */
 
@@ -129,7 +129,7 @@ class YourSite_Logo_Generator {
     }
     
     /**
-     * Create white logo for dark backgrounds
+     * FIXED: Create white logo for dark backgrounds
      */
     private function create_white_logo($logo) {
         if ($logo['mime_type'] === 'image/svg+xml') {
@@ -147,7 +147,6 @@ class YourSite_Logo_Generator {
         $image = $this->load_image($logo['path']);
         if (!$image) return false;
         
-        // Create white version
         $width = imagesx($image);
         $height = imagesy($image);
         $white_image = imagecreatetruecolor($width, $height);
@@ -160,14 +159,32 @@ class YourSite_Logo_Generator {
         $transparent = imagecolorallocatealpha($white_image, 0, 0, 0, 127);
         imagefill($white_image, 0, 0, $transparent);
         
-        // Convert to white silhouette
+        // Convert to white preserving shape and transparency
         for ($x = 0; $x < $width; $x++) {
             for ($y = 0; $y < $height; $y++) {
                 $rgba = imagecolorat($image, $x, $y);
                 $alpha = ($rgba & 0x7F000000) >> 24;
                 
-                if ($alpha < 127) { // Not fully transparent
-                    $white = imagecolorallocatealpha($white_image, 255, 255, 255, $alpha);
+                // Only process non-transparent pixels
+                if ($alpha < 127) {
+                    // Calculate the original pixel's brightness to preserve some detail
+                    $red = ($rgba >> 16) & 0xFF;
+                    $green = ($rgba >> 8) & 0xFF;
+                    $blue = $rgba & 0xFF;
+                    
+                    // Calculate perceived brightness
+                    $brightness = (0.299 * $red + 0.587 * $green + 0.114 * $blue) / 255;
+                    
+                    // For very dark pixels, make them white
+                    // For lighter pixels, use a lighter white with some transparency
+                    if ($brightness < 0.5) {
+                        $white = imagecolorallocatealpha($white_image, 255, 255, 255, $alpha);
+                    } else {
+                        // Slightly transparent white for lighter areas to preserve some detail
+                        $adjusted_alpha = min(127, $alpha + 20);
+                        $white = imagecolorallocatealpha($white_image, 255, 255, 255, $adjusted_alpha);
+                    }
+                    
                     imagesetpixel($white_image, $x, $y, $white);
                 }
             }
@@ -181,7 +198,7 @@ class YourSite_Logo_Generator {
     }
     
     /**
-     * Create black logo
+     * FIXED: Create black logo
      */
     private function create_black_logo($logo) {
         if ($logo['mime_type'] === 'image/svg+xml') {
@@ -199,7 +216,6 @@ class YourSite_Logo_Generator {
         $image = $this->load_image($logo['path']);
         if (!$image) return false;
         
-        // Create black version (similar to white but with black color)
         $width = imagesx($image);
         $height = imagesy($image);
         $black_image = imagecreatetruecolor($width, $height);
@@ -210,13 +226,32 @@ class YourSite_Logo_Generator {
         $transparent = imagecolorallocatealpha($black_image, 0, 0, 0, 127);
         imagefill($black_image, 0, 0, $transparent);
         
+        // Convert to black preserving shape and transparency
         for ($x = 0; $x < $width; $x++) {
             for ($y = 0; $y < $height; $y++) {
                 $rgba = imagecolorat($image, $x, $y);
                 $alpha = ($rgba & 0x7F000000) >> 24;
                 
+                // Only process non-transparent pixels
                 if ($alpha < 127) {
-                    $black = imagecolorallocatealpha($black_image, 0, 0, 0, $alpha);
+                    // Calculate the original pixel's brightness
+                    $red = ($rgba >> 16) & 0xFF;
+                    $green = ($rgba >> 8) & 0xFF;
+                    $blue = $rgba & 0xFF;
+                    
+                    // Calculate perceived brightness
+                    $brightness = (0.299 * $red + 0.587 * $green + 0.114 * $blue) / 255;
+                    
+                    // For light pixels, make them black
+                    // For darker pixels, use a darker black with some transparency
+                    if ($brightness > 0.5) {
+                        $black = imagecolorallocatealpha($black_image, 0, 0, 0, $alpha);
+                    } else {
+                        // Slightly transparent black for darker areas to preserve some detail
+                        $adjusted_alpha = min(127, $alpha + 20);
+                        $black = imagecolorallocatealpha($black_image, 0, 0, 0, $adjusted_alpha);
+                    }
+                    
                     imagesetpixel($black_image, $x, $y, $black);
                 }
             }
@@ -230,7 +265,7 @@ class YourSite_Logo_Generator {
     }
     
     /**
-     * Create grayscale logo
+     * FIXED: Create grayscale logo - Using proper imagefilter
      */
     private function create_grayscale_logo($logo) {
         if ($logo['mime_type'] === 'image/svg+xml') {
@@ -248,8 +283,34 @@ class YourSite_Logo_Generator {
         $image = $this->load_image($logo['path']);
         if (!$image) return false;
         
-        // Apply grayscale filter
-        imagefilter($image, IMG_FILTER_GRAYSCALE);
+        // Preserve transparency for PNG images
+        if ($logo['mime_type'] === 'image/png') {
+            imagealphablending($image, false);
+            imagesavealpha($image, true);
+        }
+        
+        // Apply grayscale filter - this should work properly
+        if (!imagefilter($image, IMG_FILTER_GRAYSCALE)) {
+            // Fallback: manual grayscale conversion if imagefilter fails
+            $width = imagesx($image);
+            $height = imagesy($image);
+            
+            for ($x = 0; $x < $width; $x++) {
+                for ($y = 0; $y < $height; $y++) {
+                    $rgba = imagecolorat($image, $x, $y);
+                    $alpha = ($rgba & 0x7F000000) >> 24;
+                    $red = ($rgba >> 16) & 0xFF;
+                    $green = ($rgba >> 8) & 0xFF;
+                    $blue = $rgba & 0xFF;
+                    
+                    // Convert to grayscale using luminance formula
+                    $gray = intval(0.299 * $red + 0.587 * $green + 0.114 * $blue);
+                    
+                    $gray_color = imagecolorallocatealpha($image, $gray, $gray, $gray, $alpha);
+                    imagesetpixel($image, $x, $y, $gray_color);
+                }
+            }
+        }
         
         $this->save_image($image, $output_path, 'png');
         imagedestroy($image);
@@ -289,7 +350,7 @@ class YourSite_Logo_Generator {
     }
     
     /**
-     * Process SVG logos for different variations
+     * IMPROVED: Process SVG logos for different variations with better color replacement
      */
     private function process_svg_logo($logo, $type) {
         $filename = $type . '-logo-' . $logo['id'] . '.svg';
@@ -304,17 +365,43 @@ class YourSite_Logo_Generator {
         
         switch ($type) {
             case 'white':
-                $svg_content = preg_replace('/fill="[^"]*"/', 'fill="white"', $svg_content);
-                $svg_content = preg_replace('/stroke="[^"]*"/', 'stroke="white"', $svg_content);
+                // Replace all fill colors with white (except transparent/none)
+                $svg_content = preg_replace('/fill="(?!none|transparent)[^"]*"/i', 'fill="white"', $svg_content);
+                $svg_content = preg_replace('/fill:\s*(?!none|transparent)[^;]+;/i', 'fill: white;', $svg_content);
+                // Also handle stroke colors
+                $svg_content = preg_replace('/stroke="(?!none|transparent)[^"]*"/i', 'stroke="white"', $svg_content);
+                $svg_content = preg_replace('/stroke:\s*(?!none|transparent)[^;]+;/i', 'stroke: white;', $svg_content);
                 break;
+                
             case 'black':
-                $svg_content = preg_replace('/fill="[^"]*"/', 'fill="black"', $svg_content);
-                $svg_content = preg_replace('/stroke="[^"]*"/', 'stroke="black"', $svg_content);
+                // Replace all fill colors with black (except transparent/none)
+                $svg_content = preg_replace('/fill="(?!none|transparent)[^"]*"/i', 'fill="black"', $svg_content);
+                $svg_content = preg_replace('/fill:\s*(?!none|transparent)[^;]+;/i', 'fill: black;', $svg_content);
+                // Also handle stroke colors
+                $svg_content = preg_replace('/stroke="(?!none|transparent)[^"]*"/i', 'stroke="black"', $svg_content);
+                $svg_content = preg_replace('/stroke:\s*(?!none|transparent)[^;]+;/i', 'stroke: black;', $svg_content);
                 break;
+                
             case 'grayscale':
-                // Add a grayscale filter to SVG
-                $filter = '<defs><filter id="grayscale"><feColorMatrix type="saturate" values="0"/></filter></defs>';
-                $svg_content = str_replace('<svg', $filter . '<svg style="filter: url(#grayscale)"', $svg_content);
+                // Add a more comprehensive grayscale filter to SVG
+                $filter = '<defs><filter id="grayscale" x="0%" y="0%" width="100%" height="100%">
+                    <feColorMatrix type="matrix" values="0.299 0.587 0.114 0 0
+                                                         0.299 0.587 0.114 0 0  
+                                                         0.299 0.587 0.114 0 0
+                                                         0     0     0     1 0"/>
+                </filter></defs>';
+                
+                // Insert the filter and apply it
+                if (preg_match('/<svg[^>]*>/', $svg_content, $matches)) {
+                    $svg_tag = $matches[0];
+                    // Add filter attribute to svg tag
+                    if (strpos($svg_tag, 'style=') !== false) {
+                        $svg_tag = preg_replace('/style="([^"]*)"/', 'style="$1; filter: url(#grayscale);"', $svg_tag);
+                    } else {
+                        $svg_tag = str_replace('>', ' style="filter: url(#grayscale);">', $svg_tag);
+                    }
+                    $svg_content = str_replace($matches[0], $filter . $svg_tag, $svg_content);
+                }
                 break;
         }
         
@@ -364,45 +451,87 @@ class YourSite_Logo_Generator {
     }
     
     /**
-     * Load image from file
+     * IMPROVED: Better image loading with proper transparency handling
      */
     private function load_image($path) {
         $image_info = getimagesize($path);
         if (!$image_info) return false;
         
+        $image = false;
+        
         switch ($image_info['mime']) {
             case 'image/jpeg':
-                return imagecreatefromjpeg($path);
+                $image = imagecreatefromjpeg($path);
+                break;
             case 'image/png':
-                return imagecreatefrompng($path);
+                $image = imagecreatefrompng($path);
+                // Preserve transparency
+                if ($image) {
+                    imagealphablending($image, false);
+                    imagesavealpha($image, true);
+                }
+                break;
             case 'image/gif':
-                return imagecreatefromgif($path);
+                $image = imagecreatefromgif($path);
+                // Handle transparency for GIF
+                if ($image) {
+                    $transparent_index = imagecolortransparent($image);
+                    if ($transparent_index >= 0) {
+                        imagecolortransparent($image, $transparent_index);
+                    }
+                }
+                break;
             case 'image/webp':
-                return imagecreatefromwebp($path);
-            default:
-                return false;
+                if (function_exists('imagecreatefromwebp')) {
+                    $image = imagecreatefromwebp($path);
+                    // Preserve transparency
+                    if ($image) {
+                        imagealphablending($image, false);
+                        imagesavealpha($image, true);
+                    }
+                }
+                break;
         }
+        
+        return $image;
     }
     
     /**
-     * Save image to file
+     * IMPROVED: Better image saving with proper transparency preservation
      */
     private function save_image($image, $path, $format = 'png', $quality = 100) {
         switch (strtolower($format)) {
             case 'jpeg':
             case 'jpg':
-                return imagejpeg($image, $path, $quality);
+                // For JPEG, we need to handle transparency by compositing onto white background
+                $width = imagesx($image);
+                $height = imagesy($image);
+                $jpeg_image = imagecreatetruecolor($width, $height);
+                $white = imagecolorallocate($jpeg_image, 255, 255, 255);
+                imagefill($jpeg_image, 0, 0, $white);
+                imagecopy($jpeg_image, $image, 0, 0, 0, 0, $width, $height);
+                $result = imagejpeg($jpeg_image, $path, $quality);
+                imagedestroy($jpeg_image);
+                return $result;
+                
             case 'png':
                 imagealphablending($image, false);
                 imagesavealpha($image, true);
-                return imagepng($image, $path, 9);
+                return imagepng($image, $path);
+                
             case 'gif':
                 return imagegif($image, $path);
+                
             case 'webp':
-                return imagewebp($image, $path, $quality);
-            default:
-                return false;
+                if (function_exists('imagewebp')) {
+                    imagealphablending($image, false);
+                    imagesavealpha($image, true);
+                    return imagewebp($image, $path, $quality);
+                }
+                break;
         }
+        
+        return false;
     }
     
     /**
@@ -647,6 +776,45 @@ For questions about logo usage, please contact: " . get_option('admin_email') . 
         );
         
         return isset($descriptions[$type]) ? $descriptions[$type] : '';
+    }
+    
+    /**
+     * DEBUGGING: Add a method to test image processing
+     */
+    public function debug_image_processing($logo_id) {
+        $logo = $this->get_site_logo();
+        if (!$logo) {
+            return 'No logo found';
+        }
+        
+        $debug_info = array();
+        $debug_info['original'] = array(
+            'path' => $logo['path'],
+            'url' => $logo['url'],
+            'mime_type' => $logo['mime_type'],
+            'exists' => file_exists($logo['path']),
+            'readable' => is_readable($logo['path']),
+            'size' => filesize($logo['path'])
+        );
+        
+        // Test image loading
+        $test_image = $this->load_image($logo['path']);
+        $debug_info['image_loading'] = array(
+            'loaded' => $test_image !== false,
+            'gd_enabled' => extension_loaded('gd'),
+            'gd_info' => function_exists('gd_info') ? gd_info() : 'gd_info not available'
+        );
+        
+        if ($test_image) {
+            $debug_info['image_properties'] = array(
+                'width' => imagesx($test_image),
+                'height' => imagesy($test_image),
+                'type' => 'resource'
+            );
+            imagedestroy($test_image);
+        }
+        
+        return $debug_info;
     }
 }
 

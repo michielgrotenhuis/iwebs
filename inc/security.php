@@ -190,7 +190,7 @@ function yoursite_add_csp_header() {
         $csp .= "font-src 'self' https://fonts.gstatic.com data:; ";
         $csp .= "img-src 'self' data: https: blob:; ";
         $csp .= "connect-src 'self' https:; ";
-        $csp .= "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; ";
+        $csp .= "frame-src 'self' blob: https://www.youtube.com https://www.youtube-nocookie.com; ";
         $csp .= "media-src 'self' https:; ";
         $csp .= "object-src 'none'; ";
         $csp .= "base-uri 'self'; ";
@@ -221,7 +221,7 @@ function yoursite_modify_csp_for_youtube($headers) {
             );
         } else {
             // Add frame-src
-            $csp .= " frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com;";
+            $csp .= " frame-src 'self' blob: https://www.youtube.com https://www.youtube-nocookie.com;";
         }
         
         // Add worker-src if not present
