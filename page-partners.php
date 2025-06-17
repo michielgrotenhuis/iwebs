@@ -1,7 +1,7 @@
 <?php
 /**
- * Template Name: Partners Page
- * Updated version with Customizer integration
+ * Template Name: Partners Page - FIXED VERSION
+ * Fixes: Dark mode hero text contrast, FAQ section, missing customizer content
  */
 
 get_header(); 
@@ -47,14 +47,14 @@ if (isset($_POST['submit_partner_application'])) {
 ?>
 
 <?php if (get_theme_mod('partners_hero_enable', true)) : ?>
-<!-- Hero Section -->
-<section class="bg-gradient-to-br from-green-50 to-blue-100 py-20">
+<!-- Hero Section - FIXED WITH PROPER DARK MODE CONTRAST -->
+<section class="partners-hero-section bg-gradient-to-br from-green-50 to-blue-100 py-20">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-4xl lg:text-6xl font-bold text-gray-900 mb-6">
+            <h1 class="partners-hero-title text-4xl lg:text-6xl font-bold mb-6">
                 <?php echo esc_html(get_theme_mod('partners_hero_title', __('Become a Partner', 'yoursite'))); ?>
             </h1>
-            <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p class="partners-hero-subtitle text-xl mb-8 max-w-3xl mx-auto">
                 <?php echo esc_html(get_theme_mod('partners_hero_subtitle', __('Join our global network of resellers, agencies, and consultants. Help businesses grow while building your own success with our comprehensive partner program.', 'yoursite'))); ?>
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
@@ -70,6 +70,14 @@ if (isset($_POST['submit_partner_application'])) {
                     <div class="text-2xl font-bold text-purple-600"><?php echo esc_html(get_theme_mod('partners_hero_stat3_number', __('24/7', 'yoursite'))); ?></div>
                     <div class="text-sm text-gray-600"><?php echo esc_html(get_theme_mod('partners_hero_stat3_label', __('Partner Support', 'yoursite'))); ?></div>
                 </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="#apply" class="btn-primary text-lg px-8 py-4 rounded-lg font-semibold hover-lift">
+                    <?php _e('Apply Now', 'yoursite'); ?>
+                </a>
+                <a href="#benefits" class="btn-secondary text-lg px-8 py-4 rounded-lg font-semibold hover-lift">
+                    <?php _e('Learn More', 'yoursite'); ?>
+                </a>
             </div>
         </div>
     </div>
@@ -92,11 +100,32 @@ if (isset($_POST['submit_partner_application'])) {
             
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <?php 
-                $icons = array('M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z', 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1', 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4');
+                $icons = array(
+                    'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z', 
+                    'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1', 
+                    'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 
+                    'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4'
+                );
                 $colors = array('blue', 'green', 'purple', 'orange');
+                $type_names = array('Reseller', 'Affiliate', 'Agency', 'Technology');
+                $type_descriptions = array(
+                    'Sell our solutions directly to your clients with full white-label support and competitive margins.',
+                    'Refer customers and earn commissions on every successful conversion through your unique link.',
+                    'Integrate our platform into your agency services with dedicated support and resources.',
+                    'Build integrations and complementary solutions that extend our platform\'s capabilities.'
+                );
+                $type_features = array(
+                    array('Up to 40% commission', 'White-label options', 'Marketing materials', 'Training & certification'),
+                    array('25% recurring commission', 'Real-time tracking', 'Monthly payouts', 'Performance bonuses'),
+                    array('Custom pricing tiers', 'Dedicated account manager', 'API access & tools', 'Co-marketing opportunities'),
+                    array('Revenue sharing', 'Technical support', 'Joint go-to-market', 'Featured listings')
+                );
                 
                 for ($i = 1; $i <= 4; $i++) : 
                     if (get_theme_mod("partners_type_{$i}_enable", true)) :
+                        $title = get_theme_mod("partners_type_{$i}_title", $type_names[$i-1]);
+                        $description = get_theme_mod("partners_type_{$i}_description", $type_descriptions[$i-1]);
+                        $features = get_theme_mod("partners_type_{$i}_features", implode("\n", $type_features[$i-1]));
                 ?>
                     <div class="text-center p-6 rounded-xl border-2 border-gray-200 hover:border-<?php echo $colors[$i-1]; ?>-500 transition-all hover:shadow-lg">
                         <div class="w-16 h-16 bg-<?php echo $colors[$i-1]; ?>-100 rounded-xl flex items-center justify-center mx-auto mb-6">
@@ -105,14 +134,13 @@ if (isset($_POST['submit_partner_application'])) {
                             </svg>
                         </div>
                         <h3 class="text-xl font-semibold mb-3">
-                            <?php echo esc_html(get_theme_mod("partners_type_{$i}_title", '')); ?>
+                            <?php echo esc_html($title); ?>
                         </h3>
                         <p class="text-gray-600 mb-4">
-                            <?php echo esc_html(get_theme_mod("partners_type_{$i}_description", '')); ?>
+                            <?php echo esc_html($description); ?>
                         </p>
                         <ul class="text-sm text-gray-600 text-left space-y-1">
                             <?php 
-                            $features = get_theme_mod("partners_type_{$i}_features", '');
                             if ($features) {
                                 $feature_lines = explode("\n", $features);
                                 foreach ($feature_lines as $feature) {
@@ -136,7 +164,7 @@ if (isset($_POST['submit_partner_application'])) {
 
 <?php if (get_theme_mod('partners_benefits_enable', true)) : ?>
 <!-- Benefits Section -->
-<section class="py-20 bg-gray-50">
+<section class="py-20 bg-gray-50" id="benefits">
     <div class="container mx-auto px-4">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
@@ -159,9 +187,27 @@ if (isset($_POST['submit_partner_application'])) {
                     'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'
                 );
                 $benefit_colors = array('blue', 'green', 'purple', 'yellow', 'red', 'indigo');
+                $benefit_titles = array(
+                    'Competitive Commissions',
+                    'Training & Certification', 
+                    'Marketing Support',
+                    'Technical Resources',
+                    'Dedicated Support',
+                    'Performance Tracking'
+                );
+                $benefit_descriptions = array(
+                    'Earn up to 40% commission on all sales with transparent tracking and monthly payouts.',
+                    'Comprehensive onboarding program with ongoing training and official certification.',
+                    'Access to marketing materials, co-branded content, and campaign support.',
+                    'Developer tools, API documentation, and technical support for implementations.',
+                    'Personal account manager and priority support for you and your clients.',
+                    'Real-time dashboard to track sales, commissions, and customer metrics.'
+                );
                 
                 for ($i = 1; $i <= 6; $i++) : 
                     if (get_theme_mod("partners_benefit_{$i}_enable", true)) :
+                        $title = get_theme_mod("partners_benefit_{$i}_title", $benefit_titles[$i-1]);
+                        $description = get_theme_mod("partners_benefit_{$i}_description", $benefit_descriptions[$i-1]);
                 ?>
                     <div class="bg-white rounded-xl p-6 shadow-sm">
                         <div class="w-12 h-12 bg-<?php echo $benefit_colors[$i-1]; ?>-100 rounded-lg flex items-center justify-center mb-4">
@@ -170,10 +216,10 @@ if (isset($_POST['submit_partner_application'])) {
                             </svg>
                         </div>
                         <h3 class="text-lg font-semibold mb-3">
-                            <?php echo esc_html(get_theme_mod("partners_benefit_{$i}_title", '')); ?>
+                            <?php echo esc_html($title); ?>
                         </h3>
                         <p class="text-gray-600">
-                            <?php echo esc_html(get_theme_mod("partners_benefit_{$i}_description", '')); ?>
+                            <?php echo esc_html($description); ?>
                         </p>
                     </div>
                 <?php 
@@ -203,10 +249,24 @@ if (isset($_POST['submit_partner_application'])) {
             <div class="grid md:grid-cols-3 gap-8">
                 <?php 
                 $story_colors = array('blue', 'purple', 'green');
+                $story_companies = array('TechWave Solutions', 'Digital Apex', 'E-Commerce Experts');
+                $story_types = array('Reseller Partner', 'Agency Partner', 'Affiliate Partner');
+                $story_quotes = array(
+                    'Partnering with this platform increased our revenue by 300% in the first year. The support team is incredible and the commission structure is very competitive.',
+                    'The white-label solutions allow us to offer enterprise-grade integrations under our own brand. Our clients love the seamless experience.',
+                    'Started as an affiliate and now earning consistent monthly commissions. The tracking is transparent and payouts are always on time.'
+                );
+                $story_metrics = array('$2.5M+', '150+', '$50K+');
+                $story_metric_labels = array('Annual Revenue Generated', 'Successful Implementations', 'Monthly Commission');
                 
                 for ($i = 1; $i <= 3; $i++) : 
                     if (get_theme_mod("partners_story_{$i}_enable", true)) :
-                        $company = get_theme_mod("partners_story_{$i}_company", '');
+                        $company = get_theme_mod("partners_story_{$i}_company", $story_companies[$i-1]);
+                        $type = get_theme_mod("partners_story_{$i}_type", $story_types[$i-1]);
+                        $quote = get_theme_mod("partners_story_{$i}_quote", $story_quotes[$i-1]);
+                        $metric = get_theme_mod("partners_story_{$i}_metric", $story_metrics[$i-1]);
+                        $metric_label = get_theme_mod("partners_story_{$i}_metric_label", $story_metric_labels[$i-1]);
+                        
                         $initials = '';
                         if ($company) {
                             $words = explode(' ', $company);
@@ -218,26 +278,26 @@ if (isset($_POST['submit_partner_application'])) {
                 ?>
                     <div class="bg-gray-50 rounded-xl p-6">
                         <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 bg-<?php echo $story_colors[$i-1]; ?>-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                            <div class="w-12 h-12 bg-<?php echo $story_colors[$i-1]; ?>-600 rounded-full flex items-center justify-content text-white font-bold mr-4">
                                 <?php echo esc_html($initials); ?>
                             </div>
                             <div>
                                 <h4 class="font-semibold">
-                                    <?php echo esc_html(get_theme_mod("partners_story_{$i}_company", '')); ?>
+                                    <?php echo esc_html($company); ?>
                                 </h4>
                                 <p class="text-sm text-gray-600">
-                                    <?php echo esc_html(get_theme_mod("partners_story_{$i}_type", '')); ?>
+                                    <?php echo esc_html($type); ?>
                                 </p>
                             </div>
                         </div>
                         <p class="text-gray-600 mb-4">
-                            "<?php echo esc_html(get_theme_mod("partners_story_{$i}_quote", '')); ?>"
+                            "<?php echo esc_html($quote); ?>"
                         </p>
                         <div class="text-2xl font-bold text-green-600">
-                            <?php echo esc_html(get_theme_mod("partners_story_{$i}_metric", '')); ?>
+                            <?php echo esc_html($metric); ?>
                         </div>
                         <div class="text-sm text-gray-600">
-                            <?php echo esc_html(get_theme_mod("partners_story_{$i}_metric_label", '')); ?>
+                            <?php echo esc_html($metric_label); ?>
                         </div>
                     </div>
                 <?php 
@@ -391,7 +451,7 @@ if (isset($_POST['submit_partner_application'])) {
 <?php endif; ?>
 
 <?php if (get_theme_mod('partners_faq_enable', true)) : ?>
-<!-- FAQ Section -->
+<!-- FAQ Section - FIXED AND ADDED -->
 <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto">
@@ -405,19 +465,54 @@ if (isset($_POST['submit_partner_application'])) {
             </div>
             
             <div class="space-y-6">
-                <?php for ($i = 1; $i <= 5; $i++) : 
+                <?php 
+                // Default FAQ data in case customizer hasn't been set
+                $default_faqs = array(
+                    array(
+                        'question' => 'How long does the application process take?',
+                        'answer' => 'We typically review applications within 3-5 business days. If approved, you\'ll receive onboarding materials and access to our partner portal immediately.'
+                    ),
+                    array(
+                        'question' => 'What are the commission rates?',
+                        'answer' => 'Commission rates vary by partner type: Affiliates earn 25% recurring, Resellers up to 40%, and custom rates are available for Agencies and Technology partners.'
+                    ),
+                    array(
+                        'question' => 'Is there a minimum sales requirement?',
+                        'answer' => 'There\'s no minimum sales requirement to maintain your partner status. However, active partners who consistently drive sales receive additional benefits and higher commission tiers.'
+                    ),
+                    array(
+                        'question' => 'What marketing materials do you provide?',
+                        'answer' => 'We provide logos, brochures, case studies, demo videos, email templates, and co-branded materials. Custom materials can be created for qualified partners.'
+                    ),
+                    array(
+                        'question' => 'Can I offer white-label solutions?',
+                        'answer' => 'Yes! Reseller and Agency partners can access white-label options to offer our solutions under their own brand with full customization support.'
+                    )
+                );
+                
+                for ($i = 1; $i <= 5; $i++) : 
                     if (get_theme_mod("partners_faq_{$i}_enable", true)) :
-                        $question = get_theme_mod("partners_faq_{$i}_question", '');
-                        $answer = get_theme_mod("partners_faq_{$i}_answer", '');
+                        $question = get_theme_mod("partners_faq_{$i}_question", $default_faqs[$i-1]['question']);
+                        $answer = get_theme_mod("partners_faq_{$i}_answer", $default_faqs[$i-1]['answer']);
                         if ($question && $answer) :
                 ?>
-                    <div class="bg-gray-50 rounded-lg p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">
-                            <?php echo esc_html($question); ?>
-                        </h3>
-                        <p class="text-gray-600">
-                            <?php echo esc_html($answer); ?>
-                        </p>
+                    <div class="bg-gray-50 rounded-lg overflow-hidden">
+                        <button class="faq-toggle w-full text-left p-6 focus:outline-none focus:bg-gray-100 transition-colors" 
+                                onclick="toggleFAQ(<?php echo $i; ?>)">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-lg font-semibold text-gray-900 pr-8">
+                                    <?php echo esc_html($question); ?>
+                                </h3>
+                                <svg class="faq-icon w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </button>
+                        <div id="faq-answer-<?php echo $i; ?>" class="faq-answer hidden px-6 pb-6">
+                            <p class="text-gray-600 leading-relaxed">
+                                <?php echo esc_html($answer); ?>
+                            </p>
+                        </div>
                     </div>
                 <?php 
                         endif;
@@ -425,15 +520,184 @@ if (isset($_POST['submit_partner_application'])) {
                 endfor; 
                 ?>
             </div>
+            
+            <!-- Contact CTA -->
+            <div class="text-center mt-12 p-8 bg-blue-50 rounded-xl">
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Still have questions?</h3>
+                <p class="text-gray-600 mb-6">Our partner team is here to help you succeed. Get in touch for personalized support.</p>
+                <a href="/contact" class="btn-primary px-6 py-3 rounded-lg font-semibold">Contact Partner Team</a>
+            </div>
         </div>
     </div>
 </section>
 <?php endif; ?>
 
+<!-- Additional CSS for dark mode fixes and FAQ functionality -->
 <style>
-.bg-gradient-to-br {
-    background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+/* DARK MODE HERO SECTION FIXES */
+.partners-hero-section {
+    position: relative;
+}
+
+/* Light mode - default */
+.partners-hero-title {
+    color: #111827 !important;
+}
+
+.partners-hero-subtitle {
+    color: #4b5563 !important;
+}
+
+/* Dark mode fixes for hero section */
+body.dark-mode .partners-hero-section {
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%) !important;
+}
+
+body.dark-mode .partners-hero-title {
+    color: #f9fafb !important;
+}
+
+body.dark-mode .partners-hero-subtitle {
+    color: #e5e7eb !important;
+}
+
+/* Ensure stat cards remain readable in dark mode */
+body.dark-mode .partners-hero-section .bg-white\/80 {
+    background-color: rgba(31, 41, 55, 0.9) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+body.dark-mode .partners-hero-section .text-gray-600 {
+    color: #d1d5db !important;
+}
+
+/* FAQ Interactive Styles */
+.faq-toggle:hover {
+    background-color: #f3f4f6;
+}
+
+.faq-toggle.active .faq-icon {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    transition: all 0.3s ease;
+}
+
+.faq-answer.show {
+    display: block !important;
+}
+
+/* Dark mode FAQ styles */
+body.dark-mode .faq-toggle {
+    background-color: var(--bg-tertiary) !important;
+}
+
+body.dark-mode .faq-toggle:hover {
+    background-color: var(--bg-secondary) !important;
+}
+
+body.dark-mode .faq-toggle h3 {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .faq-answer p {
+    color: var(--text-secondary) !important;
+}
+
+/* Button fixes for dark mode */
+body.dark-mode .btn-secondary {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .btn-secondary:hover {
+    border-color: #667eea !important;
+    color: #667eea !important;
+}
+
+/* Partner type cards dark mode */
+body.dark-mode .partner-type-card {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+}
+
+body.dark-mode .partner-type-card h3 {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .partner-type-card p {
+    color: var(--text-secondary) !important;
 }
 </style>
+
+<!-- FAQ JavaScript -->
+<script>
+function toggleFAQ(index) {
+    const answer = document.getElementById('faq-answer-' + index);
+    const button = answer.previousElementSibling;
+    const icon = button.querySelector('.faq-icon');
+    
+    // Close all other FAQs
+    const allAnswers = document.querySelectorAll('.faq-answer');
+    const allButtons = document.querySelectorAll('.faq-toggle');
+    const allIcons = document.querySelectorAll('.faq-icon');
+    
+    allAnswers.forEach((item, i) => {
+        if (i !== index - 1) {
+            item.classList.add('hidden');
+            item.classList.remove('show');
+        }
+    });
+    
+    allButtons.forEach((item, i) => {
+        if (i !== index - 1) {
+            item.classList.remove('active');
+        }
+    });
+    
+    allIcons.forEach((item, i) => {
+        if (i !== index - 1) {
+            item.style.transform = 'rotate(0deg)';
+        }
+    });
+    
+    // Toggle current FAQ
+    if (answer.classList.contains('hidden')) {
+        answer.classList.remove('hidden');
+        answer.classList.add('show');
+        button.classList.add('active');
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        answer.classList.add('hidden');
+        answer.classList.remove('show');
+        button.classList.remove('active');
+        icon.style.transform = 'rotate(0deg)';
+    }
+}
+
+// Close FAQ when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.faq-toggle') && !event.target.closest('.faq-answer')) {
+        const allAnswers = document.querySelectorAll('.faq-answer');
+        const allButtons = document.querySelectorAll('.faq-toggle');
+        const allIcons = document.querySelectorAll('.faq-icon');
+        
+        allAnswers.forEach(item => {
+            item.classList.add('hidden');
+            item.classList.remove('show');
+        });
+        
+        allButtons.forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        allIcons.forEach(item => {
+            item.style.transform = 'rotate(0deg)';
+        });
+    }
+});
+</script>
 
 <?php get_footer(); ?>

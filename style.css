@@ -933,3 +933,766 @@ body.dark-mode .guide-content h6 {
         margin-top: 1.5rem !important;
     }
 }
+
+/* ==========================================================================
+   DARK MODE HEADER FIXES - Add this to your style.css
+   ========================================================================== */
+
+/* Dark Mode Header Background and Structure */
+body.dark-mode .site-header,
+body.dark-mode #masthead,
+body.dark-mode header.site-header {
+    background-color: #1f2937 !important;
+    border-bottom-color: #374151 !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Site Title (Logo Text) Dark Mode */
+body.dark-mode .site-title,
+body.dark-mode .site-title a,
+body.dark-mode .site-title a:hover,
+body.dark-mode .site-title a:visited,
+body.dark-mode .site-title a:focus {
+    color: #f9fafb !important;
+    text-decoration: none !important;
+}
+
+/* Site Description Dark Mode */
+body.dark-mode .site-description,
+body.dark-mode .site-tagline {
+    color: #d1d5db !important;
+}
+
+/* Primary Navigation Dark Mode */
+body.dark-mode .main-navigation,
+body.dark-mode #primary-menu,
+body.dark-mode .primary-navigation {
+    background-color: transparent !important;
+}
+
+body.dark-mode .main-navigation a,
+body.dark-mode #primary-menu a,
+body.dark-mode .primary-navigation a,
+body.dark-mode .site-header nav a,
+body.dark-mode .site-header .menu a {
+    color: #e5e7eb !important;
+    text-decoration: none !important;
+}
+
+body.dark-mode .main-navigation a:hover,
+body.dark-mode #primary-menu a:hover,
+body.dark-mode .primary-navigation a:hover,
+body.dark-mode .site-header nav a:hover,
+body.dark-mode .site-header .menu a:hover {
+    color: #667eea !important;
+    background-color: #374151 !important;
+}
+
+/* Mobile Navigation Dark Mode */
+body.dark-mode #mobile-navigation,
+body.dark-mode .mobile-menu {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+body.dark-mode .mobile-menu-list,
+body.dark-mode .mobile-navigation-menu {
+    background-color: #1f2937 !important;
+}
+
+body.dark-mode .mobile-menu-list a,
+body.dark-mode .mobile-navigation-menu a,
+body.dark-mode .mobile-menu a {
+    color: #e5e7eb !important;
+    border-bottom-color: #374151 !important;
+}
+
+body.dark-mode .mobile-menu-list a:hover,
+body.dark-mode .mobile-navigation-menu a:hover,
+body.dark-mode .mobile-menu a:hover {
+    color: #667eea !important;
+    background-color: #374151 !important;
+}
+
+/* Mobile Menu Toggle Button Dark Mode */
+body.dark-mode .mobile-menu-toggle,
+body.dark-mode .menu-toggle,
+body.dark-mode .hamburger-menu {
+    color: #e5e7eb !important;
+    border-color: #4b5563 !important;
+    background-color: transparent !important;
+}
+
+body.dark-mode .mobile-menu-toggle:hover,
+body.dark-mode .menu-toggle:hover,
+body.dark-mode .hamburger-menu:hover {
+    color: #f9fafb !important;
+    border-color: #6b7280 !important;
+    background-color: #374151 !important;
+}
+
+/* Login/CTA Buttons in Header Dark Mode */
+body.dark-mode .login-btn,
+body.dark-mode .header-cta-btn,
+body.dark-mode .site-header .btn-secondary {
+    color: #e5e7eb !important;
+    border-color: #4b5563 !important;
+    background-color: transparent !important;
+}
+
+body.dark-mode .login-btn:hover,
+body.dark-mode .header-cta-btn:hover,
+body.dark-mode .site-header .btn-secondary:hover {
+    color: #667eea !important;
+    border-color: #667eea !important;
+    background-color: rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Header CTA Widget Area Dark Mode */
+body.dark-mode .header-cta-widget,
+body.dark-mode .header-widgets {
+    color: #e5e7eb !important;
+}
+
+body.dark-mode .header-cta-widget a,
+body.dark-mode .header-widgets a {
+    color: #e5e7eb !important;
+}
+
+body.dark-mode .header-cta-widget a:hover,
+body.dark-mode .header-widgets a:hover {
+    color: #667eea !important;
+}
+
+/* Search Form in Header Dark Mode */
+body.dark-mode .site-header .search-form input,
+body.dark-mode .header-search input {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+    color: #f9fafb !important;
+}
+
+body.dark-mode .site-header .search-form input::placeholder,
+body.dark-mode .header-search input::placeholder {
+    color: #9ca3af !important;
+}
+
+body.dark-mode .site-header .search-form input:focus,
+body.dark-mode .header-search input:focus {
+    border-color: #667eea !important;
+    background-color: #4b5563 !important;
+}
+
+/* Dropdown Menus Dark Mode */
+body.dark-mode .sub-menu,
+body.dark-mode .dropdown-menu,
+body.dark-mode .main-navigation .sub-menu {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .sub-menu a,
+body.dark-mode .dropdown-menu a,
+body.dark-mode .main-navigation .sub-menu a {
+    color: #e5e7eb !important;
+    border-bottom-color: #374151 !important;
+}
+
+body.dark-mode .sub-menu a:hover,
+body.dark-mode .dropdown-menu a:hover,
+body.dark-mode .main-navigation .sub-menu a:hover {
+    color: #667eea !important;
+    background-color: #374151 !important;
+}
+
+/* Header Background Transparency with Scroll */
+body.dark-mode .site-header.scrolled,
+body.dark-mode #masthead.scrolled {
+    background-color: rgba(31, 41, 55, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Social Media Icons in Header Dark Mode */
+body.dark-mode .header-social-icons a,
+body.dark-mode .social-header a {
+    color: #9ca3af !important;
+}
+
+body.dark-mode .header-social-icons a:hover,
+body.dark-mode .social-header a:hover {
+    color: #667eea !important;
+}
+
+/* Header Utility Links Dark Mode */
+body.dark-mode .utility-nav a,
+body.dark-mode .header-utility a,
+body.dark-mode .top-bar a {
+    color: #9ca3af !important;
+}
+
+body.dark-mode .utility-nav a:hover,
+body.dark-mode .header-utility a:hover,
+body.dark-mode .top-bar a:hover {
+    color: #d1d5db !important;
+}
+
+/* Ensure all header text elements are covered */
+body.dark-mode .site-header,
+body.dark-mode .site-header *,
+body.dark-mode #masthead,
+body.dark-mode #masthead * {
+    color: #e5e7eb !important;
+}
+
+/* Override any remaining light text issues */
+body.dark-mode .site-branding *,
+body.dark-mode .site-navigation *,
+body.dark-mode .header-content * {
+    color: #e5e7eb !important;
+}
+
+/* Links should be clearly visible */
+body.dark-mode .site-header a {
+    color: #e5e7eb !important;
+}
+
+body.dark-mode .site-header a:hover {
+    color: #667eea !important;
+}
+
+/* Mobile specific dark mode fixes */
+@media (max-width: 1024px) {
+    body.dark-mode .mobile-header,
+    body.dark-mode .site-header {
+        background-color: #1f2937 !important;
+    }
+    
+    body.dark-mode .mobile-navigation-overlay {
+        background-color: rgba(0, 0, 0, 0.8) !important;
+    }
+}
+
+/* Tablet specific adjustments */
+@media (max-width: 768px) {
+    body.dark-mode .site-header .container {
+        background-color: transparent !important;
+    }
+    
+    body.dark-mode .mobile-menu-wrapper {
+        background-color: #1f2937 !important;
+        border-color: #374151 !important;
+    }
+}
+
+/* ==========================================================================
+   ADDITIONAL CONTRAST FIXES FOR READABILITY
+   ========================================================================== */
+
+/* Ensure maximum contrast for important elements */
+body.dark-mode .site-title a {
+    font-weight: 600 !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .main-navigation > ul > li > a {
+    font-weight: 500 !important;
+    color: #f3f4f6 !important;
+}
+
+/* High contrast mode for accessibility */
+@media (prefers-contrast: high) {
+    body.dark-mode .site-header {
+        background-color: #000000 !important;
+    }
+    
+    body.dark-mode .site-header *,
+    body.dark-mode .site-header a {
+        color: #ffffff !important;
+    }
+    
+    body.dark-mode .site-header a:hover {
+        color: #87ceeb !important;
+    }
+}
+
+/* ==========================================================================
+   DARK MODE GLOBAL FIXES - COMPREHENSIVE SOLUTION
+   ========================================================================== */
+
+/* Dark Mode CSS Variables */
+:root {
+    /* Light mode variables (existing) */
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --accent-color: #f093fb;
+    --text-color: #374151;
+    --text-light: #6b7280;
+    --background-color: #ffffff;
+    --border-color: #e5e7eb;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    
+    /* Light mode specific variables */
+    --text-primary: #111827;
+    --text-secondary: #374151;
+    --text-tertiary: #6b7280;
+    --text-quaternary: #9ca3af;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+    --card-bg: #ffffff;
+    --hero-text: #ffffff;
+}
+
+/* Dark mode variables */
+body.dark-mode {
+    --text-primary: #f9fafb;
+    --text-secondary: #e5e7eb;
+    --text-tertiary: #d1d5db;
+    --text-quaternary: #9ca3af;
+    --bg-primary: #111827;
+    --bg-secondary: #1f2937;
+    --bg-tertiary: #374151;
+    --card-bg: #1f2937;
+    --hero-text: #ffffff;
+    --border-color: #374151;
+    --background-color: #111827;
+}
+
+/* ==========================================================================
+   GLOBAL TEXT COLOR FIXES
+   ========================================================================== */
+
+/* Base text elements */
+body.dark-mode,
+body.dark-mode * {
+    color: var(--text-secondary) !important;
+}
+
+/* Primary headings - always high contrast */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode .text-4xl,
+body.dark-mode .text-5xl,
+body.dark-mode .text-6xl,
+body.dark-mode .text-3xl,
+body.dark-mode .text-2xl,
+body.dark-mode .text-xl,
+body.dark-mode .text-lg {
+    color: var(--text-primary) !important;
+}
+
+/* Specific heading classes */
+body.dark-mode .hero-gradient h1,
+body.dark-mode .hero-gradient h2,
+body.dark-mode .hero-gradient h3,
+body.dark-mode .hero-gradient h4,
+body.dark-mode .hero-gradient h5,
+body.dark-mode .hero-gradient h6 {
+    color: var(--hero-text) !important;
+}
+
+/* Text hierarchy */
+body.dark-mode .text-gray-900,
+body.dark-mode .font-bold,
+body.dark-mode .font-semibold {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .text-gray-600,
+body.dark-mode .text-gray-700,
+body.dark-mode p {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .text-gray-500,
+body.dark-mode .text-gray-400 {
+    color: var(--text-tertiary) !important;
+}
+
+body.dark-mode .text-gray-300 {
+    color: var(--text-quaternary) !important;
+}
+
+/* ==========================================================================
+   BACKGROUND FIXES
+   ========================================================================== */
+
+/* Primary backgrounds */
+body.dark-mode,
+body.dark-mode .bg-white {
+    background-color: var(--bg-primary) !important;
+}
+
+body.dark-mode .bg-gray-50 {
+    background-color: var(--bg-secondary) !important;
+}
+
+body.dark-mode .bg-gray-100 {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* Card backgrounds */
+body.dark-mode .bg-white,
+body.dark-mode .card,
+body.dark-mode .feature-card,
+body.dark-mode .pricing-card,
+body.dark-mode .webinar-card,
+body.dark-mode .template-card,
+body.dark-mode .templates-card {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* ==========================================================================
+   COMPONENT-SPECIFIC FIXES
+   ========================================================================== */
+
+/* Hero sections - keep original styling */
+body.dark-mode .hero-gradient,
+body.dark-mode .templates-cta-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+body.dark-mode .hero-gradient *,
+body.dark-mode .templates-cta-section * {
+    color: white !important;
+}
+
+/* Navigation */
+body.dark-mode .site-header {
+    background-color: var(--bg-primary) !important;
+    border-bottom-color: var(--border-color) !important;
+}
+
+body.dark-mode .site-header a {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .site-header a:hover {
+    color: var(--text-primary) !important;
+}
+
+/* Footer */
+body.dark-mode .site-footer {
+    background-color: var(--bg-primary) !important;
+    border-top: 1px solid var(--border-color) !important;
+}
+
+body.dark-mode .site-footer * {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .site-footer a {
+    color: var(--text-tertiary) !important;
+}
+
+body.dark-mode .site-footer a:hover {
+    color: var(--text-primary) !important;
+}
+
+/* ==========================================================================
+   PAGE-SPECIFIC FIXES
+   ========================================================================== */
+
+/* Press Kit Page */
+body.dark-mode .templates-hero-section {
+    background: linear-gradient(to bottom right, var(--bg-secondary), var(--bg-tertiary)) !important;
+}
+
+body.dark-mode .templates-hero-title {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .templates-hero-subtitle {
+    color: var(--text-secondary) !important;
+}
+
+/* Templates Page */
+body.dark-mode .templates-section-title {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .templates-section-subtitle {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .template-card-title,
+body.dark-mode .template-grid-title {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .template-card-description {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .templates-feature-title {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .templates-feature-description {
+    color: var(--text-secondary) !important;
+}
+
+/* Webinars Page */
+body.dark-mode .webinar-card {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+body.dark-mode .webinar-card h3 {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .webinar-card p {
+    color: var(--text-secondary) !important;
+}
+
+/* Single Post Page */
+body.dark-mode .single-post-page {
+    background-color: var(--bg-secondary) !important;
+}
+
+body.dark-mode .prose {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .prose h1,
+body.dark-mode .prose h2,
+body.dark-mode .prose h3,
+body.dark-mode .prose h4,
+body.dark-mode .prose h5,
+body.dark-mode .prose h6 {
+    color: var(--text-primary) !important;
+}
+
+/* Guide Content */
+body.dark-mode .guide-content {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .guide-content h1,
+body.dark-mode .guide-content h2,
+body.dark-mode .guide-content h3,
+body.dark-mode .guide-content h4,
+body.dark-mode .guide-content h5,
+body.dark-mode .guide-content h6 {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .guide-content p {
+    color: var(--text-secondary) !important;
+}
+
+/* ==========================================================================
+   FORM ELEMENTS
+   ========================================================================== */
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="email"],
+body.dark-mode input[type="url"],
+body.dark-mode input[type="password"],
+body.dark-mode input[type="search"],
+body.dark-mode input[type="number"],
+body.dark-mode input[type="tel"],
+body.dark-mode textarea,
+body.dark-mode select {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: var(--text-tertiary) !important;
+}
+
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+
+/* Filter buttons */
+body.dark-mode .template-filter-btn {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+body.dark-mode .template-filter-btn:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+body.dark-mode .template-filter-btn.active {
+    background-color: #8b5cf6 !important;
+    color: white !important;
+}
+
+body.dark-mode .webinar-filter {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+body.dark-mode .webinar-filter.active {
+    background-color: #1d4ed8 !important;
+    color: white !important;
+}
+
+/* ==========================================================================
+   UTILITY CLASSES
+   ========================================================================== */
+
+/* Border colors */
+body.dark-mode .border-gray-200,
+body.dark-mode .border-gray-300 {
+    border-color: var(--border-color) !important;
+}
+
+/* Text colors for specific elements */
+body.dark-mode .breadcrumbs-footer {
+    color: var(--text-quaternary) !important;
+}
+
+body.dark-mode .breadcrumbs-footer a {
+    color: var(--text-tertiary) !important;
+}
+
+body.dark-mode .breadcrumbs-footer a:hover {
+    color: var(--text-secondary) !important;
+}
+
+/* FAQ sections */
+body.dark-mode .faq-toggle {
+    color: var(--text-primary) !important;
+    background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .faq-toggle:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+body.dark-mode .faq-content {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* ==========================================================================
+   GRADIENTS AND SPECIAL BACKGROUNDS
+   ========================================================================== */
+
+/* Maintain gradient backgrounds but ensure text contrast */
+body.dark-mode .bg-gradient-to-br,
+body.dark-mode .bg-gradient-to-r {
+    /* Keep gradients as is - they usually have good contrast */
+}
+
+/* Special background sections */
+body.dark-mode .bg-blue-50,
+body.dark-mode .bg-green-50,
+body.dark-mode .bg-purple-50,
+body.dark-mode .bg-yellow-50,
+body.dark-mode .bg-red-50,
+body.dark-mode .bg-orange-50 {
+    background-color: var(--bg-secondary) !important;
+}
+
+/* Icon background adjustments */
+body.dark-mode .bg-blue-100,
+body.dark-mode .bg-green-100,
+body.dark-mode .bg-purple-100,
+body.dark-mode .bg-yellow-100,
+body.dark-mode .bg-red-100,
+body.dark-mode .bg-orange-100 {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE CONSIDERATIONS
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    body.dark-mode .hero-gradient h1 {
+        color: white !important;
+    }
+    
+    body.dark-mode .templates-hero-title {
+        color: var(--text-primary) !important;
+    }
+}
+
+/* ==========================================================================
+   ENSURE HIGH CONTRAST FOR ACCESSIBILITY
+   ========================================================================== */
+
+/* Force high contrast for critical elements */
+body.dark-mode .btn-primary {
+    color: white !important;
+}
+
+body.dark-mode .btn-secondary {
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* Links */
+body.dark-mode a {
+    color: #60a5fa !important; /* Light blue for better contrast */
+}
+
+body.dark-mode a:hover {
+    color: #93c5fd !important;
+}
+
+/* ==========================================================================
+   OVERRIDE ANY REMAINING LIGHT TEXT ON LIGHT BACKGROUNDS
+   ========================================================================== */
+
+/* Catch-all for any missed elements */
+body.dark-mode .text-white {
+    color: white !important; /* Keep white text where intended */
+}
+
+/* But fix cases where white text appears on light backgrounds */
+body.dark-mode .bg-white .text-white,
+body.dark-mode .bg-gray-50 .text-white,
+body.dark-mode .bg-gray-100 .text-white {
+    color: var(--text-primary) !important;
+}
+
+/* Fix any remaining gray text on gray backgrounds */
+body.dark-mode .bg-gray-900 .text-gray-900,
+body.dark-mode .bg-gray-800 .text-gray-800 {
+    color: var(--text-primary) !important;
+}
+
+/* ==========================================================================
+   LOGO AND IMAGES
+   ========================================================================== */
+
+/* Adjust logo for dark mode if needed */
+body.dark-mode .custom-logo {
+    /* Add filter if logo needs adjustment in dark mode */
+    /* filter: brightness(1.1) contrast(0.9); */
+}
+
+/* Image adjustments for dark mode */
+body.dark-mode img {
+    /* Slightly reduce brightness of images in dark mode */
+    filter: brightness(0.9) contrast(1.1);
+}
+
+body.dark-mode .hero-gradient img,
+body.dark-mode .templates-cta-section img {
+    /* Reset filter for images in gradient sections */
+    filter: none;
+}
