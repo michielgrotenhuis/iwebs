@@ -26,6 +26,7 @@ function yoursite_load_customizer_modules() {
         'customizer-partners.php',      // Partners page
         'customizer-webinars.php',      // Webinars page
         'customizer-press-kit.php',     // Press Kit page
+        'customizer-difm.php',          // DIFM Page
     );
     
     foreach ($customizer_modules as $module) {

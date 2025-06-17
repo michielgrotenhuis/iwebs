@@ -1706,7 +1706,6 @@ function yoursite_add_press_kit_customizer($wp_customize) {
     }
 }
 add_action('customize_register', 'yoursite_add_press_kit_customizer');
-
 // =============================================================================
 // FALLBACK FUNCTIONS
 // =============================================================================
@@ -1729,5 +1728,8 @@ if (!function_exists('yoursite_enqueue_scripts_fallback')) {
     }
     add_action('wp_enqueue_scripts', 'yoursite_enqueue_scripts_fallback', 20);
 }
+// OR
+require_once get_template_directory() . '/inc/difm-admin.php';
+require_once get_template_directory() . '/inc/difm-post-type.php';
 
 ?>

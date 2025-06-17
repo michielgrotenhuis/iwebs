@@ -213,7 +213,7 @@
     #primary-menu a {
         color: #374151 !important;
         font-weight: 500 !important;
-        font-size: 0.875rem !important;
+        font-size: 1rem !important;
         padding: 6px 12px !important;
         border-radius: 4px !important;
         transition: all 0.2s ease !important;
