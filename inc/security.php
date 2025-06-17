@@ -1,6 +1,6 @@
 <?php
 /**
- * Security enhancements
+ * Security enhancements - FIXED FOR YOUTUBE AND CSP ISSUES
  */
 
 if (!defined('ABSPATH')) {
@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Add security headers
+ * Add security headers - UPDATED FOR YOUTUBE COMPATIBILITY
  */
 function yoursite_security_headers() {
     // Check if headers have already been sent
@@ -84,6 +84,116 @@ function yoursite_disable_embeds() {
     remove_action('wp_head', 'wp_oembed_add_host_js');
 }
 add_action('init', 'yoursite_disable_embeds', 9999);
+
+/**
+ * FIXED: Add Content Security Policy - YOUTUBE COMPATIBLE VERSION
+ */
+function yoursite_add_csp_header() {
+    // Skip CSP in admin area to avoid conflicts
+    if (is_admin()) {
+        return;
+    }
+    
+    // Check if headers have already been sent
+    if (!headers_sent()) {
+        $csp = "default-src 'self' https: data: blob:; ";
+        $csp .= "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.youtube.com https://s.ytimg.com https://www.youtube-nocookie.com; ";
+        $csp .= "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; ";
+        $csp .= "font-src 'self' https://fonts.gstatic.com data:; ";
+        $csp .= "img-src 'self' data: https: blob: https://i.ytimg.com https://s.ytimg.com; ";
+        $csp .= "connect-src 'self' https:; ";
+        $csp .= "frame-src 'self' blob: https://www.youtube.com https://www.youtube-nocookie.com; ";
+        $csp .= "media-src 'self' https: blob:; ";
+        $csp .= "object-src 'none'; ";
+        $csp .= "base-uri 'self'; ";
+        $csp .= "form-action 'self'; ";
+        $csp .= "frame-ancestors 'self'; ";
+        $csp .= "worker-src 'self' blob:;";
+        
+        header("Content-Security-Policy: " . $csp);
+    }
+}
+add_action('send_headers', 'yoursite_add_csp_header', 5);
+
+/**
+ * FIXED: Add relaxed CSP for video embeds
+ */
+function yoursite_add_video_csp_meta() {
+    // Only add on pages that might have video embeds
+    if (!is_admin()) {
+        ?>
+        <meta http-equiv="Content-Security-Policy" content="frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com blob:; worker-src 'self' blob:;">
+        <?php
+    }
+}
+add_action('wp_head', 'yoursite_add_video_csp_meta', 1);
+
+/**
+ * FIXED: Allow YouTube iframes and blob URLs in content
+ */
+function yoursite_allow_youtube_iframe($allowedtags) {
+    // Add iframe to allowed tags with YouTube-specific attributes
+    $allowedtags['iframe'] = array(
+        'src' => true,
+        'width' => true,
+        'height' => true,
+        'frameborder' => true,
+        'allowfullscreen' => true,
+        'allow' => true,
+        'class' => true,
+        'id' => true,
+        'style' => true,
+        'title' => true,
+        'loading' => true,
+    );
+    
+    return $allowedtags;
+}
+add_filter('wp_kses_allowed_html', 'yoursite_allow_youtube_iframe', 10, 1);
+
+/**
+ * FIXED: Add .htaccess rules for YouTube compatibility
+ */
+function yoursite_add_htaccess_security() {
+    $htaccess_file = ABSPATH . '.htaccess';
+    $security_rules = "
+# Security Headers for YouTube and Video Embeds
+<IfModule mod_headers.c>
+    # Basic security headers
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options SAMEORIGIN
+    Header always set X-XSS-Protection \"1; mode=block\"
+    Header always set Referrer-Policy \"strict-origin-when-cross-origin\"
+    
+    # YouTube-compatible CSP
+    Header always set Content-Security-Policy \"default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.youtube.com https://s.ytimg.com https://www.youtube-nocookie.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob: https://i.ytimg.com https://s.ytimg.com; frame-src 'self' blob: https://www.youtube.com https://www.youtube-nocookie.com; worker-src 'self' blob:; media-src 'self' https: blob:; object-src 'none';\"
+</IfModule>
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect wp-config.php
+<Files wp-config.php>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Protect .htaccess
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
+";
+    
+    if (file_exists($htaccess_file) && is_writable($htaccess_file)) {
+        $htaccess_content = file_get_contents($htaccess_file);
+        if (strpos($htaccess_content, 'Security Headers for YouTube') === false) {
+            $htaccess_content = $security_rules . "\n" . $htaccess_content;
+            file_put_contents($htaccess_file, $htaccess_content);
+        }
+    }
+}
+add_action('admin_init', 'yoursite_add_htaccess_security');
 
 /**
  * Limit login attempts (basic implementation)
@@ -177,77 +287,6 @@ function yoursite_secure_wp_config() {
     }
 }
 add_action('init', 'yoursite_secure_wp_config');
-
-/**
- * Add Content Security Policy - UPDATED FOR YOUTUBE
- */
-function yoursite_add_csp_header() {
-    // Check if headers have already been sent
-    if (!headers_sent() && !is_admin()) {
-        $csp = "default-src 'self' https:; ";
-        $csp .= "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.youtube.com https://s.ytimg.com; ";
-        $csp .= "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; ";
-        $csp .= "font-src 'self' https://fonts.gstatic.com data:; ";
-        $csp .= "img-src 'self' data: https: blob:; ";
-        $csp .= "connect-src 'self' https:; ";
-        $csp .= "frame-src 'self' blob: https://www.youtube.com https://www.youtube-nocookie.com; ";
-        $csp .= "media-src 'self' https:; ";
-        $csp .= "object-src 'none'; ";
-        $csp .= "base-uri 'self'; ";
-        $csp .= "form-action 'self'; ";
-        $csp .= "frame-ancestors 'self'; ";
-        $csp .= "worker-src 'self' blob:;";
-        
-        header("Content-Security-Policy: " . $csp);
-    }
-}
-add_action('send_headers', 'yoursite_add_csp_header', 20);
-
-/**
- * Alternative method using WordPress filters for CSP (if headers already sent)
- */
-function yoursite_modify_csp_for_youtube($headers) {
-    // Modify CSP to allow YouTube
-    if (isset($headers['Content-Security-Policy'])) {
-        $csp = $headers['Content-Security-Policy'];
-        
-        // Add YouTube to frame-src if not already present
-        if (strpos($csp, 'frame-src') !== false) {
-            // Update existing frame-src
-            $csp = preg_replace(
-                "/frame-src([^;]*);/", 
-                "frame-src$1 https://www.youtube.com https://www.youtube-nocookie.com;", 
-                $csp
-            );
-        } else {
-            // Add frame-src
-            $csp .= " frame-src 'self' blob: https://www.youtube.com https://www.youtube-nocookie.com;";
-        }
-        
-        // Add worker-src if not present
-        if (strpos($csp, 'worker-src') === false) {
-            $csp .= " worker-src 'self' blob:;";
-        }
-        
-        $headers['Content-Security-Policy'] = $csp;
-    }
-    
-    return $headers;
-}
-add_filter('wp_headers', 'yoursite_modify_csp_for_youtube', 25);
-
-/**
- * Add meta tag CSP as fallback for YouTube embeds
- */
-function yoursite_add_csp_meta_tag() {
-    // Only add on front-end pages where we might have YouTube embeds
-    if (!is_admin()) {
-        ?>
-        <meta http-equiv="Content-Security-Policy" content="frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com;">
-        <?php
-    }
-}
-add_action('wp_head', 'yoursite_add_csp_meta_tag', 1);
 
 /**
  * Sanitize file uploads
@@ -378,70 +417,42 @@ function yoursite_log_successful_login($user_login, $user) {
 add_action('wp_login', 'yoursite_log_successful_login', 10, 2);
 
 /**
- * Disable directory browsing
+ * FIXED: Remove overly restrictive CSP that breaks functionality
  */
-function yoursite_disable_directory_browsing() {
-    $htaccess_file = ABSPATH . '.htaccess';
-    $directive = 'Options -Indexes';
-    
-    if (file_exists($htaccess_file) && is_writable($htaccess_file)) {
-        $htaccess_content = file_get_contents($htaccess_file);
-        if (strpos($htaccess_content, $directive) === false) {
-            $htaccess_content = $directive . "\n" . $htaccess_content;
-            file_put_contents($htaccess_file, $htaccess_content);
+function yoursite_remove_conflicting_headers() {
+    // Remove any conflicting CSP headers that might be too restrictive
+    if (!is_admin()) {
+        remove_action('send_headers', 'wp_headers_security', 20);
+    }
+}
+add_action('init', 'yoursite_remove_conflicting_headers', 1);
+
+/**
+ * DEBUGGING: Add function to test YouTube embed compatibility
+ */
+function yoursite_test_youtube_compatibility() {
+    if (current_user_can('manage_options') && isset($_GET['test_youtube']) && $_GET['test_youtube'] === '1') {
+        echo '<div style="background: white; padding: 20px; margin: 20px; border: 1px solid #ccc;">';
+        echo '<h2>YouTube Compatibility Test</h2>';
+        
+        // Test iframe embed
+        echo '<h3>Test YouTube Embed:</h3>';
+        echo '<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        
+        echo '<h3>Current CSP Headers:</h3>';
+        $headers = headers_list();
+        foreach ($headers as $header) {
+            if (stripos($header, 'content-security-policy') !== false) {
+                echo '<pre>' . esc_html($header) . '</pre>';
+            }
         }
+        
+        echo '<h3>Server Info:</h3>';
+        echo '<p>Admin: ' . (is_admin() ? 'Yes' : 'No') . '</p>';
+        echo '<p>Headers sent: ' . (headers_sent() ? 'Yes' : 'No') . '</p>';
+        
+        echo '</div>';
     }
 }
-add_action('admin_init', 'yoursite_disable_directory_browsing');
-
-/**
- * Allow YouTube iframes in content
- */
-function yoursite_allow_youtube_iframe($allowedtags) {
-    // Add iframe to allowed tags
-    $allowedtags['iframe'] = array(
-        'src' => true,
-        'width' => true,
-        'height' => true,
-        'frameborder' => true,
-        'allowfullscreen' => true,
-        'allow' => true,
-        'class' => true,
-        'id' => true,
-    );
-    
-    return $allowedtags;
-}
-add_filter('wp_kses_allowed_html', 'yoursite_allow_youtube_iframe', 10, 1);
-
-/**
- * Remove CSP restrictions for admin area
- */
-function yoursite_remove_admin_csp() {
-    if (is_admin()) {
-        remove_action('send_headers', 'yoursite_add_csp_header', 20);
-    }
-}
-add_action('init', 'yoursite_remove_admin_csp');
-
-/**
- * Add .htaccess rules for additional security
- */
-function yoursite_add_htaccess_security() {
-    $htaccess_file = ABSPATH . '.htaccess';
-    $security_rules = "
-# Security Headers for YouTube
-<IfModule mod_headers.c>
-    Header set Content-Security-Policy \"frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com;\"
-</IfModule>
-";
-    
-    if (file_exists($htaccess_file) && is_writable($htaccess_file)) {
-        $htaccess_content = file_get_contents($htaccess_file);
-        if (strpos($htaccess_content, 'Security Headers for YouTube') === false) {
-            $htaccess_content .= "\n" . $security_rules;
-            file_put_contents($htaccess_file, $htaccess_content);
-        }
-    }
-}
-add_action('admin_init', 'yoursite_add_htaccess_security');
+add_action('wp_head', 'yoursite_test_youtube_compatibility');
+?>

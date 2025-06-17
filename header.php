@@ -14,8 +14,8 @@
     <a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e('Skip to content', 'yoursite'); ?></a>
 
     <header id="masthead" class="site-header bg-white shadow-sm border-b border-gray-200" style="margin-top: <?php echo is_admin_bar_showing() ? '32px' : '0'; ?>;">
-        <div class="container mx-auto px-4 py-2">
-            <div class="flex items-center justify-between py-6 h-20">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-4">
                 
                 <!-- Logo -->
                 <div class="site-branding flex items-center">
@@ -35,7 +35,7 @@
                         </div>
                     <?php else : ?>
                         <div class="site-title-wrapper">
-                            <h1 class="site-title text-2xl font-bold text-gray-900 no-hover-effect">
+                            <h1 class="site-title text-xl font-bold text-gray-900 no-hover-effect">
                                 <a href="<?php echo esc_url(home_url('/')); ?>" rel="home" class="text-gray-900 hover:text-gray-900 no-underline">
                                     <?php bloginfo('name'); ?>
                                 </a>
@@ -44,7 +44,7 @@
                             $description = get_bloginfo('description', 'display');
                             if ($description || is_customize_preview()) :
                             ?>
-                                <p class="site-description text-sm text-gray-600 mt-1"><?php echo $description; ?></p>
+                                <p class="site-description text-xs text-gray-600 mt-0.5"><?php echo $description; ?></p>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
@@ -56,7 +56,7 @@
                     wp_nav_menu(array(
                         'theme_location' => 'primary',
                         'menu_id'        => 'primary-menu',
-                        'menu_class'     => 'flex items-center space-x-8',
+                        'menu_class'     => 'flex items-center space-x-6',
                         'container'      => false,
                         'fallback_cb'    => 'yoursite_fallback_menu',
                     ));
@@ -64,7 +64,7 @@
                 </nav>
 
                 <!-- Header Actions (CTA Buttons + Theme Toggle) -->
-                <div class="header-actions hidden lg:flex items-center space-x-4">
+                <div class="header-actions hidden lg:flex items-center space-x-3">
                     <!-- Theme Toggle -->
                     <?php if (get_theme_mod('show_theme_toggle', true)) : ?>
                         <div class="theme-toggle-wrapper">
@@ -74,8 +74,8 @@
                     
                     <!-- Login Button -->
                     <a href="<?php echo esc_url(get_theme_mod('header_login_url', '/login')); ?>" 
-                       class="login-btn flex items-center px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="login-btn flex items-center px-3 py-1.5 text-sm text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium">
+                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                         <?php echo esc_html(get_theme_mod('header_login_text', 'Login')); ?>
@@ -83,8 +83,8 @@
                     
                     <!-- CTA Button -->
                     <a href="<?php echo esc_url(get_theme_mod('header_cta_url', '/signup')); ?>" 
-                       class="cta-btn bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="cta-btn bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-1.5 rounded-md text-sm font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 flex items-center">
+                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
                         <?php echo esc_html(get_theme_mod('header_cta_text', 'Start Free Trial')); ?>
@@ -92,7 +92,7 @@
                 </div>
 
                 <!-- Mobile Menu Button -->
-                <button class="mobile-menu-toggle lg:hidden flex items-center px-3 py-2 border border-gray-300 rounded text-gray-500 hover:text-gray-600 hover:border-gray-400">
+                <button class="mobile-menu-toggle lg:hidden flex items-center justify-center w-9 h-9 border border-gray-300 rounded-md text-gray-600 hover:text-gray-800 hover:border-gray-400 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -113,7 +113,7 @@
                 
                 <!-- Mobile Actions -->
                 <div class="mobile-actions mt-4 pt-4 border-t border-gray-200 space-y-3">
-                    <!-- Mobile Theme Toggle - FIXED -->
+                    <!-- Mobile Theme Toggle -->
                     <?php if (get_theme_mod('show_theme_toggle', true)) : ?>
                         <div class="mobile-theme-toggle-row">
                             <span class="mobile-theme-label"><?php esc_html_e('Dark Mode', 'yoursite'); ?></span>
@@ -124,7 +124,7 @@
                     
                     <!-- Mobile CTA Buttons -->
                     <a href="<?php echo esc_url(get_theme_mod('header_login_url', '/login')); ?>" 
-                       class="mobile-login-btn flex items-center justify-center w-full px-4 py-3 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium">
+                       class="mobile-login-btn flex items-center justify-center w-full px-4 py-2.5 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200 font-medium">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
@@ -132,7 +132,7 @@
                     </a>
                     
                     <a href="<?php echo esc_url(get_theme_mod('header_cta_url', '/signup')); ?>" 
-                       class="mobile-cta-btn bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-md flex items-center justify-center w-full">
+                       class="mobile-cta-btn bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2.5 rounded-md text-sm font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-sm flex items-center justify-center w-full">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
@@ -144,14 +144,15 @@
     </header>
 
     <style>
-    /* Header Specific Styles */
+    /* Header Specific Styles - Improved and Cleaner */
     .site-header {
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.98);
         backdrop-filter: blur(10px);
-        position: relative; /* Ensure not sticky */
+        position: relative;
+        min-height: 64px;
     }
     
-    /* Logo - No hover effect */
+    /* Logo Styles */
     .site-title a,
     .site-title a:hover,
     .site-title a:visited,
@@ -164,10 +165,10 @@
         color: inherit !important;
     }
     
-    /* Custom Logo Styles - Inline for immediate effect */
+    /* Custom Logo Styles */
     .custom-logo-link {
         display: inline-block !important;
-        max-width: 200px !important;
+        max-width: 160px !important;
         width: auto !important;
         height: auto !important;
     }
@@ -176,7 +177,7 @@
         max-width: 100% !important;
         width: auto !important;
         height: auto !important;
-        max-height: 60px !important;
+        max-height: 40px !important;
         object-fit: contain !important;
         display: block !important;
         transition: opacity 0.3s ease !important;
@@ -188,16 +189,6 @@
 
     /* Mobile responsive logo */
     @media (max-width: 768px) {
-        .custom-logo-link {
-            max-width: 150px !important;
-        }
-        
-        .custom-logo {
-            max-height: 40px !important;
-        }
-    }
-
-    @media (max-width: 480px) {
         .custom-logo-link {
             max-width: 120px !important;
         }
@@ -222,8 +213,9 @@
     #primary-menu a {
         color: #374151 !important;
         font-weight: 500 !important;
-        padding: 8px 16px !important;
-        border-radius: 6px !important;
+        font-size: 0.875rem !important;
+        padding: 6px 12px !important;
+        border-radius: 4px !important;
         transition: all 0.2s ease !important;
         text-decoration: none !important;
         display: block !important;
@@ -250,12 +242,13 @@
     .mobile-menu-list a {
         color: #374151 !important;
         font-weight: 500 !important;
-        padding: 12px 16px !important;
-        border-radius: 6px !important;
+        font-size: 0.875rem !important;
+        padding: 10px 12px !important;
+        border-radius: 4px !important;
         transition: all 0.2s ease !important;
         text-decoration: none !important;
         display: block !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 2px !important;
     }
     
     .mobile-menu-list a:hover {
@@ -296,14 +289,32 @@
         }
     }
     
-    /* Better CTA Button Hover */
+    /* Better CTA Button Styling */
+    .cta-btn {
+        font-size: 0.875rem !important;
+        padding: 0.375rem 1rem !important;
+        border-radius: 0.375rem !important;
+        line-height: 1.5 !important;
+    }
+    
     .cta-btn:hover {
         transform: translateY(-1px) !important;
     }
     
-    /* Mobile Menu Toggle Button - Ensure it's hidden on desktop */
+    /* Login Button Styling */
+    .login-btn {
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Mobile Menu Toggle Button */
     .mobile-menu-toggle {
         display: none;
+        width: 36px !important;
+        height: 36px !important;
+        padding: 0 !important;
+        border-radius: 0.375rem !important;
+        transition: all 0.2s ease !important;
     }
     
     @media (max-width: 1023px) {
@@ -318,16 +329,19 @@
         }
     }
     
-    /* Mobile Menu Toggle */
     .mobile-menu-toggle:focus {
         outline: 2px solid #667eea;
         outline-offset: 2px;
     }
     
+    .mobile-menu-toggle:active {
+        transform: scale(0.95);
+    }
+    
     /* Header Actions Spacing */
     .header-actions {
         align-items: center;
-        gap: 1rem;
+        gap: 0.75rem;
     }
     
     .theme-toggle-wrapper {
@@ -335,19 +349,59 @@
         align-items: center;
     }
     
+    /* Theme Toggle Size Adjustment */
+    .theme-toggle {
+        width: 52px !important;
+        height: 28px !important;
+        padding: 3px !important;
+    }
+    
+    .theme-toggle-slider {
+        width: 18px !important;
+        height: 18px !important;
+        top: 3px !important;
+        left: 3px !important;
+    }
+    
+    .theme-toggle-slider svg {
+        width: 10px !important;
+        height: 10px !important;
+    }
+    
+    body.dark-mode .theme-toggle-slider {
+        transform: translateX(24px) !important;
+    }
+    
     /* Mobile Actions Styling */
     .mobile-actions {
         background-color: rgba(249, 250, 251, 0.5);
-        border-radius: 8px;
-        padding: 1rem;
-        margin-top: 1rem;
+        border-radius: 6px;
+        padding: 0.75rem;
+        margin-top: 0.75rem;
+    }
+    
+    .mobile-theme-toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 0;
+    }
+    
+    .mobile-theme-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+    }
+    
+    body.dark-mode .mobile-theme-label {
+        color: var(--text-secondary);
     }
     
     /* Site branding flex adjustments */
     .site-branding {
         display: flex !important;
         align-items: center !important;
-        gap: 12px !important;
+        gap: 10px !important;
     }
 
     .site-logo {
@@ -357,22 +411,74 @@
     .site-title-wrapper {
         min-width: 0 !important;
     }
-
+    
     /* Ensure proper header height and alignment */
-    .site-header .container .flex {
-        align-items: center !important;
-        min-height: 80px !important;
+    .site-header > .container > .flex {
+        min-height: 64px !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+    
+    /* Smooth transitions */
+    * {
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    /* Dark mode support */
+    body.dark-mode .site-header {
+        background: rgba(17, 24, 39, 0.98) !important;
+        border-color: var(--border-primary) !important;
+    }
+    
+    body.dark-mode .mobile-menu-toggle {
+        border-color: var(--border-secondary) !important;
+        color: var(--text-secondary) !important;
+    }
+    
+    body.dark-mode .mobile-menu-toggle:hover {
+        color: var(--text-primary) !important;
+        border-color: var(--border-primary) !important;
+        background-color: rgba(55, 65, 81, 0.5) !important;
+    }
+    
+    body.dark-mode .login-btn {
+        color: var(--text-secondary) !important;
+    }
+    
+    body.dark-mode .login-btn:hover {
+        color: #667eea !important;
+    }
+    
+    body.dark-mode #primary-menu a,
+    body.dark-mode .mobile-menu-list a {
+        color: var(--text-secondary) !important;
+    }
+    
+    body.dark-mode #primary-menu a:hover,
+    body.dark-mode .mobile-menu-list a:hover {
+        color: #667eea !important;
+        background-color: var(--bg-tertiary) !important;
+    }
+    
+    body.dark-mode #mobile-navigation {
+        background-color: var(--bg-primary) !important;
+        border-color: var(--border-primary) !important;
+    }
+    
+    body.dark-mode .mobile-actions {
+        background-color: rgba(55, 65, 81, 0.5);
     }
     </style>
 
     <script>
-    // Mobile Menu Toggle
+    // Mobile Menu Toggle - Improved
     document.addEventListener('DOMContentLoaded', function() {
         const mobileToggle = document.querySelector('.mobile-menu-toggle');
         const mobileNav = document.querySelector('#mobile-navigation');
         
         if (mobileToggle && mobileNav) {
-            mobileToggle.addEventListener('click', function() {
+            mobileToggle.addEventListener('click', function(e) {
+                e.preventDefault();
                 mobileNav.classList.toggle('hidden');
                 
                 // Update button icon
@@ -381,6 +487,21 @@
                     icon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
                 } else {
                     icon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                }
+                
+                // Add animation
+                mobileToggle.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    mobileToggle.style.transform = 'scale(1)';
+                }, 100);
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!mobileToggle.contains(e.target) && !mobileNav.contains(e.target) && !mobileNav.classList.contains('hidden')) {
+                    mobileNav.classList.add('hidden');
+                    const icon = mobileToggle.querySelector('svg path');
+                    icon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
                 }
             });
         }
