@@ -365,16 +365,44 @@ get_header();
 .share-button:hover {
     transform: translateY(-1px);
 }
+
+/* Dark mode styles */
+body.dark-mode .single-post-page {
+    background-color: var(--bg-secondary);
+}
+
+body.dark-mode .prose {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .prose h1,
+body.dark-mode .prose h2,
+body.dark-mode .prose h3,
+body.dark-mode .prose h4,
+body.dark-mode .prose h5,
+body.dark-mode .prose h6 {
+    color: var(--text-primary);
+}
+
+body.dark-mode .prose a {
+    color: #60a5fa;
+}
+
+body.dark-mode .prose a:hover {
+    color: #93c5fd;
+}
+
+body.dark-mode .prose blockquote {
+    color: var(--text-tertiary);
+    border-left-color: #60a5fa;
+}
+
+body.dark-mode .prose code {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
 </style>
 
 <?php
 get_footer();
-
-// Helper function for reading time
-function reading_time() {
-    $content = get_post_field('post_content', get_the_ID());
-    $word_count = str_word_count(strip_tags($content));
-    $reading_time = ceil($word_count / 200); // Average reading speed: 200 words per minute
-    return $reading_time;
-}
 ?>

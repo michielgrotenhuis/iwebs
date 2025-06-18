@@ -1,10 +1,45 @@
 <?php
 /**
- * Helper functions - FIXED VERSION
+ * Helper functions - FIXED VERSION with reading_time() function
  */
 
 if (!defined('ABSPATH')) {
     exit;
+}
+
+/**
+ * Simple reading_time() function that page-blog.php expects
+ */
+function reading_time($post_id = null) {
+    return yoursite_get_reading_time($post_id);
+}
+
+/**
+ * FIXED: Helper function for reading time calculation
+ */
+function yoursite_get_reading_time($post_id = null) {
+    if (!$post_id) {
+        $post_id = get_the_ID();
+    }
+    
+    // Get both regular content and markdown content
+    $content = get_post_field('post_content', $post_id);
+    $markdown_content = get_post_meta($post_id, '_markdown_content', true);
+    
+    // Use markdown content if available, otherwise use regular content
+    $text_to_analyze = !empty($markdown_content) ? $markdown_content : $content;
+    
+    // Check if reading time is manually set
+    $manual_reading_time = get_post_meta($post_id, '_reading_time', true);
+    if (!empty($manual_reading_time) && is_numeric($manual_reading_time)) {
+        return intval($manual_reading_time);
+    }
+    
+    // Calculate reading time automatically
+    $word_count = str_word_count(strip_tags($text_to_analyze ?: ''));
+    $reading_time = ceil($word_count / 200); // Average reading speed: 200 words per minute
+    
+    return max(1, $reading_time); // Minimum 1 minute
 }
 
 /**
@@ -131,34 +166,6 @@ function yoursite_format_guide_content($content) {
     );
     
     return $content;
-}
-
-/**
- * Helper function for reading time calculation - FIXED
- */
-function yoursite_get_reading_time($post_id = null) {
-    if (!$post_id) {
-        $post_id = get_the_ID();
-    }
-    
-    // Get both regular content and markdown content
-    $content = get_post_field('post_content', $post_id);
-    $markdown_content = get_post_meta($post_id, '_markdown_content', true);
-    
-    // Use markdown content if available, otherwise use regular content
-    $text_to_analyze = !empty($markdown_content) ? $markdown_content : $content;
-    
-    // Check if reading time is manually set
-    $manual_reading_time = get_post_meta($post_id, '_reading_time', true);
-    if (!empty($manual_reading_time) && is_numeric($manual_reading_time)) {
-        return intval($manual_reading_time);
-    }
-    
-    // Calculate reading time automatically
-    $word_count = str_word_count(strip_tags($text_to_analyze ?: ''));
-    $reading_time = ceil($word_count / 200); // Average reading speed: 200 words per minute
-    
-    return max(1, $reading_time); // Minimum 1 minute
 }
 
 /**
