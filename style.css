@@ -1,6 +1,6 @@
 /*
 Theme Name: YourSite.biz - SaaS Store Builder
-Description: A modern WordPress theme for SaaS eCommerce platform businesses, inspired by Shopify's clean and conversion-focused design. Features include drag & drop customization, pricing tables, testimonials, and complete eCommerce integration.
+Description: A modern WordPress theme for SaaS eCommerce platform businesses, clean and conversion-focused design. Features include drag & drop customization, pricing tables, testimonials, and complete eCommerce integration.
 Version: 1.0.0
 Author: YourSite.biz
 Author URI: https://yoursite.biz
@@ -1765,3 +1765,513 @@ body.dark-mode .templates-cta-section img {
     color: #ffffff !important;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
+
+/* ==========================================================================
+   MOBILE RESPONSIVE FIXES FOR HOMEPAGE - ADD TO STYLE.CSS
+   ========================================================================== */
+
+/* ==========================================================================
+   IMPROVED MOBILE RESPONSIVE GRID SYSTEM
+   ========================================================================== */
+
+/* Benefits Section - Mobile First Approach */
+.benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Mobile: single column */
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 768px) {
+    .benefits-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2.5rem;
+        padding: 0 2rem;
+    }
+}
+
+/* Desktop: 4 columns */
+@media (min-width: 1024px) {
+    .benefits-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        padding: 0;
+    }
+}
+
+/* Features Section - Responsive Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Mobile: single column */
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 768px) {
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2.5rem;
+        padding: 0 2rem;
+    }
+}
+
+/* Desktop: 3 columns */
+@media (min-width: 1024px) {
+    .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        padding: 0;
+    }
+}
+
+/* Pricing Section - Mobile Responsive */
+.pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Mobile: single column */
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+/* Tablet: 2 columns for pricing */
+@media (min-width: 768px) {
+    .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        padding: 0 1rem;
+    }
+}
+
+/* Desktop: 3 columns for pricing */
+@media (min-width: 1024px) {
+    .pricing-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        padding: 0;
+    }
+    
+    /* If 4 pricing plans */
+    .pricing-grid.four-plans {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ==========================================================================
+   FEATURE CARDS - IMPROVED MOBILE RESPONSIVE
+   ========================================================================== */
+
+.feature-card {
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 2rem !important;
+    text-align: center !important;
+    transition: all 0.3s ease !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+}
+
+.feature-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Mobile specific adjustments for feature cards */
+@media (max-width: 767px) {
+    .feature-card {
+        padding: 1.5rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.25rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .feature-card p {
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    .feature-card .w-16.h-16 {
+        width: 3rem !important;
+        height: 3rem !important;
+        margin: 0 auto 1rem !important;
+    }
+}
+
+/* ==========================================================================
+   PRICING CARDS - MOBILE OPTIMIZED
+   ========================================================================== */
+
+.pricing-card {
+    background: white !important;
+    border: 2px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 2rem !important;
+    position: relative !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transition: all 0.3s ease !important;
+}
+
+.pricing-card.featured {
+    border-color: #667eea !important;
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15) !important;
+    transform: scale(1.02) !important;
+}
+
+/* Mobile specific pricing card adjustments */
+@media (max-width: 767px) {
+    .pricing-card {
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .pricing-card.featured {
+        transform: none !important; /* Remove scale on mobile */
+        margin-top: 0 !important;
+    }
+    
+    .pricing-card h3 {
+        font-size: 1.5rem !important;
+    }
+    
+    .pricing-card .text-4xl,
+    .pricing-card .text-5xl {
+        font-size: 2.5rem !important;
+    }
+    
+    .pricing-card .btn-primary,
+    .pricing-card .btn-secondary {
+        padding: 1rem 1.5rem !important;
+        font-size: 1rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Featured badge adjustment for mobile */
+    .pricing-card .absolute.-top-4 {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin-bottom: 1rem !important;
+        display: block !important;
+    }
+}
+
+/* ==========================================================================
+   HERO SECTION - ENHANCED MOBILE RESPONSIVE + BACKGROUND IMAGE SUPPORT
+   ========================================================================== */
+
+.hero-gradient {
+    position: relative !important;
+    overflow: hidden !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    padding: 4rem 0 !important;
+}
+
+/* Hero with background image support */
+.hero-gradient.has-background-image {
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Optional overlay for better text readability over background images */
+.hero-gradient.has-background-image::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.4) !important; /* Dark overlay */
+    z-index: 1 !important;
+}
+
+.hero-gradient.has-background-image .container {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Mobile hero adjustments */
+@media (max-width: 767px) {
+    .hero-gradient {
+        padding: 3rem 0 !important;
+        text-align: center !important;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 2rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .hero-gradient p {
+        font-size: 1.1rem !important;
+        line-height: 1.5 !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    .hero-gradient .flex {
+        flex-direction: column !important;
+        gap: 1rem !important;
+        align-items: stretch !important;
+    }
+    
+    .hero-gradient .btn-primary,
+    .hero-gradient .btn-secondary {
+        width: 100% !important;
+        max-width: 280px !important;
+        margin: 0 auto !important;
+        padding: 1rem 2rem !important;
+        font-size: 1.1rem !important;
+    }
+    
+    /* Hero dashboard preview mobile adjustments */
+    .hero-gradient .mt-16 {
+        margin-top: 2rem !important;
+    }
+    
+    .hero-gradient .bg-white {
+        padding: 1.5rem !important;
+        margin: 0 1rem !important;
+        transform: rotate(0deg) !important; /* Remove rotation on mobile */
+    }
+}
+
+/* Tablet hero adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .hero-gradient {
+        padding: 5rem 0 !important;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 3rem !important;
+    }
+    
+    .hero-gradient p {
+        font-size: 1.25rem !important;
+    }
+}
+
+/* ==========================================================================
+   SOCIAL PROOF SECTION - MOBILE RESPONSIVE
+   ========================================================================== */
+
+.social-proof-logos {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 2rem !important;
+}
+
+@media (max-width: 767px) {
+    .social-proof-logos {
+        gap: 1.5rem !important;
+        padding: 0 1rem !important;
+    }
+    
+    .social-proof-logos .w-24 {
+        width: 4rem !important;
+        height: 2.5rem !important;
+        flex: 0 0 calc(50% - 0.75rem) !important; /* 2 logos per row on mobile */
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .social-proof-logos .w-24 {
+        flex: 0 0 calc(33.333% - 1rem) !important; /* 3 logos per row on tablet */
+    }
+}
+
+/* ==========================================================================
+   TESTIMONIALS - MOBILE RESPONSIVE
+   ========================================================================== */
+
+.testimonials-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+    padding: 0 1rem !important;
+}
+
+@media (min-width: 768px) {
+    .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        padding: 0 2rem !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .testimonials-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        padding: 0 !important;
+    }
+}
+
+/* ==========================================================================
+   CONTAINER AND SPACING ADJUSTMENTS
+   ========================================================================== */
+
+/* Container responsive padding */
+.container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+@media (min-width: 768px) {
+    .container {
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+/* Section spacing adjustments */
+@media (max-width: 767px) {
+    .py-20 {
+        padding-top: 3rem !important;
+        padding-bottom: 3rem !important;
+    }
+    
+    .py-16 {
+        padding-top: 2.5rem !important;
+        padding-bottom: 2.5rem !important;
+    }
+    
+    .mb-16 {
+        margin-bottom: 2rem !important;
+    }
+    
+    .mb-8 {
+        margin-bottom: 1.5rem !important;
+    }
+}
+
+/* ==========================================================================
+   TAILWIND GRID OVERRIDES FOR BETTER MOBILE SUPPORT
+   ========================================================================== */
+
+/* Override Tailwind's default grid classes for better mobile experience */
+@media (max-width: 767px) {
+    .grid.md\\:grid-cols-2,
+    .grid.lg\\:grid-cols-3,
+    .grid.lg\\:grid-cols-4 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .grid.lg\\:grid-cols-3,
+    .grid.lg\\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* ==========================================================================
+   DARK MODE MOBILE ADJUSTMENTS
+   ========================================================================== */
+
+body.dark-mode .feature-card,
+body.dark-mode .pricing-card {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+body.dark-mode .hero-gradient.has-background-image::before {
+    background: rgba(0, 0, 0, 0.6) !important; /* Darker overlay for dark mode */
+}
+
+/* ==========================================================================
+   UTILITY CLASSES FOR MOBILE OPTIMIZATION
+   ========================================================================== */
+
+.mobile-stack {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+}
+
+@media (min-width: 768px) {
+    .mobile-stack {
+        flex-direction: row !important;
+        gap: 2rem !important;
+    }
+}
+
+.mobile-center {
+    text-align: center !important;
+}
+
+@media (min-width: 768px) {
+    .mobile-center {
+        text-align: left !important;
+    }
+}
+
+.mobile-full-width {
+    width: 100% !important;
+}
+
+@media (min-width: 768px) {
+    .mobile-full-width {
+        width: auto !important;
+    }
+}
+
+/* ==========================================================================
+   PERFORMANCE OPTIMIZATIONS FOR MOBILE
+   ========================================================================== */
+
+/* Reduce animations on mobile for better performance */
+@media (max-width: 767px) {
+    .feature-card:hover,
+    .pricing-card:hover {
+        transform: none !important;
+    }
+    
+    .hover-lift:hover {
+        transform: none !important;
+    }
+}
+
+/* Optimize touch targets for mobile */
+@media (max-width: 767px) {
+    .btn-primary,
+    .btn-secondary {
+        min-height: 44px !important; /* Apple's recommended touch target size */
+        min-width: 44px !important;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS VARIABLES (for reference)
+   ========================================================================== */
+
+/*
+Mobile: 320px - 767px
+Tablet: 768px - 1023px  
+Desktop: 1024px and up
+Large Desktop: 1200px and up
+
+Common breakpoints:
+- 480px: Small mobile landscape
+- 768px: Tablet portrait
+- 1024px: Tablet landscape / Small desktop
+- 1200px: Desktop
+- 1400px: Large desktop
+*/

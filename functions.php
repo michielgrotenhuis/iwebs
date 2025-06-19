@@ -1,7 +1,11 @@
 <?php
 /**
- * YourSite.biz Theme Functions - MINIMAL WORKING VERSION
+ * YourSite.biz Theme Functions - CLEAN VERSION WITH FIXED HERO SYSTEM
  */
+// Temporary error reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // Prevent direct access
 if (!defined('ABSPATH')) {
@@ -116,6 +120,12 @@ function yoursite_dark_mode_fixes() {
         body.dark-mode .bg-gradient-to-br *,
         body.dark-mode .bg-gradient-to-r * {
             color: white !important;
+        }
+        
+        /* Ensure final CTA (footer banner) maintains its gradient */
+        body.dark-mode .final-cta-section,
+        body.dark-mode section.hero-gradient:last-of-type {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
         }
         
         body.dark-mode .feature-card,
@@ -395,6 +405,181 @@ function yoursite_press_kit_customizer($wp_customize) {
 add_action('customize_register', 'yoursite_press_kit_customizer');
 
 // =============================================================================
+// HERO BACKGROUND SYSTEM - SINGLE CLEAN IMPLEMENTATION
+// =============================================================================
+
+/**
+ * Hero Background Image System - Main Customizer Function
+ */
+function yoursite_hero_background_customizer($wp_customize) {
+    
+    // Add section if it doesn't exist
+    if (!$wp_customize->get_section('homepage_editor')) {
+        $wp_customize->add_section('homepage_editor', array(
+            'title' => __('Homepage', 'yoursite'),
+            'priority' => 30,
+        ));
+    }
+    
+    // Hero Background Type
+    $wp_customize->add_setting('hero_background_type', array(
+        'default' => 'gradient',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('hero_background_type', array(
+        'label' => __('Hero Background Type', 'yoursite'),
+        'section' => 'homepage_editor',
+        'type' => 'select',
+        'choices' => array(
+            'gradient' => __('Gradient Background', 'yoursite'),
+            'image' => __('Image Background', 'yoursite'),
+            'image_with_gradient' => __('Image with Gradient Overlay', 'yoursite'),
+        ),
+        'priority' => 13,
+    ));
+    
+    // Hero Background Image
+    $wp_customize->add_setting('hero_background_image', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_background_image', array(
+        'label' => __('Hero Background Image', 'yoursite'),
+        'section' => 'homepage_editor',
+        'description' => __('Upload an image to use as hero background', 'yoursite'),
+        'priority' => 14,
+    )));
+    
+    // Gradient Primary Color
+    $wp_customize->add_setting('hero_gradient_primary', array(
+        'default' => '#667eea',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'hero_gradient_primary', array(
+        'label' => __('Gradient Primary Color', 'yoursite'),
+        'section' => 'homepage_editor',
+        'priority' => 15,
+    )));
+    
+    // Gradient Secondary Color
+    $wp_customize->add_setting('hero_gradient_secondary', array(
+        'default' => '#764ba2',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'hero_gradient_secondary', array(
+        'label' => __('Gradient Secondary Color', 'yoursite'),
+        'section' => 'homepage_editor',
+        'priority' => 16,
+    )));
+    
+    // Overlay Opacity
+    $wp_customize->add_setting('hero_overlay_opacity', array(
+        'default' => 40,
+        'sanitize_callback' => 'absint',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('hero_overlay_opacity', array(
+        'label' => __('Background Overlay Opacity (%)', 'yoursite'),
+        'section' => 'homepage_editor',
+        'type' => 'range',
+        'input_attrs' => array(
+            'min' => 0,
+            'max' => 80,
+            'step' => 5,
+        ),
+        'priority' => 17,
+    ));
+}
+add_action('customize_register', 'yoursite_hero_background_customizer');
+
+/**
+ * Helper function for hex to rgba conversion
+ */
+function yoursite_hero_hex_to_rgba($hex, $alpha = 1) {
+    $hex = str_replace('#', '', $hex);
+    
+    if (strlen($hex) == 3) {
+        $hex = str_repeat(substr($hex, 0, 1), 2) . str_repeat(substr($hex, 1, 1), 2) . str_repeat(substr($hex, 2, 1), 2);
+    }
+    
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+    
+    return 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $alpha . ')';
+}
+
+/**
+ * Output the dynamic hero CSS - MAIN HERO ONLY
+ */
+function yoursite_hero_background_css() {
+    if (!is_front_page() && !is_home()) {
+        return;
+    }
+    
+    $background_type = get_theme_mod('hero_background_type', 'gradient');
+    $background_image = get_theme_mod('hero_background_image', '');
+    $gradient_primary = get_theme_mod('hero_gradient_primary', '#667eea');
+    $gradient_secondary = get_theme_mod('hero_gradient_secondary', '#764ba2');
+    $overlay_opacity = get_theme_mod('hero_overlay_opacity', 40);
+    
+    $css = '';
+    switch ($background_type) {
+        case 'gradient':
+            $css = 'background: linear-gradient(135deg, ' . esc_attr($gradient_primary) . ' 0%, ' . esc_attr($gradient_secondary) . ' 100%) !important;';
+            break;
+            
+        case 'image':
+            if ($background_image) {
+                $css = 'background: url("' . esc_url($background_image) . '") !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important;';
+            }
+            break;
+            
+        case 'image_with_gradient':
+            if ($background_image) {
+                $primary_rgba = yoursite_hero_hex_to_rgba($gradient_primary, 0.8);
+                $secondary_rgba = yoursite_hero_hex_to_rgba($gradient_secondary, 0.8);
+                $css = 'background: linear-gradient(135deg, ' . $primary_rgba . ' 0%, ' . $secondary_rgba . ' 100%), url("' . esc_url($background_image) . '") !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important;';
+            }
+            break;
+    }
+    
+    echo '<style id="hero-background-dynamic">' . "\n";
+    
+    // Target only the FIRST hero section (main hero), not the final CTA
+    echo '.hero-gradient:first-of-type, section.hero-gradient:first-of-type {' . "\n";
+    echo '    position: relative !important;' . "\n";
+    echo '    min-height: 600px !important;' . "\n";
+    echo '    display: flex !important;' . "\n";
+    echo '    align-items: center !important;' . "\n";
+    echo '    color: white !important;' . "\n";
+    echo '    ' . $css . "\n";
+    echo '}' . "\n";
+    
+    // Ensure the final CTA keeps its default gradient
+    echo 'section.hero-gradient:last-of-type, .final-cta-section {' . "\n";
+    echo '    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;' . "\n";
+    echo '}' . "\n";
+    
+    // Text styling for main hero only
+    echo '.hero-gradient:first-of-type h1, .hero-gradient:first-of-type p, .hero-gradient:first-of-type .text-white {' . "\n";
+    echo '    color: white !important;' . "\n";
+    echo '}' . "\n";
+    
+    echo '</style>' . "\n";
+}
+add_action('wp_head', 'yoursite_hero_background_css', 20);
+
+// =============================================================================
 // INCLUDE ADDITIONAL FILES
 // =============================================================================
 
@@ -412,4 +597,15 @@ foreach ($additional_files as $file) {
     }
 }
 
+/**
+ * Clean up any debug functions
+ */
+function yoursite_cleanup_debug() {
+    // Remove debug actions that might be leftover
+    remove_action('wp_head', 'test_wp_head_working');
+    remove_action('wp_head', 'check_customizer_file');
+    remove_action('wp_head', 'debug_hero_output');
+    remove_action('wp_head', 'test_customizer_loading');
+}
+add_action('init', 'yoursite_cleanup_debug');
 ?>

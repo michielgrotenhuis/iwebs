@@ -1,17 +1,29 @@
 <?php
 /**
- * Template part for displaying customizable homepage content
+ * Template part for displaying customizable homepage content - SYNTAX FIXED
  */
 
-// Get background image for hero
-$hero_bg_image = get_theme_mod('hero_background_image');
-$hero_bg_style = $hero_bg_image ? 'background-image: url(' . esc_url($hero_bg_image) . '); background-size: cover; background-position: center;' : '';
-?>
+// Get background settings
+$hero_background_type = get_theme_mod('hero_background_type', 'gradient');
+$hero_bg_image = get_theme_mod('hero_background_image', '');
+$overlay_opacity = get_theme_mod('hero_overlay_opacity', 40);
 
-<?php if (get_theme_mod('hero_enable', true)) : ?>
-<!-- Hero Section -->
-<section class="hero-gradient text-white py-20 lg:py-32" style="<?php echo $hero_bg_style; ?>">
-    <div class="container mx-auto px-4">
+// Build hero classes - MAIN HERO ONLY
+$hero_classes = 'hero-gradient main-hero text-white py-20 lg:py-32';
+
+// Add background-specific classes
+if (in_array($hero_background_type, array('image', 'image_with_gradient')) && $hero_bg_image) {
+    $hero_classes .= ' has-background-image';
+}
+
+if (get_theme_mod('hero_enable', true)) : ?>
+<!-- Main Hero Section - Dynamic Background -->
+<section class="<?php echo esc_attr($hero_classes); ?>">
+    <?php if ($hero_background_type === 'image' && $hero_bg_image && $overlay_opacity > 0) : ?>
+        <div class="hero-overlay"></div>
+    <?php endif; ?>
+    
+    <div class="container mx-auto px-4 relative z-10">
         <div class="max-w-4xl mx-auto text-center fade-in-up">
             <h1 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
                 <?php echo esc_html(get_theme_mod('hero_title', __('Build Your Online Store in Minutes', 'yoursite'))); ?>
@@ -19,18 +31,18 @@ $hero_bg_style = $hero_bg_image ? 'background-image: url(' . esc_url($hero_bg_im
             <p class="text-xl lg:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
                 <?php echo esc_html(get_theme_mod('hero_subtitle', __('No code. No hassle. Just launch and sell.', 'yoursite'))); ?>
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="<?php echo esc_url(get_theme_mod('cta_primary_url', '#')); ?>" class="btn-primary text-lg px-8 py-4 rounded-lg font-semibold hover-lift" style="color: #7c3aed !important;">
+            <div class="mobile-stack justify-center items-center">
+                <a href="<?php echo esc_url(get_theme_mod('cta_primary_url', '#')); ?>" class="btn-primary text-lg px-8 py-4 rounded-lg font-semibold hover-lift mobile-full-width" style="color: #7c3aed !important;">
                     <?php echo esc_html(get_theme_mod('cta_primary_text', __('Start Free Trial', 'yoursite'))); ?>
                 </a>
-                <a href="<?php echo esc_url(get_theme_mod('cta_secondary_url', '#demo')); ?>" class="btn-secondary text-lg px-8 py-4 rounded-lg font-semibold hover-lift">
+                <a href="<?php echo esc_url(get_theme_mod('cta_secondary_url', '#demo')); ?>" class="btn-secondary text-lg px-8 py-4 rounded-lg font-semibold hover-lift mobile-full-width">
                     <?php echo esc_html(get_theme_mod('cta_secondary_text', __('View Demo', 'yoursite'))); ?>
                 </a>
             </div>
         </div>
         
         <!-- Hero Image/Dashboard Preview -->
-        <div class="mt-16 max-w-5xl mx-auto">
+        <div class="mt-16 max-w-5xl mx-auto relative z-10">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 transform rotate-1 hover:rotate-0 transition-transform duration-300">
                 <?php 
                 $dashboard_image = get_theme_mod('hero_dashboard_image');
@@ -88,12 +100,12 @@ $hero_bg_style = $hero_bg_image ? 'background-image: url(' . esc_url($hero_bg_im
 <?php endif; ?>
 
 <?php if (get_theme_mod('social_proof_enable', true)) : ?>
-<!-- Social Proof -->
+<!-- Social Proof - Mobile Responsive -->
 <section class="bg-gray-50 dark:bg-gray-900 py-12">
     <div class="container mx-auto px-4">
         <div class="text-center">
             <p class="text-gray-600 dark:text-gray-300 mb-8"><?php echo esc_html(get_theme_mod('social_proof_text', __('Trusted by over 10,000 merchants worldwide', 'yoursite'))); ?></p>
-            <div class="flex justify-center items-center flex-wrap gap-8 opacity-60">
+            <div class="social-proof-logos opacity-60">
                 <?php for ($i = 1; $i <= 5; $i++) : 
                     $logo = get_theme_mod("social_proof_logo_{$i}");
                     if ($logo) : ?>
@@ -113,7 +125,7 @@ $hero_bg_style = $hero_bg_image ? 'background-image: url(' . esc_url($hero_bg_im
 <?php endif; ?>
 
 <?php if (get_theme_mod('benefits_enable', true)) : ?>
-<!-- Key Benefits -->
+<!-- Key Benefits - Mobile Responsive Grid -->
 <section class="py-20 bg-white dark:bg-gray-800">
     <div class="container mx-auto px-4">
         <div class="max-w-6xl mx-auto">
@@ -126,7 +138,8 @@ $hero_bg_style = $hero_bg_image ? 'background-image: url(' . esc_url($hero_bg_im
                 </p>
             </div>
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Mobile Responsive Benefits Grid -->
+            <div class="benefits-grid">
                 <?php 
                 $benefit_icons = array(
                     'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
@@ -166,7 +179,7 @@ $hero_bg_style = $hero_bg_image ? 'background-image: url(' . esc_url($hero_bg_im
                     $color = get_theme_mod("benefit_{$i}_color", $default_benefits[$i-1]['color']);
                     $custom_image = get_theme_mod("benefit_{$i}_image");
                     ?>
-                    <div class="text-center feature-card p-6 rounded-lg">
+                    <div class="feature-card">
                         <div class="w-16 h-16 bg-<?php echo esc_attr($color); ?>-100 dark:bg-<?php echo esc_attr($color); ?>-900 rounded-lg mx-auto mb-4 flex items-center justify-center">
                             <?php if ($custom_image) : ?>
                                 <img src="<?php echo esc_url($custom_image); ?>" alt="<?php echo esc_attr($title); ?>" class="w-8 h-8 object-contain">
@@ -188,7 +201,7 @@ $hero_bg_style = $hero_bg_image ? 'background-image: url(' . esc_url($hero_bg_im
 <?php endif; ?>
 
 <?php if (get_theme_mod('features_enable', true)) : ?>
-<!-- Features Grid -->
+<!-- Features Grid - Mobile Responsive -->
 <?php
 $features_count = get_theme_mod('features_count', 6);
 $features = get_features($features_count);
@@ -206,9 +219,10 @@ if ($features->have_posts()) :
                 </p>
             </div>
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Mobile Responsive Features Grid -->
+            <div class="features-grid">
                 <?php while ($features->have_posts()) : $features->the_post(); ?>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-8 feature-card border border-gray-200 dark:border-gray-700">
+                <div class="feature-card border border-gray-200 dark:border-gray-700">
                     <?php if (has_post_thumbnail()) : ?>
                         <div class="mb-6">
                             <?php the_post_thumbnail('medium', array('class' => 'w-full h-48 object-cover rounded-lg')); ?>
@@ -237,17 +251,16 @@ endif;
 
 <?php
 /**
- * Enhanced Dynamic Pricing Section for Homepage
- * Replace the pricing section in template-parts/homepage.php with this code
+ * Enhanced Dynamic Pricing Section for Homepage - Mobile Responsive
  */
 
 if (get_theme_mod('pricing_enable', true)) : ?>
-<!-- Dynamic Pricing Section -->
+<!-- Dynamic Pricing Section - Mobile Responsive -->
 <?php
 // Get pricing plans from your new pricing post type
 $pricing_args = array(
     'post_type' => 'pricing',
-    'posts_per_page' => get_theme_mod('homepage_pricing_count', 3), // Allow customization of how many to show
+    'posts_per_page' => get_theme_mod('homepage_pricing_count', 3),
     'post_status' => 'publish',
     'meta_key' => '_pricing_monthly_price',
     'orderby' => 'meta_value_num',
@@ -284,31 +297,52 @@ if (!empty($pricing_plans)) :
             
             <!-- Billing Toggle for Homepage -->
             <?php if (get_theme_mod('homepage_show_billing_toggle', true)) : ?>
-            <div class="flex items-center justify-center mb-12">
-                <span class="text-gray-700 dark:text-gray-300 mr-4 font-medium homepage-monthly-label">
+            <div class="flex items-center justify-center mb-12 flex-wrap gap-4">
+                <span class="text-gray-700 dark:text-gray-300 font-medium homepage-monthly-label">
                     <?php _e('Monthly', 'yoursite'); ?>
                 </span>
                 <div class="relative">
-                    <input type="checkbox" id="homepage-billing-toggle" class="sr-only peer">
-                    <label for="homepage-billing-toggle" class="relative inline-flex items-center justify-between w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer transition-colors duration-300 peer-checked:bg-blue-600 peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800">
-                        <span class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 peer-checked:translate-x-8"></span>
+                    <input type="checkbox" id="homepage-billing-toggle" class="sr-only" checked>
+                    <label for="homepage-billing-toggle" class="relative inline-flex items-center justify-between w-16 h-8 bg-blue-600 rounded-full cursor-pointer transition-colors duration-300 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
+                        <span class="toggle-switch absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 translate-x-8"></span>
                     </label>
                 </div>
-                <span class="text-gray-700 dark:text-gray-300 ml-4 font-medium homepage-yearly-label">
+                <span class="text-blue-600 dark:text-blue-400 font-semibold homepage-yearly-label">
                     <?php _e('Annual', 'yoursite'); ?>
                 </span>
-                <span class="bg-emerald-500 text-emerald-50 dark:text-white text-sm font-semibold px-3 py-1 rounded-full ml-3 shadow-md">
+                <span class="bg-emerald-500 text-emerald-50 dark:text-white text-sm font-semibold px-3 py-1 rounded-full shadow-md">
                     <?php _e('Save 20%', 'yoursite'); ?>
                 </span>
             </div>
             <?php endif; ?>
             
-            <!-- Dynamic Pricing Cards -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-<?php echo min(count($pricing_plans), 4); ?> gap-8 homepage-pricing-grid">
+            <!-- Dynamic Pricing Cards - Mobile Responsive Grid -->
+            <div class="pricing-grid homepage-pricing-grid">
                 <?php 
                 // Load pricing meta functions if not already loaded
                 if (!function_exists('yoursite_get_pricing_meta_fields')) {
-                    require_once get_template_directory() . '/inc/pricing-meta-boxes.php';
+                    function yoursite_get_pricing_meta_fields($post_id) {
+                        return array(
+                            'pricing_featured' => get_post_meta($post_id, '_pricing_featured', true),
+                            'pricing_monthly_price' => get_post_meta($post_id, '_pricing_monthly_price', true),
+                            'pricing_annual_price' => get_post_meta($post_id, '_pricing_annual_price', true),
+                            'pricing_currency' => get_post_meta($post_id, '_pricing_currency', true) ?: 'USD',
+                            'pricing_features' => get_post_meta($post_id, '_pricing_features', true),
+                            'pricing_button_text' => get_post_meta($post_id, '_pricing_button_text', true),
+                            'pricing_button_url' => get_post_meta($post_id, '_pricing_button_url', true)
+                        );
+                    }
+                }
+                if (!function_exists('yoursite_get_currency_symbol')) {
+                    function yoursite_get_currency_symbol($currency = 'USD') {
+                        $symbols = array(
+                            'USD' => '$',
+                            'EUR' => '€',
+                            'GBP' => '£',
+                            'JPY' => '¥'
+                        );
+                        return isset($symbols[$currency]) ? $symbols[$currency] : '$';
+                    }
                 }
                 
                 foreach ($pricing_plans as $plan) : 
@@ -324,7 +358,7 @@ if (!empty($pricing_plans)) :
                     }
                     $annual_monthly = $annual_price > 0 ? $annual_price / 12 : 0;
                 ?>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-8 border-2 border-gray-200 dark:border-gray-700 feature-card relative transition-all duration-300 hover:shadow-xl <?php echo $is_featured ? 'border-blue-500 dark:border-blue-400 shadow-lg scale-105' : ''; ?>">
+                <div class="pricing-card <?php echo $is_featured ? 'featured' : ''; ?> relative transition-all duration-300 hover:shadow-xl">
                     
                     <!-- Featured Badge -->
                     <?php if ($is_featured) : ?>
@@ -350,8 +384,8 @@ if (!empty($pricing_plans)) :
                         
                         <!-- Price Display with Toggle -->
                         <div class="mb-6">
-                            <!-- Monthly Pricing -->
-                            <div class="homepage-monthly-pricing">
+                            <!-- Monthly Pricing (Hidden by default since annual is default) -->
+                            <div class="homepage-monthly-pricing" style="display: none;">
                                 <span class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
                                     <?php echo $currency_symbol . number_format($monthly_price, 0); ?>
                                 </span>
@@ -360,8 +394,8 @@ if (!empty($pricing_plans)) :
                                 </span>
                             </div>
                             
-                            <!-- Annual Pricing (Hidden by default) -->
-                            <div class="homepage-annual-pricing hidden">
+                            <!-- Annual Pricing (Visible by default) -->
+                            <div class="homepage-annual-pricing">
                                 <span class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
                                     <?php echo $currency_symbol . number_format($annual_monthly, 0); ?>
                                 </span>
@@ -375,9 +409,9 @@ if (!empty($pricing_plans)) :
                                 <?php endif; ?>
                             </div>
                             
-                            <!-- Savings Badge (Annual) -->
+                            <!-- Savings Badge (Annual) - Visible by default -->
                             <?php if ($monthly_price > 0 && $annual_price > 0) : ?>
-                                <div class="homepage-annual-savings hidden mt-2">
+                                <div class="homepage-annual-savings mt-2">
                                     <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-3 py-1 rounded-full text-sm font-medium">
                                         <?php printf(__('Save %s per year', 'yoursite'), $currency_symbol . number_format(($monthly_price * 12) - $annual_price, 0)); ?>
                                     </span>
@@ -388,11 +422,11 @@ if (!empty($pricing_plans)) :
                     
                     <!-- Features List -->
                     <?php if (!empty($meta['pricing_features'])) : ?>
-                    <div class="mb-8">
+                    <div class="mb-8 flex-grow">
                         <ul class="space-y-3">
                             <?php 
                             $features = array_filter(explode("\n", $meta['pricing_features']));
-                            $max_features = get_theme_mod('homepage_max_features', 5); // Limit features shown on homepage
+                            $max_features = get_theme_mod('homepage_max_features', 5);
                             $display_features = array_slice($features, 0, $max_features);
                             
                             foreach ($display_features as $feature) :
@@ -425,10 +459,10 @@ if (!empty($pricing_plans)) :
                     <?php endif; ?>
                     
                     <!-- CTA Button -->
-                    <div class="text-center">
+                    <div class="text-center mt-auto">
                         <a href="<?php echo esc_url($meta['pricing_button_url'] ?: home_url('/pricing')); ?>" 
-   class="<?php echo $is_featured ? 'btn-primary' : 'btn-secondary'; ?> w-full text-center block py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-200 hover:transform hover:-translate-y-1" 
-   <?php echo $is_featured ? 'style="color: #ffffff !important;"' : ''; ?>>
+                           class="<?php echo $is_featured ? 'btn-primary' : 'btn-secondary'; ?> w-full text-center block py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-200 hover:transform hover:-translate-y-1" 
+                           <?php echo $is_featured ? 'style="color: #ffffff !important;"' : ''; ?>>
                             <?php echo esc_html($meta['pricing_button_text'] ?: __('Get Started', 'yoursite')); ?>
                         </a>
                     </div>
@@ -448,166 +482,6 @@ if (!empty($pricing_plans)) :
         </div>
     </div>
 </section>
-
-<!-- Homepage Pricing JavaScript -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const homepageBillingToggle = document.getElementById('homepage-billing-toggle');
-    const homepagePricingGrid = document.querySelector('.homepage-pricing-grid');
-    
-    if (homepageBillingToggle && homepagePricingGrid) {
-        homepageBillingToggle.addEventListener('change', function() {
-            const isYearly = this.checked;
-            
-            // Update toggle labels
-            updateToggleLabels(isYearly);
-            
-            // Update pricing display
-            updatePricingDisplay(isYearly);
-            
-            // Sync with other toggles on the page
-            syncOtherToggles(isYearly);
-        });
-    }
-    
-    function updateToggleLabels(isYearly) {
-        const monthlyLabel = document.querySelector('.homepage-monthly-label');
-        const yearlyLabel = document.querySelector('.homepage-yearly-label');
-        
-        if (monthlyLabel && yearlyLabel) {
-            if (isYearly) {
-                monthlyLabel.style.color = '#9ca3af';
-                monthlyLabel.style.fontWeight = '400';
-                yearlyLabel.style.color = '#3b82f6';
-                yearlyLabel.style.fontWeight = '600';
-            } else {
-                monthlyLabel.style.color = '#3b82f6';
-                monthlyLabel.style.fontWeight = '600';
-                yearlyLabel.style.color = '#9ca3af';
-                yearlyLabel.style.fontWeight = '400';
-            }
-        }
-    }
-    
-    function updatePricingDisplay(isYearly) {
-        const monthlyPricing = document.querySelectorAll('.homepage-monthly-pricing');
-        const annualPricing = document.querySelectorAll('.homepage-annual-pricing');
-        const annualSavings = document.querySelectorAll('.homepage-annual-savings');
-        
-        monthlyPricing.forEach(element => {
-            element.style.display = isYearly ? 'none' : 'block';
-        });
-        
-        annualPricing.forEach(element => {
-            element.style.display = isYearly ? 'block' : 'none';
-        });
-        
-        annualSavings.forEach(element => {
-            element.style.display = isYearly ? 'block' : 'none';
-        });
-    }
-    
-    function syncOtherToggles(isYearly) {
-        // Sync with main pricing page toggle if it exists
-        const mainBillingToggle = document.getElementById('billing-toggle');
-        if (mainBillingToggle) {
-            mainBillingToggle.checked = isYearly;
-            // Trigger change event to update main pricing page
-            mainBillingToggle.dispatchEvent(new Event('change'));
-        }
-        
-        // Sync with comparison table toggle if it exists
-        const comparisonToggle = document.getElementById('comparison-billing-toggle');
-        if (comparisonToggle) {
-            comparisonToggle.checked = isYearly;
-            comparisonToggle.dispatchEvent(new Event('change'));
-        }
-    }
-    
-    // Listen for changes from other toggles
-    document.addEventListener('change', function(e) {
-        if (e.target.id === 'billing-toggle' || e.target.id === 'comparison-billing-toggle') {
-            if (homepageBillingToggle && homepageBillingToggle !== e.target) {
-                homepageBillingToggle.checked = e.target.checked;
-                updateToggleLabels(e.target.checked);
-                updatePricingDisplay(e.target.checked);
-            }
-        }
-    });
-});
-</script>
-
-<!-- Homepage Pricing Styles -->
-<style>
-/* Homepage pricing specific styles */
-.homepage-pricing-grid .feature-card {
-    transition: all 0.3s ease;
-}
-
-.homepage-pricing-grid .feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-}
-
-/* Featured plan always slightly elevated */
-.homepage-pricing-grid .feature-card.scale-105 {
-    transform: scale(1.05);
-}
-
-.homepage-pricing-grid .feature-card.scale-105:hover {
-    transform: scale(1.05) translateY(-4px);
-}
-
-/* Dark mode adjustments */
-.dark .homepage-monthly-label,
-.dark .homepage-yearly-label {
-    color: #d1d5db;
-}
-
-/* Responsive grid adjustments */
-@media (max-width: 768px) {
-    .homepage-pricing-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-    
-    .homepage-pricing-grid .feature-card.scale-105 {
-        transform: none;
-    }
-    
-    .homepage-pricing-grid .feature-card:hover {
-        transform: translateY(-2px);
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .homepage-pricing-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* Animation for price switching */
-.homepage-monthly-pricing,
-.homepage-annual-pricing,
-.homepage-annual-savings {
-    transition: all 0.3s ease;
-}
-
-/* Enhanced billing toggle styling */
-#homepage-billing-toggle:checked + label {
-    background-color: #3b82f6;
-}
-
-#homepage-billing-toggle:focus + label {
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
-}
-
-/* Grid responsive classes */
-.lg\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-.lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-</style>
 
 <?php
 wp_reset_postdata();
@@ -635,7 +509,7 @@ endif;
 <?php endif; ?>
 
 <?php if (get_theme_mod('testimonials_enable', true)) : ?>
-<!-- Testimonials -->
+<!-- Testimonials - Mobile Responsive -->
 <?php
 $testimonials_count = get_theme_mod('testimonials_count', 3);
 $testimonials = get_testimonials($testimonials_count);
@@ -653,9 +527,10 @@ if ($testimonials->have_posts()) :
                 </p>
             </div>
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Mobile Responsive Testimonials Grid -->
+            <div class="testimonials-grid">
                 <?php while ($testimonials->have_posts()) : $testimonials->the_post(); ?>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-8 feature-card border border-gray-200 dark:border-gray-700">
+                <div class="feature-card border border-gray-200 dark:border-gray-700">
                     <div class="mb-6">
                         <div class="flex text-yellow-400 mb-4">
                             <?php for ($i = 0; $i < 5; $i++) : ?>
@@ -693,30 +568,265 @@ endif;
 <?php endif; ?>
 
 <?php if (get_theme_mod('final_cta_enable', true)) : ?>
-<!-- Final CTA Section -->
-<section class="hero-gradient text-white py-20">
+<!-- Final CTA Section - IMPROVED BUTTON DESIGN -->
+<section class="final-cta-section text-white py-20" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl lg:text-5xl font-bold mb-6">
+            <h2 class="text-3xl lg:text-5xl font-bold mb-6" style="color: #ffffff !important;">
                 <?php echo esc_html(get_theme_mod('final_cta_title', __('Ready to launch your store?', 'yoursite'))); ?>
             </h2>
-            <p class="text-xl mb-8 opacity-90">
+            <p class="text-xl mb-8" style="color: #ffffff !important; opacity: 0.95;">
                 <?php echo esc_html(get_theme_mod('final_cta_subtitle', __('Start free today—no credit card required. Join thousands of successful merchants.', 'yoursite'))); ?>
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="<?php echo esc_url(get_theme_mod('final_cta_primary_url', '#')); ?>" class="btn-primary text-lg px-8 py-4 bg-white hover:bg-gray-100" style="color: #7c3aed !important;">
+            <div class="mobile-stack justify-center items-center">
+                <!-- Primary CTA Button - High Contrast Design -->
+                <a href="<?php echo esc_url(get_theme_mod('final_cta_primary_url', '#')); ?>" 
+                   class="inline-flex items-center justify-center text-lg px-8 py-4 font-semibold rounded-lg transition-all duration-200 mobile-full-width cta-primary-button"
+                   style="background: #ffffff; color: #1f2937 !important; box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2); border: 2px solid transparent;">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
                     <?php echo esc_html(get_theme_mod('final_cta_primary_text', __('Start Free Trial', 'yoursite'))); ?>
                 </a>
-                <a href="<?php echo esc_url(get_theme_mod('final_cta_secondary_url', '/contact')); ?>" class="btn-secondary text-lg px-8 py-4 border-white text-white hover:bg-white" style="hover:color: #7c3aed !important;">
+                
+                <!-- Secondary CTA Button - Outline Design -->
+                <a href="<?php echo esc_url(get_theme_mod('final_cta_secondary_url', '/contact')); ?>" 
+                   class="inline-flex items-center justify-center text-lg px-8 py-4 font-semibold rounded-lg transition-all duration-200 mobile-full-width cta-secondary-button"
+                   style="background: transparent; color: #ffffff !important; border: 2px solid rgba(255, 255, 255, 0.8);">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
                     <?php echo esc_html(get_theme_mod('final_cta_secondary_text', __('Book a Demo', 'yoursite'))); ?>
                 </a>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+/* Enhanced CTA Button Styles */
+.cta-primary-button:hover {
+    background: #f8fafc !important;
+    color: #1f2937 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px 0 rgba(0, 0, 0, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.cta-secondary-button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 1) !important;
+    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2);
+}
+
+.cta-primary-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+.cta-secondary-button:active {
+    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Focus states for accessibility */
+.cta-primary-button:focus,
+.cta-secondary-button:focus {
+    outline: 3px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .mobile-full-width {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .mobile-stack {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+/* Dark mode compatibility - ensure text stays white */
+body.dark-mode .final-cta-section h2,
+body.dark-mode .final-cta-section p {
+    color: #ffffff !important;
+}
+
+body.dark-mode .cta-primary-button {
+    background: #ffffff !important;
+    color: #1f2937 !important;
+}
+
+body.dark-mode .cta-secondary-button {
+    border-color: rgba(255, 255, 255, 0.8) !important;
+    color: #ffffff !important;
+}
+</style>
 <?php endif; ?>
 
 <script>
+// ==========================================================================
+// HOMEPAGE PRICING JAVASCRIPT - FIXED WITH ANNUAL DEFAULT
+// ==========================================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const homepageBillingToggle = document.getElementById('homepage-billing-toggle');
+    const homepagePricingGrid = document.querySelector('.homepage-pricing-grid');
+    
+    if (homepageBillingToggle && homepagePricingGrid) {
+        // Initialize with annual as default
+        updateToggleLabels(true); // true = annual is selected
+        updatePricingDisplay(true);
+        updateToggleAppearance(true);
+        
+        homepageBillingToggle.addEventListener('change', function() {
+            const isYearly = this.checked;
+            console.log('Toggle changed to:', isYearly ? 'Annual' : 'Monthly');
+            
+            // Update toggle visual appearance
+            updateToggleAppearance(isYearly);
+            
+            // Update toggle labels
+            updateToggleLabels(isYearly);
+            
+            // Update pricing display
+            updatePricingDisplay(isYearly);
+            
+            // Sync with other toggles on the page
+            syncOtherToggles(isYearly);
+        });
+    }
+    
+    function updateToggleAppearance(isYearly) {
+        const toggle = document.getElementById('homepage-billing-toggle');
+        const label = toggle ? toggle.nextElementSibling : null;
+        const toggleSwitch = label ? label.querySelector('.toggle-switch') : null;
+        
+        if (label && toggleSwitch) {
+            if (isYearly) {
+                // Annual selected - toggle is ON (blue background, switch to right)
+                label.style.backgroundColor = '#2563eb'; // blue-600
+                toggleSwitch.style.transform = 'translateX(32px)'; // move to right
+                toggle.checked = true;
+            } else {
+                // Monthly selected - toggle is OFF (gray background, switch to left)
+                label.style.backgroundColor = '#d1d5db'; // gray-300
+                toggleSwitch.style.transform = 'translateX(0px)'; // move to left
+                toggle.checked = false;
+            }
+        }
+    }
+    
+    function updateToggleLabels(isYearly) {
+        const monthlyLabel = document.querySelector('.homepage-monthly-label');
+        const yearlyLabel = document.querySelector('.homepage-yearly-label');
+        
+        if (monthlyLabel && yearlyLabel) {
+            if (isYearly) {
+                // Annual selected
+                monthlyLabel.style.color = '#9ca3af'; // gray-400
+                monthlyLabel.style.fontWeight = '400';
+                yearlyLabel.style.color = '#2563eb'; // blue-600
+                yearlyLabel.style.fontWeight = '600';
+            } else {
+                // Monthly selected
+                monthlyLabel.style.color = '#2563eb'; // blue-600
+                monthlyLabel.style.fontWeight = '600';
+                yearlyLabel.style.color = '#9ca3af'; // gray-400
+                yearlyLabel.style.fontWeight = '400';
+            }
+        }
+    }
+    
+    function updatePricingDisplay(isYearly) {
+        const monthlyPricing = document.querySelectorAll('.homepage-monthly-pricing');
+        const annualPricing = document.querySelectorAll('.homepage-annual-pricing');
+        const annualSavings = document.querySelectorAll('.homepage-annual-savings');
+        
+        monthlyPricing.forEach(element => {
+            element.style.display = isYearly ? 'none' : 'block';
+        });
+        
+        annualPricing.forEach(element => {
+            element.style.display = isYearly ? 'block' : 'none';
+        });
+        
+        annualSavings.forEach(element => {
+            element.style.display = isYearly ? 'block' : 'none';
+        });
+    }
+    
+    function syncOtherToggles(isYearly) {
+        // Sync with main pricing page toggle if it exists
+        const mainBillingToggle = document.getElementById('billing-toggle');
+        if (mainBillingToggle && mainBillingToggle !== homepageBillingToggle) {
+            mainBillingToggle.checked = isYearly;
+            // Trigger change event to update main pricing page
+            const event = new Event('change', { bubbles: true });
+            mainBillingToggle.dispatchEvent(event);
+        }
+        
+        // Sync with comparison table toggle if it exists
+        const comparisonToggle = document.getElementById('comparison-billing-toggle');
+        if (comparisonToggle && comparisonToggle !== homepageBillingToggle) {
+            comparisonToggle.checked = isYearly;
+            const event = new Event('change', { bubbles: true });
+            comparisonToggle.dispatchEvent(event);
+        }
+    }
+    
+    // Listen for changes from other toggles
+    document.addEventListener('change', function(e) {
+        if ((e.target.id === 'billing-toggle' || e.target.id === 'comparison-billing-toggle') && 
+            e.target !== homepageBillingToggle) {
+            if (homepageBillingToggle) {
+                const isYearly = e.target.checked;
+                homepageBillingToggle.checked = isYearly;
+                updateToggleAppearance(isYearly);
+                updateToggleLabels(isYearly);
+                updatePricingDisplay(isYearly);
+            }
+        }
+    });
+});
+
+// ==========================================================================
+// ADDITIONAL CSS FOR TOGGLE STYLING
+// ==========================================================================
+
+// Add additional CSS for better toggle styling
+const toggleStyles = document.createElement('style');
+toggleStyles.innerHTML = `
+    /* Enhanced toggle styling */
+    .homepage-billing-toggle-label {
+        background-color: #d1d5db;
+        transition: background-color 0.3s ease;
+    }
+    
+    .homepage-billing-toggle-label.checked {
+        background-color: #2563eb !important;
+    }
+    
+    .toggle-switch {
+        transition: transform 0.3s ease;
+    }
+    
+    /* Dark mode adjustments */
+    .dark .homepage-billing-toggle-label {
+        background-color: #4b5563;
+    }
+    
+    .dark .homepage-billing-toggle-label.checked {
+        background-color: #2563eb !important;
+    }
+`;
+document.head.appendChild(toggleStyles);
+
 // ==========================================================================
 // YOUTUBE MODAL - FIXED JAVASCRIPT
 // ==========================================================================
@@ -727,14 +837,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeButton = document.getElementById('close-video-modal');
     const videoThumbnail = document.querySelector('.video-thumbnail');
     
-    // Debug logging
-    console.log('Modal elements found:', {
-        videoModal: !!videoModal,
-        videoIframe: !!videoIframe,
-        closeButton: !!closeButton,
-        videoThumbnail: !!videoThumbnail
-    });
-    
     if (videoThumbnail && videoModal) {
         // Make the entire thumbnail clickable
         videoThumbnail.addEventListener('click', function(e) {
@@ -742,7 +844,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             
             const videoUrl = this.getAttribute('data-video-url');
-            console.log('Video URL:', videoUrl);
             
             if (videoUrl && videoIframe) {
                 openVideoModal(videoUrl);
@@ -753,7 +854,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function openVideoModal(videoUrl) {
         // Convert YouTube URL to privacy-enhanced embed format
         let embedUrl = convertToEmbedUrl(videoUrl);
-        console.log('Embed URL:', embedUrl);
         
         if (embedUrl) {
             // Set loading state
@@ -781,8 +881,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function closeVideoModal() {
-        console.log('Closing modal');
-        
         if (videoModal && !videoModal.classList.contains('hidden')) {
             // Hide modal
             videoModal.classList.add('hidden');

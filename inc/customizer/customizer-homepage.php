@@ -1,6 +1,6 @@
 <?php
 /**
- * Homepage customizer options
+ * Homepage customizer options - CLEAN VERSION WITHOUT DUPLICATES
  */
 
 if (!defined('ABSPATH')) {
@@ -65,19 +65,6 @@ function yoursite_homepage_customizer($wp_customize) {
         'priority' => 12,
     ));
     
-    // Hero Background Image
-    $wp_customize->add_setting('hero_background_image', array(
-        'default' => '',
-        'sanitize_callback' => 'esc_url_raw',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_background_image', array(
-        'label' => __('Hero Background Image', 'yoursite'),
-        'section' => 'homepage_editor',
-        'priority' => 13,
-    )));
-    
     // Primary CTA Button
     $wp_customize->add_setting('cta_primary_text', array(
         'default' => __('Start Free Trial', 'yoursite'),
@@ -89,7 +76,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Primary Button Text', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 14,
+        'priority' => 18,
     ));
     
     $wp_customize->add_setting('cta_primary_url', array(
@@ -102,7 +89,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Primary Button URL', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'url',
-        'priority' => 15,
+        'priority' => 19,
     ));
     
     // Secondary CTA Button
@@ -116,7 +103,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Secondary Button Text', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 16,
+        'priority' => 20,
     ));
     
     $wp_customize->add_setting('cta_secondary_url', array(
@@ -129,7 +116,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Secondary Button URL', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'url',
-        'priority' => 17,
+        'priority' => 21,
     ));
     
     // Hero Dashboard Image
@@ -142,11 +129,11 @@ function yoursite_homepage_customizer($wp_customize) {
     $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_dashboard_image', array(
         'label' => __('Dashboard Preview Image', 'yoursite'),
         'section' => 'homepage_editor',
-        'description' => __('Image shown below the hero text', 'yoursite'),
-        'priority' => 18,
+        'description' => __('Image shown below the hero text (recommended: 1200x600px)', 'yoursite'),
+        'priority' => 22,
     )));
     
-    // Hero Video URL (NEW)
+    // Hero Video URL
     $wp_customize->add_setting('hero_video_url', array(
         'default' => '',
         'sanitize_callback' => 'esc_url_raw',
@@ -158,7 +145,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'section' => 'homepage_editor',
         'type' => 'url',
         'description' => __('YouTube video URL to play when clicking the dashboard preview', 'yoursite'),
-        'priority' => 19,
+        'priority' => 23,
     ));
     
     // ===================
@@ -176,7 +163,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Enable Social Proof Section', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'checkbox',
-        'priority' => 20,
+        'priority' => 30,
     ));
     
     // Social Proof Text
@@ -190,7 +177,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Social Proof Text', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 21,
+        'priority' => 31,
     ));
     
     // Logo uploads (5 logos)
@@ -204,7 +191,7 @@ function yoursite_homepage_customizer($wp_customize) {
         $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, "social_proof_logo_{$i}", array(
             'label' => sprintf(__('Company Logo %d', 'yoursite'), $i),
             'section' => 'homepage_editor',
-            'priority' => 21 + $i,
+            'priority' => 31 + $i,
         )));
     }
     
@@ -223,7 +210,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Enable Key Benefits Section', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'checkbox',
-        'priority' => 30,
+        'priority' => 40,
     ));
     
     // Benefits Title
@@ -237,7 +224,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Benefits Section Title', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 31,
+        'priority' => 41,
     ));
     
     // Benefits Subtitle
@@ -251,7 +238,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Benefits Section Subtitle', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'textarea',
-        'priority' => 32,
+        'priority' => 42,
     ));
     
     // 4 Benefits
@@ -292,7 +279,7 @@ function yoursite_homepage_customizer($wp_customize) {
             'label' => sprintf(__('Benefit %d Title', 'yoursite'), $i),
             'section' => 'homepage_editor',
             'type' => 'text',
-            'priority' => 32 + ($i * 4),
+            'priority' => 42 + ($i * 4),
         ));
         
         // Benefit Description
@@ -306,7 +293,7 @@ function yoursite_homepage_customizer($wp_customize) {
             'label' => sprintf(__('Benefit %d Description', 'yoursite'), $i),
             'section' => 'homepage_editor',
             'type' => 'textarea',
-            'priority' => 33 + ($i * 4),
+            'priority' => 43 + ($i * 4),
         ));
         
         // Benefit Icon Color
@@ -330,7 +317,7 @@ function yoursite_homepage_customizer($wp_customize) {
                 'pink' => __('Pink', 'yoursite'),
                 'gray' => __('Gray', 'yoursite'),
             ),
-            'priority' => 34 + ($i * 4),
+            'priority' => 44 + ($i * 4),
         ));
         
         // Benefit Custom Image (optional)
@@ -344,7 +331,7 @@ function yoursite_homepage_customizer($wp_customize) {
             'label' => sprintf(__('Benefit %d Custom Image (Optional)', 'yoursite'), $i),
             'section' => 'homepage_editor',
             'description' => __('Upload a custom image to replace the icon', 'yoursite'),
-            'priority' => 35 + ($i * 4),
+            'priority' => 45 + ($i * 4),
         )));
     }
     
@@ -363,7 +350,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Enable Features Section', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'checkbox',
-        'priority' => 50,
+        'priority' => 60,
     ));
     
     // Features Title
@@ -377,7 +364,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Features Section Title', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 51,
+        'priority' => 61,
     ));
     
     // Features Subtitle
@@ -391,7 +378,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Features Section Subtitle', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 52,
+        'priority' => 62,
     ));
     
     // Features Count
@@ -410,7 +397,7 @@ function yoursite_homepage_customizer($wp_customize) {
             'max' => 12,
             'step' => 3,
         ),
-        'priority' => 53,
+        'priority' => 63,
     ));
     
     // ===================
@@ -428,7 +415,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Enable Pricing Section', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'checkbox',
-        'priority' => 60,
+        'priority' => 70,
     ));
     
     // Pricing Title
@@ -442,7 +429,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Pricing Section Title', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 61,
+        'priority' => 71,
     ));
     
     // Pricing Subtitle
@@ -456,7 +443,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Pricing Section Subtitle', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 62,
+        'priority' => 72,
     ));
     
     // Homepage Pricing Count
@@ -475,7 +462,7 @@ function yoursite_homepage_customizer($wp_customize) {
             'min' => 1,
             'max' => 4,
         ),
-        'priority' => 63,
+        'priority' => 73,
     ));
     
     // Show Only Featured Plans
@@ -490,7 +477,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'section' => 'homepage_editor',
         'type' => 'checkbox',
         'description' => __('Display only plans marked as featured', 'yoursite'),
-        'priority' => 64,
+        'priority' => 74,
     ));
     
     // Show Billing Toggle
@@ -505,7 +492,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'section' => 'homepage_editor',
         'type' => 'checkbox',
         'description' => __('Display toggle to switch between monthly and annual pricing', 'yoursite'),
-        'priority' => 65,
+        'priority' => 75,
     ));
     
     // Max Features to Show
@@ -524,55 +511,7 @@ function yoursite_homepage_customizer($wp_customize) {
             'min' => 3,
             'max' => 10,
         ),
-        'priority' => 66,
-    ));
-    
-    // Annual Discount Percentage
-    $wp_customize->add_setting('pricing_annual_discount', array(
-        'default' => 20,
-        'sanitize_callback' => 'absint',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_annual_discount', array(
-        'label' => __('Annual Discount Percentage', 'yoursite'),
-        'section' => 'homepage_editor',
-        'type' => 'number',
-        'description' => __('Discount percentage for annual plans (e.g., 20 for 20%)', 'yoursite'),
-        'input_attrs' => array(
-            'min' => 0,
-            'max' => 50,
-        ),
-        'priority' => 67,
-    ));
-    
-    // Pricing Free Trial Text
-    $wp_customize->add_setting('pricing_free_trial_text', array(
-        'default' => __('All plans include a 14-day free trial. No credit card required.', 'yoursite'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_free_trial_text', array(
-        'label' => __('Free Trial Text', 'yoursite'),
-        'section' => 'homepage_editor',
-        'type' => 'text',
-        'description' => __('Text shown below pricing plans', 'yoursite'),
-        'priority' => 68,
-    ));
-    
-    // View All Plans Button Text
-    $wp_customize->add_setting('pricing_view_all_text', array(
-        'default' => __('View All Plans & Features', 'yoursite'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_view_all_text', array(
-        'label' => __('View All Plans Button Text', 'yoursite'),
-        'section' => 'homepage_editor',
-        'type' => 'text',
-        'priority' => 69,
+        'priority' => 76,
     ));
     
     // ===================
@@ -590,7 +529,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Enable Testimonials Section', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'checkbox',
-        'priority' => 70,
+        'priority' => 80,
     ));
     
     // Testimonials Title
@@ -604,7 +543,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Testimonials Section Title', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 71,
+        'priority' => 81,
     ));
     
     // Testimonials Subtitle
@@ -618,7 +557,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Testimonials Section Subtitle', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 72,
+        'priority' => 82,
     ));
     
     // Testimonials Count
@@ -636,7 +575,7 @@ function yoursite_homepage_customizer($wp_customize) {
             'min' => 1,
             'max' => 6,
         ),
-        'priority' => 73,
+        'priority' => 83,
     ));
     
     // ===================
@@ -654,7 +593,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Enable Final CTA Section', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'checkbox',
-        'priority' => 80,
+        'priority' => 90,
     ));
     
     // Final CTA Title
@@ -668,7 +607,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Final CTA Title', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 81,
+        'priority' => 91,
     ));
     
     // Final CTA Subtitle
@@ -682,7 +621,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Final CTA Subtitle', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'textarea',
-        'priority' => 82,
+        'priority' => 92,
     ));
     
     // Final CTA Primary Button
@@ -696,7 +635,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Final CTA Primary Button Text', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 83,
+        'priority' => 93,
     ));
     
     $wp_customize->add_setting('final_cta_primary_url', array(
@@ -709,7 +648,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Final CTA Primary Button URL', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'url',
-        'priority' => 84,
+        'priority' => 94,
     ));
     
     // Final CTA Secondary Button
@@ -723,7 +662,7 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Final CTA Secondary Button Text', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'text',
-        'priority' => 85,
+        'priority' => 95,
     ));
     
     $wp_customize->add_setting('final_cta_secondary_url', array(
@@ -736,17 +675,30 @@ function yoursite_homepage_customizer($wp_customize) {
         'label' => __('Final CTA Secondary Button URL', 'yoursite'),
         'section' => 'homepage_editor',
         'type' => 'url',
-        'priority' => 86,
+        'priority' => 96,
     ));
 }
 add_action('customize_register', 'yoursite_homepage_customizer');
+
+/**
+ * Active callback functions for conditional display
+ */
+function yoursite_is_hero_image_background($control) {
+    $background_type = $control->manager->get_setting('hero_background_type')->value();
+    return in_array($background_type, array('image', 'image_with_gradient'));
+}
+
+function yoursite_is_hero_gradient_background($control) {
+    $background_type = $control->manager->get_setting('hero_background_type')->value();
+    return in_array($background_type, array('gradient', 'image_with_gradient'));
+}
 
 /**
  * Sanitize checkbox
  */
 if (!function_exists('yoursite_sanitize_checkbox')) {
     function yoursite_sanitize_checkbox($input) {
-        return ($input === true) ? true : false;
+        return ($input === true || $input === '1' || $input === 1) ? true : false;
     }
 }
 
