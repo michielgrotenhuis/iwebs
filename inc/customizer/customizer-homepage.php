@@ -414,7 +414,7 @@ function yoursite_homepage_customizer($wp_customize) {
     ));
     
     // ===================
-    // PRICING SECTION
+    // PRICING SECTION - ENHANCED
     // ===================
     
     // Pricing Enable/Disable
@@ -457,6 +457,122 @@ function yoursite_homepage_customizer($wp_customize) {
         'section' => 'homepage_editor',
         'type' => 'text',
         'priority' => 62,
+    ));
+    
+    // Homepage Pricing Count
+    $wp_customize->add_setting('homepage_pricing_count', array(
+        'default' => 3,
+        'sanitize_callback' => 'absint',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('homepage_pricing_count', array(
+        'label' => __('Number of Pricing Plans to Show', 'yoursite'),
+        'section' => 'homepage_editor',
+        'type' => 'number',
+        'description' => __('How many pricing plans to display on the homepage', 'yoursite'),
+        'input_attrs' => array(
+            'min' => 1,
+            'max' => 4,
+        ),
+        'priority' => 63,
+    ));
+    
+    // Show Only Featured Plans
+    $wp_customize->add_setting('homepage_show_featured_only', array(
+        'default' => false,
+        'sanitize_callback' => 'yoursite_sanitize_checkbox',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('homepage_show_featured_only', array(
+        'label' => __('Show Only Featured Plans', 'yoursite'),
+        'section' => 'homepage_editor',
+        'type' => 'checkbox',
+        'description' => __('Display only plans marked as featured', 'yoursite'),
+        'priority' => 64,
+    ));
+    
+    // Show Billing Toggle
+    $wp_customize->add_setting('homepage_show_billing_toggle', array(
+        'default' => true,
+        'sanitize_callback' => 'yoursite_sanitize_checkbox',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('homepage_show_billing_toggle', array(
+        'label' => __('Show Monthly/Annual Toggle', 'yoursite'),
+        'section' => 'homepage_editor',
+        'type' => 'checkbox',
+        'description' => __('Display toggle to switch between monthly and annual pricing', 'yoursite'),
+        'priority' => 65,
+    ));
+    
+    // Max Features to Show
+    $wp_customize->add_setting('homepage_max_features', array(
+        'default' => 5,
+        'sanitize_callback' => 'absint',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('homepage_max_features', array(
+        'label' => __('Max Features per Plan', 'yoursite'),
+        'section' => 'homepage_editor',
+        'type' => 'number',
+        'description' => __('Maximum number of features to show per pricing plan', 'yoursite'),
+        'input_attrs' => array(
+            'min' => 3,
+            'max' => 10,
+        ),
+        'priority' => 66,
+    ));
+    
+    // Annual Discount Percentage
+    $wp_customize->add_setting('pricing_annual_discount', array(
+        'default' => 20,
+        'sanitize_callback' => 'absint',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('pricing_annual_discount', array(
+        'label' => __('Annual Discount Percentage', 'yoursite'),
+        'section' => 'homepage_editor',
+        'type' => 'number',
+        'description' => __('Discount percentage for annual plans (e.g., 20 for 20%)', 'yoursite'),
+        'input_attrs' => array(
+            'min' => 0,
+            'max' => 50,
+        ),
+        'priority' => 67,
+    ));
+    
+    // Pricing Free Trial Text
+    $wp_customize->add_setting('pricing_free_trial_text', array(
+        'default' => __('All plans include a 14-day free trial. No credit card required.', 'yoursite'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('pricing_free_trial_text', array(
+        'label' => __('Free Trial Text', 'yoursite'),
+        'section' => 'homepage_editor',
+        'type' => 'text',
+        'description' => __('Text shown below pricing plans', 'yoursite'),
+        'priority' => 68,
+    ));
+    
+    // View All Plans Button Text
+    $wp_customize->add_setting('pricing_view_all_text', array(
+        'default' => __('View All Plans & Features', 'yoursite'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('pricing_view_all_text', array(
+        'label' => __('View All Plans Button Text', 'yoursite'),
+        'section' => 'homepage_editor',
+        'type' => 'text',
+        'priority' => 69,
     ));
     
     // ===================
@@ -624,3 +740,50 @@ function yoursite_homepage_customizer($wp_customize) {
     ));
 }
 add_action('customize_register', 'yoursite_homepage_customizer');
+
+/**
+ * Sanitize checkbox
+ */
+if (!function_exists('yoursite_sanitize_checkbox')) {
+    function yoursite_sanitize_checkbox($input) {
+        return ($input === true) ? true : false;
+    }
+}
+
+/**
+ * Additional helper functions for the homepage
+ */
+
+/**
+ * Get features for homepage
+ */
+if (!function_exists('get_features')) {
+    function get_features($count = 6) {
+        $args = array(
+            'post_type' => 'features',
+            'posts_per_page' => $count,
+            'post_status' => 'publish',
+            'orderby' => 'menu_order',
+            'order' => 'ASC'
+        );
+        
+        return new WP_Query($args);
+    }
+}
+
+/**
+ * Get testimonials for homepage
+ */
+if (!function_exists('get_testimonials')) {
+    function get_testimonials($count = 3) {
+        $args = array(
+            'post_type' => 'testimonials',
+            'posts_per_page' => $count,
+            'post_status' => 'publish',
+            'orderby' => 'date',
+            'order' => 'DESC'
+        );
+        
+        return new WP_Query($args);
+    }
+}

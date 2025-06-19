@@ -7,6 +7,7 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+require_once get_template_directory() . '/inc/pricing-loader.php';
 
 // Define theme constants
 define('YOURSITE_THEME_VERSION', '1.0.0');

@@ -1696,3 +1696,72 @@ body.dark-mode .templates-cta-section img {
     /* Reset filter for images in gradient sections */
     filter: none;
 }
+
+/* Pricing Section Style Improvements */
+
+/* Most Popular Badge - Ensure white text */
+.homepage-pricing-grid .feature-card .bg-gradient-to-r {
+    color: #ffffff !important;
+}
+
+/* Featured plan primary button - Ensure white text */
+.homepage-pricing-grid .feature-card .btn-primary {
+    color: #ffffff !important;
+}
+
+/* Additional styling for better contrast on featured plans */
+.homepage-pricing-grid .feature-card .btn-primary:hover {
+    color: #ffffff !important;
+    opacity: 0.9;
+}
+
+/* If using the scale-105 class for featured plans */
+.homepage-pricing-grid .feature-card.scale-105 .btn-primary {
+    color: #ffffff !important;
+    background-color: #7c3aed;
+    border-color: #7c3aed;
+}
+
+.homepage-pricing-grid .feature-card.scale-105 .btn-primary:hover {
+    color: #ffffff !important;
+    background-color: #6d28d9;
+    border-color: #6d28d9;
+}
+
+/* Most Popular badge specific styling */
+.homepage-pricing-grid .absolute.-top-4 span {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* Ensure the gradient badge has proper contrast */
+.bg-gradient-to-r.from-blue-500.to-purple-600 {
+    background: linear-gradient(to right, #3b82f6, #9333ea);
+    color: #ffffff !important;
+}
+
+/* Dark mode adjustments */
+.dark .homepage-pricing-grid .feature-card .btn-primary {
+    color: #ffffff !important;
+}
+
+.dark .homepage-pricing-grid .feature-card.scale-105 .btn-primary {
+    color: #ffffff !important;
+}
+
+/* Ensure annual savings badge is readable */
+.homepage-annual-savings span {
+    font-weight: 500;
+}
+
+/* Make sure Save 20% badge is readable */
+.bg-emerald-500 {
+    color: #ffffff !important;
+}
+
+/* Specific fix for the pricing section buttons */
+#homepage .pricing-section .btn-primary,
+.homepage-pricing-grid .btn-primary {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
