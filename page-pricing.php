@@ -1,7 +1,7 @@
 <?php
 /**
- * Template Name: Pricing Page with Enhanced Comparison
- * Updated page-pricing.php with improved comparison table
+ * Template Name: Pricing Page with Enhanced Comparison and Fixed Toggles
+ * Updated page-pricing.php with improved comparison table and working toggles
  */
 
 get_header();
@@ -30,7 +30,7 @@ require_once get_template_directory() . '/inc/pricing-shortcodes.php';
                     <div class="relative">
                         <input type="checkbox" id="billing-toggle" class="sr-only peer" checked>
                         <label for="billing-toggle" class="relative inline-flex items-center justify-between w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer transition-colors duration-300 peer-checked:bg-blue-600 peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800">
-                            <span class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 peer-checked:translate-x-8"></span>
+                            <span class="toggle-switch absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300"></span>
                         </label>
                     </div>
                     <span class="text-gray-700 dark:text-gray-300 ml-4 font-medium billing-yearly">Annual</span>
@@ -52,11 +52,136 @@ require_once get_template_directory() . '/inc/pricing-shortcodes.php';
         </div>
     </section>
 
-    <!-- Pricing Cards Section -->
-    <section class="py-20">
+    <!-- Pricing Cards Section with Enhanced Toggle -->
+    <section class="py-20" id="pricing-cards">
         <div class="container mx-auto px-4">
-            <!-- Pricing cards code remains the same -->
-            <?php echo do_shortcode('[pricing_cards limit="4" show_features="true"]'); ?>
+            <div class="max-w-7xl mx-auto">
+                
+                <!-- Dynamic Pricing Cards -->
+                <?php
+                $args = array(
+                    'post_type' => 'pricing',
+                    'posts_per_page' => 4,
+                    'post_status' => 'publish',
+                    'meta_key' => '_pricing_monthly_price',
+                    'orderby' => 'meta_value_num',
+                    'order' => 'ASC'
+                );
+                
+                $plans = get_posts($args);
+                
+                if (!empty($plans)) : ?>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <?php foreach ($plans as $plan) : 
+                            if (!function_exists('yoursite_get_pricing_meta_fields')) {
+                                require_once get_template_directory() . '/inc/pricing-meta-boxes.php';
+                            }
+                            $meta = yoursite_get_pricing_meta_fields($plan->ID);
+                            $is_featured = $meta['pricing_featured'] === '1';
+                            $monthly_price = floatval($meta['pricing_monthly_price']);
+                            $annual_price = floatval($meta['pricing_annual_price']);
+                            
+                            // Auto-calculate annual price if not set (20% discount)
+                            if ($annual_price == 0 && $monthly_price > 0) {
+                                $annual_price = $monthly_price * 12 * 0.8;
+                            }
+                            $annual_monthly = $annual_price > 0 ? $annual_price / 12 : 0;
+                            
+                            if (!function_exists('yoursite_get_currency_symbol')) {
+                                function yoursite_get_currency_symbol($currency = 'USD') {
+                                    $symbols = array('USD' => '$', 'EUR' => '€', 'GBP' => '£', 'CAD' => 'C$', 'AUD' => 'A$');
+                                    return isset($symbols[$currency]) ? $symbols[$currency] : '$';
+                                }
+                            }
+                            $currency_symbol = yoursite_get_currency_symbol($meta['pricing_currency']);
+                            ?>
+                            <div class="pricing-card <?php echo $is_featured ? 'featured-card' : ''; ?> bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden border border-gray-200 dark:border-gray-700">
+                                
+                                <?php if ($is_featured) : ?>
+                                    <div class="absolute top-0 left-0 right-0 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center py-2 text-sm font-semibold">
+                                        <?php _e('Most Popular', 'yoursite'); ?>
+                                    </div>
+                                    <div class="pt-10 pb-8 px-8">
+                                <?php else : ?>
+                                    <div class="p-8">
+                                <?php endif; ?>
+                                
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                        <?php echo esc_html($plan->post_title); ?>
+                                    </h3>
+                                    
+                                    <?php if ($plan->post_excerpt) : ?>
+                                        <p class="text-gray-600 dark:text-gray-300 mb-6">
+                                            <?php echo esc_html($plan->post_excerpt); ?>
+                                        </p>
+                                    <?php endif; ?>
+                                    
+                                    <div class="mb-8 price-container">
+                                        <!-- Monthly Pricing (Hidden by Default) -->
+                                        <div class="monthly-price hidden">
+                                            <span class="text-5xl font-bold text-gray-900 dark:text-white">
+                                                <?php echo $currency_symbol . number_format($monthly_price, 0); ?>
+                                            </span>
+                                            <span class="text-gray-600 dark:text-gray-400 text-lg ml-2">
+                                                /<?php _e('month', 'yoursite'); ?>
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Annual Pricing (Shown by Default) -->
+                                        <div class="yearly-price">
+                                            <span class="text-5xl font-bold text-gray-900 dark:text-white">
+                                                <?php echo $currency_symbol . number_format($annual_monthly, 0); ?>
+                                            </span>
+                                            <span class="text-gray-600 dark:text-gray-400 text-lg ml-2">
+                                                /<?php _e('month', 'yoursite'); ?>
+                                            </span>
+                                            <?php if ($annual_price > 0) : ?>
+                                                <div class="text-sm text-green-600 dark:text-green-400 mt-1">
+                                                    <?php printf(__('Billed annually (%s)', 'yoursite'), $currency_symbol . number_format($annual_price, 0)); ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    
+                                    <a href="<?php echo esc_url($meta['pricing_button_url'] ?: '#'); ?>" 
+                                       class="<?php echo $is_featured ? 'btn-primary' : 'btn-secondary'; ?> w-full text-center py-4 px-6 rounded-lg font-semibold text-lg mb-8 block transition-all duration-200 hover:transform hover:-translate-y-1">
+                                        <?php echo esc_html($meta['pricing_button_text'] ?: __('Get Started', 'yoursite')); ?>
+                                    </a>
+                                    
+                                    <?php if (!empty($meta['pricing_features'])) : ?>
+                                        <ul class="space-y-4">
+                                            <?php 
+                                            $features = array_filter(explode("\n", $meta['pricing_features']));
+                                            foreach ($features as $feature) : 
+                                                $feature = trim($feature);
+                                                if (!empty($feature)) :
+                                            ?>
+                                                <li class="flex items-center">
+                                                    <svg class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                    </svg>
+                                                    <span class="text-gray-700 dark:text-gray-300"><?php echo esc_html($feature); ?></span>
+                                                </li>
+                                            <?php endif; endforeach; ?>
+                                        </ul>
+                                    <?php endif; ?>
+                                    
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else : ?>
+                    <div class="text-center py-12">
+                        <p class="text-gray-500 dark:text-gray-400 text-lg mb-4">No pricing plans available yet.</p>
+                        <?php if (current_user_can('manage_options')) : ?>
+                            <a href="<?php echo admin_url('post-new.php?post_type=pricing'); ?>" class="btn-primary">
+                                Create Your First Pricing Plan
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+                
+            </div>
         </div>
     </section>
 
@@ -130,7 +255,7 @@ require_once get_template_directory() . '/inc/pricing-shortcodes.php';
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto text-center">
                 <h2 class="text-4xl font-bold mb-6">Ready to grow your business?</h2>
-                <p class="text-xl text-blue-100 mb-8">Join thousands of successful merchants using Storeicu</p>
+                <p class="text-xl text-blue-100 mb-8">Join thousands of successful merchants using our platform</p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a href="#" class="btn-primary bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 inline-block">
                         Start Your Free Trial
@@ -146,50 +271,68 @@ require_once get_template_directory() . '/inc/pricing-shortcodes.php';
 
 <!-- Enhanced Styles for Pricing Page -->
 <style>
-/* Annual billing default styles */
-.pricing-page.yearly-active .billing-yearly,
-.pricing-comparison-wrapper.comparison-yearly-active .comparison-yearly-label {
-    color: #3b82f6;
-    font-weight: 600;
+/* Toggle Switch Animation */
+.toggle-switch {
+    transition: transform 0.3s ease;
 }
 
-.pricing-page.yearly-active .billing-monthly,
-.pricing-comparison-wrapper.comparison-yearly-active .comparison-monthly-label {
-    color: #9ca3af;
+#billing-toggle:checked + label .toggle-switch {
+    transform: translateX(32px);
 }
 
-.pricing-page:not(.yearly-active) .billing-monthly,
-.pricing-comparison-wrapper:not(.comparison-yearly-active) .comparison-monthly-label {
-    color: #3b82f6;
-    font-weight: 600;
+/* Pricing Toggle States */
+.pricing-page.yearly-active .billing-yearly {
+    color: #3b82f6 !important;
+    font-weight: 600 !important;
 }
 
-.pricing-page:not(.yearly-active) .billing-yearly,
-.pricing-comparison-wrapper:not(.comparison-yearly-active) .comparison-yearly-label {
-    color: #9ca3af;
+.pricing-page.yearly-active .billing-monthly {
+    color: #9ca3af !important;
+    font-weight: 400 !important;
 }
 
-/* Price display toggles */
-.yearly-active .monthly-price,
-.yearly-active .monthly-period {
+.pricing-page:not(.yearly-active) .billing-monthly {
+    color: #3b82f6 !important;
+    font-weight: 600 !important;
+}
+
+.pricing-page:not(.yearly-active) .billing-yearly {
+    color: #9ca3af !important;
+    font-weight: 400 !important;
+}
+
+/* Price Display Toggle */
+.pricing-page.yearly-active .monthly-price {
     display: none !important;
 }
 
-.yearly-active .yearly-price,
-.yearly-active .yearly-period,
-.yearly-active .yearly-savings {
+.pricing-page.yearly-active .yearly-price {
     display: block !important;
 }
 
-/* Dark mode adjustments */
-.dark .pricing-page.yearly-active .billing-yearly,
-.dark .pricing-comparison-wrapper.comparison-yearly-active .comparison-yearly-label {
-    color: #60a5fa;
+.pricing-page:not(.yearly-active) .monthly-price {
+    display: block !important;
 }
 
-.dark .pricing-page.yearly-active .billing-monthly,
-.dark .pricing-comparison-wrapper.comparison-yearly-active .comparison-monthly-label {
-    color: #6b7280;
+.pricing-page:not(.yearly-active) .yearly-price {
+    display: none !important;
+}
+
+/* Dark mode adjustments */
+.dark .pricing-page.yearly-active .billing-yearly {
+    color: #60a5fa !important;
+}
+
+.dark .pricing-page.yearly-active .billing-monthly {
+    color: #6b7280 !important;
+}
+
+.dark .pricing-page:not(.yearly-active) .billing-monthly {
+    color: #60a5fa !important;
+}
+
+.dark .pricing-page:not(.yearly-active) .billing-yearly {
+    color: #6b7280 !important;
 }
 
 /* Smooth scroll indicator */
@@ -214,29 +357,100 @@ require_once get_template_directory() . '/inc/pricing-shortcodes.php';
 .faq-content {
     transition: all 0.3s ease;
 }
+
+/* Enhanced pricing card animations */
+.pricing-card {
+    transition: all 0.3s ease;
+}
+
+.pricing-card:hover {
+    transform: translateY(-4px);
+}
+
+.featured-card {
+    transform: scale(1.05);
+    border: 2px solid #3b82f6;
+}
+
+.featured-card:hover {
+    transform: scale(1.05) translateY(-4px);
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .pricing-card {
+        margin-bottom: 2rem;
+    }
+    
+    .featured-card {
+        transform: none;
+        border: 2px solid #3b82f6;
+    }
+    
+    .featured-card:hover {
+        transform: translateY(-2px);
+    }
+}
 </style>
 
 <!-- Enhanced JavaScript for Pricing Page -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize with annual billing as default
+    // Initialize pricing page
     const pricingPage = document.querySelector('.pricing-page');
     const billingToggle = document.getElementById('billing-toggle');
+    const comparisonToggle = document.getElementById('comparison-billing-toggle');
     
-    // Set initial state to annual
-    if (pricingPage && billingToggle) {
+    // Set initial state to annual (yearly)
+    if (pricingPage) {
         pricingPage.classList.add('yearly-active');
+    }
+    
+    if (billingToggle) {
         billingToggle.checked = true;
     }
     
-    // Billing toggle functionality
+    // Main billing toggle functionality
     if (billingToggle) {
         billingToggle.addEventListener('change', function() {
-            if (this.checked) {
+            const isYearly = this.checked;
+            
+            if (isYearly) {
                 pricingPage.classList.add('yearly-active');
+                pricingPage.classList.remove('monthly-active');
             } else {
                 pricingPage.classList.remove('yearly-active');
+                pricingPage.classList.add('monthly-active');
             }
+            
+            // Sync with comparison toggle
+            if (comparisonToggle && comparisonToggle !== this) {
+                comparisonToggle.checked = isYearly;
+                const event = new Event('change', { bubbles: true });
+                comparisonToggle.dispatchEvent(event);
+            }
+            
+            // Add smooth transition animation
+            const priceContainers = document.querySelectorAll('.price-container');
+            priceContainers.forEach(container => {
+                container.style.opacity = '0.5';
+                setTimeout(() => {
+                    container.style.opacity = '1';
+                }, 150);
+            });
+        });
+    }
+    
+    // Listen for changes from comparison toggle
+    if (comparisonToggle && billingToggle) {
+        comparisonToggle.addEventListener('change', function() {
+            if (this !== document.activeElement) return; // Prevent loop
+            
+            const isYearly = this.checked;
+            billingToggle.checked = isYearly;
+            
+            const event = new Event('change', { bubbles: true });
+            billingToggle.dispatchEvent(event);
         });
     }
     
@@ -254,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const otherContent = otherToggle.nextElementSibling;
                     const otherIcon = otherToggle.querySelector('svg');
                     otherContent.classList.add('hidden');
-                    otherIcon.classList.remove('rotate-180');
+                    otherIcon.style.transform = 'rotate(0deg)';
                     otherToggle.classList.remove('active');
                 }
             });
@@ -262,24 +476,24 @@ document.addEventListener('DOMContentLoaded', function() {
             // Toggle current FAQ
             if (content.classList.contains('hidden')) {
                 content.classList.remove('hidden');
-                icon.classList.add('rotate-180');
+                icon.style.transform = 'rotate(180deg)';
                 this.classList.add('active');
             } else {
                 content.classList.add('hidden');
-                icon.classList.remove('rotate-180');
+                icon.style.transform = 'rotate(0deg)';
                 this.classList.remove('active');
             }
         });
     });
     
-    // Smooth scroll enhancement
+    // Smooth scroll enhancement with offset for sticky header
     const scrollButtons = document.querySelectorAll('[data-scroll-to-comparison]');
     scrollButtons.forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
             const target = document.querySelector('.pricing-comparison-wrapper');
             if (target) {
-                const offset = 100; // Offset for fixed header
+                const offset = 20; // Offset for better positioning
                 const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
                 
                 window.scrollTo({
@@ -296,31 +510,38 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add scroll progress indicator
-    let scrollIndicator = null;
-    function checkScrollPosition() {
-        const comparisonSection = document.querySelector('.pricing-comparison-wrapper');
-        if (!comparisonSection) return;
+    // Enhanced pricing card hover effects
+    const pricingCards = document.querySelectorAll('.pricing-card');
+    pricingCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('featured-card')) {
+                this.style.borderColor = '#3b82f6';
+            }
+        });
         
-        const rect = comparisonSection.getBoundingClientRect();
-        const isNearComparison = rect.top < window.innerHeight && rect.bottom > 0;
-        
-        if (isNearComparison && !scrollIndicator) {
-            // Remove any existing indicator
-            const existing = document.querySelector('.comparison-scroll-hint');
-            if (existing) existing.remove();
-        }
-    }
-    
-    // Check scroll position on scroll
-    let scrollTimeout;
-    window.addEventListener('scroll', function() {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(checkScrollPosition, 100);
+        card.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('featured-card')) {
+                this.style.borderColor = '#e5e7eb';
+            }
+        });
     });
     
-    // Initial check
-    checkScrollPosition();
+    // Intersection Observer for pricing cards animation
+    const observeCards = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    });
+    
+    pricingCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+        observeCards.observe(card);
+    });
 });
 </script>
 
