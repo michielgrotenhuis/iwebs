@@ -2275,3 +2275,107 @@ Common breakpoints:
 - 1200px: Desktop
 - 1400px: Large desktop
 */
+
+/* Enhanced Comparison Table Styles */
+.pricing-comparison-wrapper {
+    position: relative;
+    max-width: 100%;
+    margin: 2rem 0;
+}
+
+/* Feature tooltip styles */
+.feature-label {
+    cursor: help;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.feature-label:hover svg {
+    color: #667eea;
+}
+
+/* Tooltip modal */
+.feature-tooltip {
+    position: fixed;
+    z-index: 9999;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 300px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.dark .feature-tooltip {
+    background: #1f2937;
+    border-color: #374151;
+    color: #e5e7eb;
+}
+
+.feature-tooltip.show {
+    opacity: 1;
+}
+
+.feature-tooltip.hidden {
+    opacity: 0;
+}
+
+.tooltip-content {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Billing toggle enhanced states */
+.comparison-yearly-active .monthly-pricing {
+    display: none !important;
+}
+
+.comparison-yearly-active .annual-pricing {
+    display: block !important;
+}
+
+.pricing-comparison-wrapper.comparison-yearly-active .comparison-yearly-label {
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+.pricing-comparison-wrapper.comparison-yearly-active .comparison-monthly-label {
+    color: #9ca3af;
+}
+
+.pricing-comparison-wrapper:not(.comparison-yearly-active) .comparison-monthly-label {
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+.pricing-comparison-wrapper:not(.comparison-yearly-active) .comparison-yearly-label {
+    color: #9ca3af;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .comparison-table th:first-child,
+    .comparison-table td:first-child {
+        min-width: 180px;
+        font-size: 13px;
+    }
+    
+    .feature-tooltip {
+        max-width: 250px;
+        font-size: 13px;
+    }
+}
+
+/* Print-friendly styles */
+@media print {
+    .feature-label svg {
+        display: none;
+    }
+    
+    .comparison-header {
+        position: static !important;
+    }
+}

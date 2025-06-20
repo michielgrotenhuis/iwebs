@@ -1,3 +1,179 @@
+// Enhanced JavaScript for Comparison Table
+document.addEventListener('DOMContentLoaded', function() {
+    // Billing toggle functionality with annual as default
+    const comparisonToggle = document.getElementById('comparison-billing-toggle');
+    const comparisonWrapper = document.querySelector('.pricing-comparison-wrapper');
+    
+    if (comparisonToggle && comparisonWrapper) {
+        // Set initial state to annual (checked)
+        comparisonWrapper.classList.add('comparison-yearly-active');
+        
+        comparisonToggle.addEventListener('change', function() {
+            if (this.checked) {
+                comparisonWrapper.classList.add('comparison-yearly-active');
+            } else {
+                comparisonWrapper.classList.remove('comparison-yearly-active');
+            }
+        });
+    }
+    
+    // Feature tooltip functionality
+    const tooltip = document.getElementById('feature-tooltip');
+    const tooltipText = tooltip ? tooltip.querySelector('.tooltip-text') : null;
+    let currentLabel = null;
+    
+    // Show tooltip on hover
+    document.querySelectorAll('.feature-label').forEach(label => {
+        label.addEventListener('mouseenter', function(e) {
+            if (!tooltip || !tooltipText) return;
+            
+            const tooltipContent = this.getAttribute('data-tooltip');
+            if (!tooltipContent) return;
+            
+            currentLabel = this;
+            tooltipText.textContent = tooltipContent;
+            
+            // Position tooltip
+            const rect = this.getBoundingClientRect();
+            const tooltipWidth = 300;
+            let left = rect.left + rect.width + 10;
+            let top = rect.top + (rect.height / 2);
+            
+            // Adjust if tooltip would go off screen
+            if (left + tooltipWidth > window.innerWidth) {
+                left = rect.left - tooltipWidth - 10;
+            }
+            
+            // Keep tooltip on screen vertically
+            if (top + 100 > window.innerHeight) {
+                top = window.innerHeight - 120;
+            }
+            
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+            tooltip.classList.remove('hidden');
+            
+            setTimeout(() => {
+                tooltip.classList.add('show');
+            }, 10);
+        });
+        
+        label.addEventListener('mouseleave', function() {
+            if (!tooltip) return;
+            
+            tooltip.classList.remove('show');
+            setTimeout(() => {
+                if (!tooltip.classList.contains('show')) {
+                    tooltip.classList.add('hidden');
+                }
+            }, 200);
+        });
+    });
+    
+    // Mobile touch support for tooltips
+    if ('ontouchstart' in window) {
+        document.querySelectorAll('.feature-label').forEach(label => {
+            label.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (!tooltip || !tooltipText) return;
+                
+                const tooltipContent = this.getAttribute('data-tooltip');
+                if (!tooltipContent) return;
+                
+                // Close other tooltips
+                if (currentLabel && currentLabel !== this) {
+                    tooltip.classList.add('hidden');
+                }
+                
+                if (tooltip.classList.contains('hidden') || currentLabel !== this) {
+                    // Show tooltip
+                    currentLabel = this;
+                    tooltipText.textContent = tooltipContent;
+                    
+                    const rect = this.getBoundingClientRect();
+                    tooltip.style.left = '50%';
+                    tooltip.style.transform = 'translateX(-50%)';
+                    tooltip.style.top = (rect.bottom + 10) + 'px';
+                    
+                    tooltip.classList.remove('hidden');
+                    setTimeout(() => {
+                        tooltip.classList.add('show');
+                    }, 10);
+                } else {
+                    // Hide tooltip
+                    tooltip.classList.remove('show');
+                    setTimeout(() => {
+                        tooltip.classList.add('hidden');
+                    }, 200);
+                    currentLabel = null;
+                }
+            });
+        });
+        
+        // Close tooltip when clicking elsewhere
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.feature-label') && !e.target.closest('.feature-tooltip')) {
+                if (tooltip) {
+                    tooltip.classList.remove('show');
+                    setTimeout(() => {
+                        tooltip.classList.add('hidden');
+                    }, 200);
+                    currentLabel = null;
+                }
+            }
+        });
+    }
+    
+    // Sync with main pricing toggle if exists
+    const mainPricingToggle = document.getElementById('billing-toggle');
+    if (mainPricingToggle && comparisonToggle) {
+        // Set main toggle to annual too
+        mainPricingToggle.checked = true;
+        const pricingPage = document.querySelector('.pricing-page');
+        if (pricingPage) {
+            pricingPage.classList.add('yearly-active');
+        }
+        
+        mainPricingToggle.addEventListener('change', function() {
+            comparisonToggle.checked = this.checked;
+            if (this.checked) {
+                comparisonWrapper.classList.add('comparison-yearly-active');
+            } else {
+                comparisonWrapper.classList.remove('comparison-yearly-active');
+            }
+        });
+        
+        comparisonToggle.addEventListener('change', function() {
+            mainPricingToggle.checked = this.checked;
+            const pricingPage = document.querySelector('.pricing-page');
+            if (pricingPage) {
+                if (this.checked) {
+                    pricingPage.classList.add('yearly-active');
+                } else {
+                    pricingPage.classList.remove('yearly-active');
+                }
+            }
+        });
+    }
+    
+    // Smooth scroll to comparison table
+    document.querySelectorAll('[data-scroll-to-comparison]').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const comparisonTable = document.querySelector('.pricing-comparison-wrapper');
+            if (comparisonTable) {
+                comparisonTable.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                    inline: 'nearest'
+                });
+            }
+        });
+    });
+});
+
+
 // Main JavaScript file for YourSite.biz theme
 // Enhanced with better error handling, performance, and maintainability
 

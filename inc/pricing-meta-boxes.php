@@ -117,74 +117,102 @@ function yoursite_pricing_plan_meta_box_callback($post) {
     echo '</table>';
 }
 
-/**
- * Pricing features comparison meta box callback
- */
+// Add to the yoursite_pricing_features_meta_box_callback function
 function yoursite_pricing_features_meta_box_callback($post) {
     $meta = yoursite_get_pricing_meta_fields($post->ID);
     
     echo '<div class="pricing-features-comparison">';
-    echo '<p class="description" style="margin-bottom: 20px;">' . __('Configure detailed features for the comparison table. Use specific values like "Unlimited", "5GB", "✓", "✗", or "Premium only".', 'yoursite') . '</p>';
+    echo '<p class="description" style="margin-bottom: 20px;">' . __('Configure detailed features for the comparison table. Use "Yes", "No", numbers, or descriptive text.', 'yoursite') . '</p>';
     
     $feature_categories = array(
-        'transaction_fees' => array(
-            'title' => __('Transaction Fees', 'yoursite'),
-            'description' => __('Fees charged per sale', 'yoursite'),
+        'basics' => array(
+            'title' => __('Essentials', 'yoursite'),
+            'description' => __('Core features to get started', 'yoursite'),
             'fields' => array(
-                'transaction_fee_percentage' => __('Transaction Fee %', 'yoursite'),
-                'transaction_fee_fixed' => __('Fixed Fee per Transaction', 'yoursite'),
+                'transaction_fee' => __('Transaction Fee', 'yoursite'),
+                'product_limit' => __('Product Limit', 'yoursite'),
+                'categories' => __('Categories', 'yoursite'),
+                'storage' => __('Storage', 'yoursite'),
             )
         ),
-        'ecommerce_website' => array(
-            'title' => __('Ecommerce Website', 'yoursite'),
-            'description' => __('Website and store features', 'yoursite'),
+        'shopping_experience' => array(
+            'title' => __('Shopping Experience', 'yoursite'),
+            'description' => __('Create seamless shopping journeys', 'yoursite'),
             'fields' => array(
-                'add_store_existing_website' => __('Add store to existing website', 'yoursite'),
-                'sell_multiple_sites' => __('Sell on multiple sites', 'yoursite'),
-                'instant_site_builder' => __('Instant Site builder', 'yoursite'),
-                'site_templates_count' => __('Number of site templates', 'yoursite'),
-                'additional_pages_count' => __('Additional Instant Site pages', 'yoursite'),
+                'adaptive_storefront' => __('Adaptive Storefront Widget', 'yoursite'),
+                'wishlist' => __('Favorites/Wishlist', 'yoursite'),
+                'single_product_widgets' => __('Single Product Widgets', 'yoursite'),
+                'faceted_search' => __('Advanced Search & Filters', 'yoursite'),
             )
         ),
-        'domains' => array(
-            'title' => __('Domains', 'yoursite'),
-            'description' => __('Domain and URL features', 'yoursite'),
+        'online_store' => array(
+            'title' => __('Online Store Builder', 'yoursite'),
+            'description' => __('Build and customize your store', 'yoursite'),
             'fields' => array(
-                'free_subdomain' => __('Free company.site domain', 'yoursite'),
-                'connect_existing_domain' => __('Connect existing domain', 'yoursite'),
-                'buy_custom_domain' => __('Buy custom domain', 'yoursite'),
-                'custom_url_slugs' => __('Custom URL slugs', 'yoursite'),
+                'wordpress_plugin' => __('WordPress Plugin', 'yoursite'),
+                'customizable_design' => __('Customizable Design', 'yoursite'),
+                'mobile_responsive' => __('Mobile Responsive', 'yoursite'),
+                'seo_optimized' => __('SEO Optimized', 'yoursite'),
+            )
+        ),
+        'product_inventory' => array(
+            'title' => __('Product & Inventory', 'yoursite'),
+            'description' => __('Manage products efficiently', 'yoursite'),
+            'fields' => array(
+                'bulk_import' => __('Bulk Import/Export', 'yoursite'),
+                'inventory_tracking' => __('Inventory Tracking', 'yoursite'),
+                'product_variants' => __('Product Variants', 'yoursite'),
+                'digital_products' => __('Digital Products', 'yoursite'),
             )
         ),
         'sales_channels' => array(
-            'title' => __('Other Sales Channels', 'yoursite'),
-            'description' => __('Additional selling platforms', 'yoursite'),
+            'title' => __('Sales Channels', 'yoursite'),
+            'description' => __('Sell everywhere your customers are', 'yoursite'),
             'fields' => array(
-                'linkup_bio_page' => __('Link-in-bio ecom page', 'yoursite'),
-                'facebook_shop' => __('Facebook shop', 'yoursite'),
-                'instagram_store' => __('Instagram store', 'yoursite'),
-                'mobile_pos' => __('Mobile point of sale', 'yoursite'),
-                'marketplace_selling' => __('Sell on marketplaces', 'yoursite'),
+                'link_in_bio' => __('Link-in-Bio Store', 'yoursite'),
+                'facebook_shop' => __('Facebook Shop', 'yoursite'),
+                'instagram_store' => __('Instagram Shopping', 'yoursite'),
+                'marketplace_sync' => __('Marketplace Integration', 'yoursite'),
             )
         ),
-        'support_analytics' => array(
-            'title' => __('Support & Analytics', 'yoursite'),
-            'description' => __('Customer support and analytics features', 'yoursite'),
+        'marketing' => array(
+            'title' => __('Marketing Tools', 'yoursite'),
+            'description' => __('Grow your audience and sales', 'yoursite'),
+            'fields' => array(
+                'email_marketing' => __('Email Marketing', 'yoursite'),
+                'discount_codes' => __('Discount Codes', 'yoursite'),
+                'abandoned_cart' => __('Abandoned Cart Recovery', 'yoursite'),
+                'affiliate_program' => __('Affiliate Program', 'yoursite'),
+            )
+        ),
+        'checkout_payment' => array(
+            'title' => __('Checkout & Payment', 'yoursite'),
+            'description' => __('Secure and flexible payments', 'yoursite'),
+            'fields' => array(
+                'payment_gateways' => __('Payment Methods', 'yoursite'),
+                'one_page_checkout' => __('One-Page Checkout', 'yoursite'),
+                'guest_checkout' => __('Guest Checkout', 'yoursite'),
+                'multi_currency' => __('Multi-Currency', 'yoursite'),
+            )
+        ),
+        'analytics' => array(
+            'title' => __('Analytics & Reports', 'yoursite'),
+            'description' => __('Data-driven insights', 'yoursite'),
+            'fields' => array(
+                'sales_analytics' => __('Sales Analytics', 'yoursite'),
+                'customer_insights' => __('Customer Insights', 'yoursite'),
+                'product_performance' => __('Product Performance', 'yoursite'),
+                'custom_reports' => __('Custom Reports', 'yoursite'),
+            )
+        ),
+        'support' => array(
+            'title' => __('Support & Success', 'yoursite'),
+            'description' => __('We\'re here to help you succeed', 'yoursite'),
             'fields' => array(
                 'support_type' => __('Support Type', 'yoursite'),
-                'analytics_level' => __('Analytics Level', 'yoursite'),
-                'reporting_features' => __('Reporting Features', 'yoursite'),
+                'response_time' => __('Response Time', 'yoursite'),
+                'onboarding' => __('Onboarding Help', 'yoursite'),
                 'api_access' => __('API Access', 'yoursite'),
-            )
-        ),
-        'storage_limits' => array(
-            'title' => __('Storage & Limits', 'yoursite'),
-            'description' => __('Product and storage limitations', 'yoursite'),
-            'fields' => array(
-                'product_limit' => __('Product Limit', 'yoursite'),
-                'storage_limit' => __('Storage Space', 'yoursite'),
-                'bandwidth_limit' => __('Bandwidth Limit', 'yoursite'),
-                'user_accounts' => __('Staff/User Accounts', 'yoursite'),
             )
         )
     );
@@ -202,15 +230,16 @@ function yoursite_pricing_features_meta_box_callback($post) {
             
             echo '<div class="feature-field">';
             echo '<label for="' . $meta_key . '" style="display: block; font-weight: 600; margin-bottom: 5px;">' . $field_label . '</label>';
-            echo '<input type="text" id="' . $meta_key . '" name="' . $meta_key . '" value="' . esc_attr($value) . '" style="width: 100%;" placeholder="e.g., ✓, ✗, Unlimited, 5GB" />';
+            echo '<input type="text" id="' . $meta_key . '" name="' . $meta_key . '" value="' . esc_attr($value) . '" style="width: 100%;" placeholder="e.g., Yes, No, Unlimited, 1000" />';
+            echo '<p class="description" style="font-size: 12px; margin-top: 4px;">Use: Yes/No, numbers, or short descriptions</p>';
             echo '</div>';
         }
         
-        echo '</div>'; // .feature-fields
-        echo '</div>'; // .feature-category
+        echo '</div>';
+        echo '</div>';
     }
     
-    echo '</div>'; // .pricing-features-comparison
+    echo '</div>';
 }
 
 /**
@@ -225,43 +254,29 @@ function yoursite_get_pricing_meta_fields($post_id) {
         'pricing_button_text' => 'Get Started',
         'pricing_button_url' => '',
         'pricing_features' => '',
-        
-        // Transaction fees
-        'transaction_fees_transaction_fee_percentage' => '',
-        'transaction_fees_transaction_fee_fixed' => '',
-        
-        // Ecommerce website
-        'ecommerce_website_add_store_existing_website' => '',
-        'ecommerce_website_sell_multiple_sites' => '',
-        'ecommerce_website_instant_site_builder' => '',
-        'ecommerce_website_site_templates_count' => '',
-        'ecommerce_website_additional_pages_count' => '',
-        
-        // Domains
-        'domains_free_subdomain' => '',
-        'domains_connect_existing_domain' => '',
-        'domains_buy_custom_domain' => '',
-        'domains_custom_url_slugs' => '',
-        
-        // Sales channels
-        'sales_channels_linkup_bio_page' => '',
-        'sales_channels_facebook_shop' => '',
-        'sales_channels_instagram_store' => '',
-        'sales_channels_mobile_pos' => '',
-        'sales_channels_marketplace_selling' => '',
-        
-        // Support & Analytics
-        'support_analytics_support_type' => '',
-        'support_analytics_analytics_level' => '',
-        'support_analytics_reporting_features' => '',
-        'support_analytics_api_access' => '',
-        
-        // Storage & Limits
-        'storage_limits_product_limit' => '',
-        'storage_limits_storage_limit' => '',
-        'storage_limits_bandwidth_limit' => '',
-        'storage_limits_user_accounts' => '',
     );
+    
+    // Add all feature fields to defaults
+    $feature_categories = array(
+        'basics' => array('transaction_fee', 'product_limit', 'categories', 'storage'),
+        'shopping_experience' => array('adaptive_storefront', 'wishlist', 'single_product_widgets', 'faceted_search', 'bulk_actions', 'user_reviews', 'quick_view', 'advanced_sorting', 'product_recommendations', 'live_search', 'product_comparison'),
+        'online_store' => array('wordpress_plugin', 'customizable_design', 'mobile_responsive', 'seo_optimized', 'page_builder_compatible', 'multi_language', 'custom_css_js', 'theme_compatibility'),
+        'product_inventory' => array('bulk_import', 'inventory_tracking', 'product_variants', 'digital_products', 'stock_alerts', 'barcode_scanning', 'product_bundles', 'serial_numbers', 'expiry_tracking', 'multi_location'),
+        'advanced_features' => array('custom_fields', 'product_scheduling', 'dynamic_pricing', 'wholesale_features', 'subscription_products', 'product_addons', 'tax_rules', 'multi_vendor'),
+        'sales_channels' => array('link_in_bio', 'facebook_shop', 'instagram_store', 'google_shopping', 'amazon_integration', 'ebay_sync', 'pinterest_shopping', 'tiktok_shop', 'marketplace_api'),
+        'marketing' => array('email_marketing', 'discount_codes', 'abandoned_cart', 'affiliate_program', 'loyalty_program', 'gift_cards', 'social_auto_post', 'referral_program', 'sms_marketing', 'push_notifications'),
+        'checkout_payment' => array('payment_gateways', 'one_page_checkout', 'guest_checkout', 'multi_currency', 'express_checkout', 'split_payments', 'cryptocurrency', 'b2b_payments', 'fraud_protection', 'pci_compliance'),
+        'shipping_fulfillment' => array('realtime_rates', 'label_printing', 'order_tracking', 'dropshipping', 'local_delivery', 'pickup_options', 'international_shipping', 'fulfillment_integration', 'shipping_rules', 'package_optimization'),
+        'analytics' => array('sales_analytics', 'customer_insights', 'product_performance', 'custom_reports', 'traffic_analytics', 'conversion_funnel', 'cohort_analysis', 'profit_analytics', 'forecasting', 'ab_testing'),
+        'domains' => array('free_subdomain', 'custom_domain', 'domain_management', 'ssl_certificate', 'domain_forwarding', 'subdomain_support', 'domain_privacy', 'international_domains'),
+        'support' => array('support_type', 'response_time', 'onboarding', 'api_access', 'knowledge_base', 'community_forum', 'account_manager', 'phone_support', 'migration_assistance', 'training_webinars'),
+    );
+    
+    foreach ($feature_categories as $category => $fields) {
+        foreach ($fields as $field) {
+            $defaults[$category . '_' . $field] = '';
+        }
+    }
     
     $meta = array();
     foreach ($defaults as $key => $default) {
@@ -290,7 +305,7 @@ function yoursite_save_pricing_meta_box_data($post_id) {
         return;
     }
 
-    // List of all meta fields to save
+    // Get all possible meta fields
     $meta_fields = array(
         'pricing_monthly_price',
         'pricing_annual_price',
@@ -299,43 +314,29 @@ function yoursite_save_pricing_meta_box_data($post_id) {
         'pricing_button_text',
         'pricing_button_url',
         'pricing_features',
-        
-        // Transaction fees
-        'transaction_fees_transaction_fee_percentage',
-        'transaction_fees_transaction_fee_fixed',
-        
-        // Ecommerce website
-        'ecommerce_website_add_store_existing_website',
-        'ecommerce_website_sell_multiple_sites',
-        'ecommerce_website_instant_site_builder',
-        'ecommerce_website_site_templates_count',
-        'ecommerce_website_additional_pages_count',
-        
-        // Domains
-        'domains_free_subdomain',
-        'domains_connect_existing_domain',
-        'domains_buy_custom_domain',
-        'domains_custom_url_slugs',
-        
-        // Sales channels
-        'sales_channels_linkup_bio_page',
-        'sales_channels_facebook_shop',
-        'sales_channels_instagram_store',
-        'sales_channels_mobile_pos',
-        'sales_channels_marketplace_selling',
-        
-        // Support & Analytics
-        'support_analytics_support_type',
-        'support_analytics_analytics_level',
-        'support_analytics_reporting_features',
-        'support_analytics_api_access',
-        
-        // Storage & Limits
-        'storage_limits_product_limit',
-        'storage_limits_storage_limit',
-        'storage_limits_bandwidth_limit',
-        'storage_limits_user_accounts',
     );
+    
+    // Add all feature fields
+    $feature_categories = array(
+        'basics' => array('transaction_fee', 'product_limit', 'categories', 'storage'),
+        'shopping_experience' => array('adaptive_storefront', 'wishlist', 'single_product_widgets', 'faceted_search', 'bulk_actions', 'user_reviews', 'quick_view', 'advanced_sorting', 'product_recommendations', 'live_search', 'product_comparison'),
+        'online_store' => array('wordpress_plugin', 'customizable_design', 'mobile_responsive', 'seo_optimized', 'page_builder_compatible', 'multi_language', 'custom_css_js', 'theme_compatibility'),
+        'product_inventory' => array('bulk_import', 'inventory_tracking', 'product_variants', 'digital_products', 'stock_alerts', 'barcode_scanning', 'product_bundles', 'serial_numbers', 'expiry_tracking', 'multi_location'),
+        'advanced_features' => array('custom_fields', 'product_scheduling', 'dynamic_pricing', 'wholesale_features', 'subscription_products', 'product_addons', 'tax_rules', 'multi_vendor'),
+        'sales_channels' => array('link_in_bio', 'facebook_shop', 'instagram_store', 'google_shopping', 'amazon_integration', 'ebay_sync', 'pinterest_shopping', 'tiktok_shop', 'marketplace_api'),
+        'marketing' => array('email_marketing', 'discount_codes', 'abandoned_cart', 'affiliate_program', 'loyalty_program', 'gift_cards', 'social_auto_post', 'referral_program', 'sms_marketing', 'push_notifications'),
+        'checkout_payment' => array('payment_gateways', 'one_page_checkout', 'guest_checkout', 'multi_currency', 'express_checkout', 'split_payments', 'cryptocurrency', 'b2b_payments', 'fraud_protection', 'pci_compliance'),
+        'shipping_fulfillment' => array('realtime_rates', 'label_printing', 'order_tracking', 'dropshipping', 'local_delivery', 'pickup_options', 'international_shipping', 'fulfillment_integration', 'shipping_rules', 'package_optimization'),
+        'analytics' => array('sales_analytics', 'customer_insights', 'product_performance', 'custom_reports', 'traffic_analytics', 'conversion_funnel', 'cohort_analysis', 'profit_analytics', 'forecasting', 'ab_testing'),
+        'domains' => array('free_subdomain', 'custom_domain', 'domain_management', 'ssl_certificate', 'domain_forwarding', 'subdomain_support', 'domain_privacy', 'international_domains'),
+        'support' => array('support_type', 'response_time', 'onboarding', 'api_access', 'knowledge_base', 'community_forum', 'account_manager', 'phone_support', 'migration_assistance', 'training_webinars'),
+    );
+    
+    foreach ($feature_categories as $category => $fields) {
+        foreach ($fields as $field) {
+            $meta_fields[] = $category . '_' . $field;
+        }
+    }
 
     foreach ($meta_fields as $field) {
         if (isset($_POST[$field])) {
@@ -391,7 +392,6 @@ function yoursite_pricing_meta_box_styles() {
         .feature-field input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
     </style>';
 }
-
 /**
  * Add admin columns for pricing plans
  */

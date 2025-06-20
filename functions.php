@@ -608,4 +608,22 @@ function yoursite_cleanup_debug() {
     remove_action('wp_head', 'test_customizer_loading');
 }
 add_action('init', 'yoursite_cleanup_debug');
+
+function yoursite_get_currency_symbol() {
+    $currency = get_option('yoursite_currency', 'USD'); // fallback to USD if not set
+
+    $symbols = [
+        'USD' => '$',
+        'EUR' => '€',
+        'GBP' => '£',
+        'AUD' => 'A$',
+        'CAD' => 'C$',
+        'JPY' => '¥',
+        'INR' => '₹',
+        // Add more currencies if needed
+    ];
+
+    return isset($symbols[$currency]) ? $symbols[$currency] : '$';
+}
+
 ?>
