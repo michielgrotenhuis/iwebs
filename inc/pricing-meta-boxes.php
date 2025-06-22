@@ -1,7 +1,7 @@
 <?php
 /**
- * Enhanced Pricing Plans Meta Box with Features Comparison
- * File inc/pricing-meta-boxes.php
+ * Enhanced Pricing Plans Meta Box with Complete Feature Set Matching Comparison Table
+ * File: inc/pricing-meta-boxes.php
  */
 
 if (!defined('ABSPATH')) {
@@ -23,7 +23,7 @@ function yoursite_add_pricing_meta_boxes() {
     
     add_meta_box(
         'pricing_plan_features',
-        __('Plan Features Comparison', 'yoursite'),
+        __('Complete Feature Set for Comparison Table', 'yoursite'),
         'yoursite_pricing_features_meta_box_callback',
         'pricing',
         'normal',
@@ -103,8 +103,8 @@ function yoursite_pricing_plan_meta_box_callback($post) {
     echo '</td>';
     echo '</tr>';
     
-    // Basic Features
-    echo '<tr><td colspan="2"><div class="meta-section"><h4>⭐ ' . __('Basic Features List', 'yoursite') . '</h4></div></td></tr>';
+    // Basic Features for Cards
+    echo '<tr><td colspan="2"><div class="meta-section"><h4>⭐ ' . __('Basic Features List (for pricing cards)', 'yoursite') . '</h4></div></td></tr>';
     
     echo '<tr>';
     echo '<th><label for="pricing_features"><strong>' . __('Features', 'yoursite') . '</strong></label></th>';
@@ -117,121 +117,44 @@ function yoursite_pricing_plan_meta_box_callback($post) {
     echo '</table>';
 }
 
-// Add to the yoursite_pricing_features_meta_box_callback function
+/**
+ * Complete feature set meta box for comparison table
+ */
 function yoursite_pricing_features_meta_box_callback($post) {
     $meta = yoursite_get_pricing_meta_fields($post->ID);
     
     echo '<div class="pricing-features-comparison">';
-    echo '<p class="description" style="margin-bottom: 20px;">' . __('Configure detailed features for the comparison table. Use "Yes", "No", numbers, or descriptive text.', 'yoursite') . '</p>';
+    echo '<p class="description" style="margin-bottom: 20px; background: #f0f6fc; padding: 15px; border: 1px solid #c3dcf2; border-radius: 6px;">';
+    echo '<strong>Instructions:</strong> Configure detailed features for the comparison table. Use:<br>';
+    echo '• <strong>"Yes"</strong> or <strong>"✓"</strong> for included features<br>';
+    echo '• <strong>"No"</strong> or <strong>"✗"</strong> for not included features<br>';
+    echo '• <strong>Numbers</strong> like "100", "1000", "Unlimited"<br>';
+    echo '• <strong>Descriptive text</strong> like "Basic support", "24/7 Premium support"<br>';
+    echo '• <strong>"Unlimited"</strong> for unlimited features';
+    echo '</p>';
     
-    $feature_categories = array(
-        'basics' => array(
-            'title' => __('Essentials', 'yoursite'),
-            'description' => __('Core features to get started', 'yoursite'),
-            'fields' => array(
-                'transaction_fee' => __('Transaction Fee', 'yoursite'),
-                'product_limit' => __('Product Limit', 'yoursite'),
-                'categories' => __('Categories', 'yoursite'),
-                'storage' => __('Storage', 'yoursite'),
-            )
-        ),
-        'shopping_experience' => array(
-            'title' => __('Shopping Experience', 'yoursite'),
-            'description' => __('Create seamless shopping journeys', 'yoursite'),
-            'fields' => array(
-                'adaptive_storefront' => __('Adaptive Storefront Widget', 'yoursite'),
-                'wishlist' => __('Favorites/Wishlist', 'yoursite'),
-                'single_product_widgets' => __('Single Product Widgets', 'yoursite'),
-                'faceted_search' => __('Advanced Search & Filters', 'yoursite'),
-            )
-        ),
-        'online_store' => array(
-            'title' => __('Online Store Builder', 'yoursite'),
-            'description' => __('Build and customize your store', 'yoursite'),
-            'fields' => array(
-                'wordpress_plugin' => __('WordPress Plugin', 'yoursite'),
-                'customizable_design' => __('Customizable Design', 'yoursite'),
-                'mobile_responsive' => __('Mobile Responsive', 'yoursite'),
-                'seo_optimized' => __('SEO Optimized', 'yoursite'),
-            )
-        ),
-        'product_inventory' => array(
-            'title' => __('Product & Inventory', 'yoursite'),
-            'description' => __('Manage products efficiently', 'yoursite'),
-            'fields' => array(
-                'bulk_import' => __('Bulk Import/Export', 'yoursite'),
-                'inventory_tracking' => __('Inventory Tracking', 'yoursite'),
-                'product_variants' => __('Product Variants', 'yoursite'),
-                'digital_products' => __('Digital Products', 'yoursite'),
-            )
-        ),
-        'sales_channels' => array(
-            'title' => __('Sales Channels', 'yoursite'),
-            'description' => __('Sell everywhere your customers are', 'yoursite'),
-            'fields' => array(
-                'link_in_bio' => __('Link-in-Bio Store', 'yoursite'),
-                'facebook_shop' => __('Facebook Shop', 'yoursite'),
-                'instagram_store' => __('Instagram Shopping', 'yoursite'),
-                'marketplace_sync' => __('Marketplace Integration', 'yoursite'),
-            )
-        ),
-        'marketing' => array(
-            'title' => __('Marketing Tools', 'yoursite'),
-            'description' => __('Grow your audience and sales', 'yoursite'),
-            'fields' => array(
-                'email_marketing' => __('Email Marketing', 'yoursite'),
-                'discount_codes' => __('Discount Codes', 'yoursite'),
-                'abandoned_cart' => __('Abandoned Cart Recovery', 'yoursite'),
-                'affiliate_program' => __('Affiliate Program', 'yoursite'),
-            )
-        ),
-        'checkout_payment' => array(
-            'title' => __('Checkout & Payment', 'yoursite'),
-            'description' => __('Secure and flexible payments', 'yoursite'),
-            'fields' => array(
-                'payment_gateways' => __('Payment Methods', 'yoursite'),
-                'one_page_checkout' => __('One-Page Checkout', 'yoursite'),
-                'guest_checkout' => __('Guest Checkout', 'yoursite'),
-                'multi_currency' => __('Multi-Currency', 'yoursite'),
-            )
-        ),
-        'analytics' => array(
-            'title' => __('Analytics & Reports', 'yoursite'),
-            'description' => __('Data-driven insights', 'yoursite'),
-            'fields' => array(
-                'sales_analytics' => __('Sales Analytics', 'yoursite'),
-                'customer_insights' => __('Customer Insights', 'yoursite'),
-                'product_performance' => __('Product Performance', 'yoursite'),
-                'custom_reports' => __('Custom Reports', 'yoursite'),
-            )
-        ),
-        'support' => array(
-            'title' => __('Support & Success', 'yoursite'),
-            'description' => __('We\'re here to help you succeed', 'yoursite'),
-            'fields' => array(
-                'support_type' => __('Support Type', 'yoursite'),
-                'response_time' => __('Response Time', 'yoursite'),
-                'onboarding' => __('Onboarding Help', 'yoursite'),
-                'api_access' => __('API Access', 'yoursite'),
-            )
-        )
-    );
+    // Get comprehensive feature categories matching the comparison table
+    // This function is now defined in pricing-features-helper.php
+    $feature_categories = yoursite_get_comparison_feature_categories();
     
     foreach ($feature_categories as $category_key => $category) {
-        echo '<div class="feature-category" style="margin-bottom: 30px; border: 1px solid #ddd; padding: 20px; border-radius: 8px;">';
-        echo '<h4 style="margin-top: 0; color: #2271b1; border-bottom: 1px solid #ddd; padding-bottom: 10px;">' . $category['title'] . '</h4>';
+        echo '<div class="feature-category" style="margin-bottom: 30px; border: 1px solid #ddd; padding: 20px; border-radius: 8px; background: #fafafa;">';
+        echo '<h4 style="margin-top: 0; color: #2271b1; border-bottom: 1px solid #ddd; padding-bottom: 10px; display: flex; align-items: center; gap: 10px;">';
+        echo '<span style="font-size: 20px;">' . $category['icon'] . '</span>';
+        echo $category['title'];
+        echo '</h4>';
         echo '<p style="font-style: italic; color: #666; margin-bottom: 15px;">' . $category['description'] . '</p>';
         
-        echo '<div class="feature-fields" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">';
+        echo '<div class="feature-fields" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">';
         
-        foreach ($category['fields'] as $field_key => $field_label) {
+        foreach ($category['fields'] as $field_key => $field_data) {
             $meta_key = $category_key . '_' . $field_key;
             $value = isset($meta[$meta_key]) ? $meta[$meta_key] : '';
             
-            echo '<div class="feature-field">';
-            echo '<label for="' . $meta_key . '" style="display: block; font-weight: 600; margin-bottom: 5px;">' . $field_label . '</label>';
-            echo '<input type="text" id="' . $meta_key . '" name="' . $meta_key . '" value="' . esc_attr($value) . '" style="width: 100%;" placeholder="e.g., Yes, No, Unlimited, 1000" />';
-            echo '<p class="description" style="font-size: 12px; margin-top: 4px;">Use: Yes/No, numbers, or short descriptions</p>';
+            echo '<div class="feature-field" style="border: 1px solid #e1e1e1; padding: 12px; border-radius: 4px; background: white;">';
+            echo '<label for="' . $meta_key . '" style="display: block; font-weight: 600; margin-bottom: 5px; color: #333;">' . $field_data['label'] . '</label>';
+            echo '<input type="text" id="' . $meta_key . '" name="' . $meta_key . '" value="' . esc_attr($value) . '" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 3px;" placeholder="e.g., Yes, No, Unlimited, 1000" />';
+            echo '<p class="description" style="font-size: 11px; margin-top: 4px; color: #666;">' . esc_html($field_data['tooltip']) . '</p>';
             echo '</div>';
         }
         
@@ -243,7 +166,7 @@ function yoursite_pricing_features_meta_box_callback($post) {
 }
 
 /**
- * Get pricing meta fields with defaults
+ * Get pricing meta fields with defaults - Updated for comprehensive features
  */
 function yoursite_get_pricing_meta_fields($post_id) {
     $defaults = array(
@@ -256,25 +179,11 @@ function yoursite_get_pricing_meta_fields($post_id) {
         'pricing_features' => '',
     );
     
-    // Add all feature fields to defaults
-    $feature_categories = array(
-        'basics' => array('transaction_fee', 'product_limit', 'categories', 'storage'),
-        'shopping_experience' => array('adaptive_storefront', 'wishlist', 'single_product_widgets', 'faceted_search', 'bulk_actions', 'user_reviews', 'quick_view', 'advanced_sorting', 'product_recommendations', 'live_search', 'product_comparison'),
-        'online_store' => array('wordpress_plugin', 'customizable_design', 'mobile_responsive', 'seo_optimized', 'page_builder_compatible', 'multi_language', 'custom_css_js', 'theme_compatibility'),
-        'product_inventory' => array('bulk_import', 'inventory_tracking', 'product_variants', 'digital_products', 'stock_alerts', 'barcode_scanning', 'product_bundles', 'serial_numbers', 'expiry_tracking', 'multi_location'),
-        'advanced_features' => array('custom_fields', 'product_scheduling', 'dynamic_pricing', 'wholesale_features', 'subscription_products', 'product_addons', 'tax_rules', 'multi_vendor'),
-        'sales_channels' => array('link_in_bio', 'facebook_shop', 'instagram_store', 'google_shopping', 'amazon_integration', 'ebay_sync', 'pinterest_shopping', 'tiktok_shop', 'marketplace_api'),
-        'marketing' => array('email_marketing', 'discount_codes', 'abandoned_cart', 'affiliate_program', 'loyalty_program', 'gift_cards', 'social_auto_post', 'referral_program', 'sms_marketing', 'push_notifications'),
-        'checkout_payment' => array('payment_gateways', 'one_page_checkout', 'guest_checkout', 'multi_currency', 'express_checkout', 'split_payments', 'cryptocurrency', 'b2b_payments', 'fraud_protection', 'pci_compliance'),
-        'shipping_fulfillment' => array('realtime_rates', 'label_printing', 'order_tracking', 'dropshipping', 'local_delivery', 'pickup_options', 'international_shipping', 'fulfillment_integration', 'shipping_rules', 'package_optimization'),
-        'analytics' => array('sales_analytics', 'customer_insights', 'product_performance', 'custom_reports', 'traffic_analytics', 'conversion_funnel', 'cohort_analysis', 'profit_analytics', 'forecasting', 'ab_testing'),
-        'domains' => array('free_subdomain', 'custom_domain', 'domain_management', 'ssl_certificate', 'domain_forwarding', 'subdomain_support', 'domain_privacy', 'international_domains'),
-        'support' => array('support_type', 'response_time', 'onboarding', 'api_access', 'knowledge_base', 'community_forum', 'account_manager', 'phone_support', 'migration_assistance', 'training_webinars'),
-    );
-    
-    foreach ($feature_categories as $category => $fields) {
-        foreach ($fields as $field) {
-            $defaults[$category . '_' . $field] = '';
+    // Add all comprehensive feature fields to defaults
+    $feature_categories = yoursite_get_comparison_feature_categories();
+    foreach ($feature_categories as $category_key => $category) {
+        foreach ($category['fields'] as $field_key => $field_data) {
+            $defaults[$category_key . '_' . $field_key] = '';
         }
     }
     
@@ -287,7 +196,7 @@ function yoursite_get_pricing_meta_fields($post_id) {
 }
 
 /**
- * Save pricing meta box data
+ * Save pricing meta box data - Updated for comprehensive features
  */
 function yoursite_save_pricing_meta_box_data($post_id) {
     // Check if nonce is valid
@@ -316,25 +225,11 @@ function yoursite_save_pricing_meta_box_data($post_id) {
         'pricing_features',
     );
     
-    // Add all feature fields
-    $feature_categories = array(
-        'basics' => array('transaction_fee', 'product_limit', 'categories', 'storage'),
-        'shopping_experience' => array('adaptive_storefront', 'wishlist', 'single_product_widgets', 'faceted_search', 'bulk_actions', 'user_reviews', 'quick_view', 'advanced_sorting', 'product_recommendations', 'live_search', 'product_comparison'),
-        'online_store' => array('wordpress_plugin', 'customizable_design', 'mobile_responsive', 'seo_optimized', 'page_builder_compatible', 'multi_language', 'custom_css_js', 'theme_compatibility'),
-        'product_inventory' => array('bulk_import', 'inventory_tracking', 'product_variants', 'digital_products', 'stock_alerts', 'barcode_scanning', 'product_bundles', 'serial_numbers', 'expiry_tracking', 'multi_location'),
-        'advanced_features' => array('custom_fields', 'product_scheduling', 'dynamic_pricing', 'wholesale_features', 'subscription_products', 'product_addons', 'tax_rules', 'multi_vendor'),
-        'sales_channels' => array('link_in_bio', 'facebook_shop', 'instagram_store', 'google_shopping', 'amazon_integration', 'ebay_sync', 'pinterest_shopping', 'tiktok_shop', 'marketplace_api'),
-        'marketing' => array('email_marketing', 'discount_codes', 'abandoned_cart', 'affiliate_program', 'loyalty_program', 'gift_cards', 'social_auto_post', 'referral_program', 'sms_marketing', 'push_notifications'),
-        'checkout_payment' => array('payment_gateways', 'one_page_checkout', 'guest_checkout', 'multi_currency', 'express_checkout', 'split_payments', 'cryptocurrency', 'b2b_payments', 'fraud_protection', 'pci_compliance'),
-        'shipping_fulfillment' => array('realtime_rates', 'label_printing', 'order_tracking', 'dropshipping', 'local_delivery', 'pickup_options', 'international_shipping', 'fulfillment_integration', 'shipping_rules', 'package_optimization'),
-        'analytics' => array('sales_analytics', 'customer_insights', 'product_performance', 'custom_reports', 'traffic_analytics', 'conversion_funnel', 'cohort_analysis', 'profit_analytics', 'forecasting', 'ab_testing'),
-        'domains' => array('free_subdomain', 'custom_domain', 'domain_management', 'ssl_certificate', 'domain_forwarding', 'subdomain_support', 'domain_privacy', 'international_domains'),
-        'support' => array('support_type', 'response_time', 'onboarding', 'api_access', 'knowledge_base', 'community_forum', 'account_manager', 'phone_support', 'migration_assistance', 'training_webinars'),
-    );
-    
-    foreach ($feature_categories as $category => $fields) {
-        foreach ($fields as $field) {
-            $meta_fields[] = $category . '_' . $field;
+    // Add all comprehensive feature fields
+    $feature_categories = yoursite_get_comparison_feature_categories();
+    foreach ($feature_categories as $category_key => $category) {
+        foreach ($category['fields'] as $field_key => $field_data) {
+            $meta_fields[] = $category_key . '_' . $field_key;
         }
     }
 
@@ -390,8 +285,10 @@ function yoursite_pricing_meta_box_styles() {
         .feature-category { background: #fafafa; }
         .feature-field label { font-size: 13px; }
         .feature-field input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .pricing-features-comparison { max-height: 600px; overflow-y: auto; border: 1px solid #ddd; padding: 20px; background: white; }
     </style>';
 }
+
 /**
  * Add admin columns for pricing plans
  */
@@ -429,4 +326,3 @@ function yoursite_pricing_admin_column_content($column, $post_id) {
     }
 }
 add_action('manage_pricing_posts_custom_column', 'yoursite_pricing_admin_column_content', 10, 2);
-?>

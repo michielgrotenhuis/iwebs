@@ -1,7 +1,8 @@
 <?php
 /**
- * Pricing Page Customizer Settings
- * Add this file as: inc/customizer/customizer-pricing.php
+ * Pricing Page Customizer Settings - Updated Version
+ * Only page content, no pricing plans management
+ * File: inc/customizer/customizer-pricing.php
  */
 
 if (!defined('ABSPATH')) {
@@ -16,7 +17,7 @@ function yoursite_pricing_page_customizer($wp_customize) {
     // Pricing Page Section
     $wp_customize->add_section('pricing_page_editor', array(
         'title' => __('Pricing Page', 'yoursite'),
-        'description' => __('Customize all elements of the Pricing page', 'yoursite'),
+        'description' => __('Customize pricing page content. Manage pricing plans in WP-Admin > Pricing Plans.', 'yoursite'),
         'panel' => 'yoursite_pages',
         'priority' => 30,
     ));
@@ -108,271 +109,66 @@ function yoursite_pricing_page_customizer($wp_customize) {
     ));
     
     // ========================================
-    // PRICING PLANS
+    // PLANS SECTION INFO
     // ========================================
     
-    // Plans Enable/Disable
-    $wp_customize->add_setting('pricing_plans_enable', array(
+    // Info about managing plans
+    $wp_customize->add_setting('pricing_plans_info', array(
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Control($wp_customize, 'pricing_plans_info', array(
+        'label' => __('Pricing Plans Management', 'yoursite'),
+        'section' => 'pricing_page_editor',
+        'type' => 'hidden',
+        'description' => __('To add, edit, or remove pricing plans, go to WP-Admin → Pricing Plans. The pricing cards and comparison table will automatically display your published pricing plans.', 'yoursite'),
+        'priority' => 20,
+    )));
+    
+    // ========================================
+    // COMPARISON TABLE SECTION
+    // ========================================
+    
+    // Comparison Table Enable
+    $wp_customize->add_setting('pricing_comparison_enable', array(
         'default' => true,
         'sanitize_callback' => 'yoursite_sanitize_checkbox',
         'transport' => 'refresh',
     ));
     
-    $wp_customize->add_control('pricing_plans_enable', array(
-        'label' => __('Enable Pricing Plans', 'yoursite'),
+    $wp_customize->add_control('pricing_comparison_enable', array(
+        'label' => __('Enable Comparison Table', 'yoursite'),
         'section' => 'pricing_page_editor',
         'type' => 'checkbox',
         'priority' => 21,
     ));
     
-    // Plan 1 - Free
-    $wp_customize->add_setting('pricing_plan_1_enable', array(
-        'default' => true,
-        'sanitize_callback' => 'yoursite_sanitize_checkbox',
+    // Comparison Table Title
+    $wp_customize->add_setting('pricing_comparison_title', array(
+        'default' => 'See What\'s Included in Each Plan',
+        'sanitize_callback' => 'sanitize_text_field',
         'transport' => 'refresh',
     ));
     
-    $wp_customize->add_control('pricing_plan_1_enable', array(
-        'label' => __('Enable Free Plan', 'yoursite'),
+    $wp_customize->add_control('pricing_comparison_title', array(
+        'label' => __('Comparison Table Title', 'yoursite'),
         'section' => 'pricing_page_editor',
-        'type' => 'checkbox',
+        'type' => 'text',
         'priority' => 22,
     ));
     
-    $wp_customize->add_setting('pricing_plan_1_name', array(
-        'default' => 'Free',
+    // Comparison Table Subtitle
+    $wp_customize->add_setting('pricing_comparison_subtitle', array(
+        'default' => 'Every feature designed to help your business grow',
         'sanitize_callback' => 'sanitize_text_field',
         'transport' => 'refresh',
     ));
     
-    $wp_customize->add_control('pricing_plan_1_name', array(
-        'label' => __('Free Plan Name', 'yoursite'),
+    $wp_customize->add_control('pricing_comparison_subtitle', array(
+        'label' => __('Comparison Table Subtitle', 'yoursite'),
         'section' => 'pricing_page_editor',
         'type' => 'text',
         'priority' => 23,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_1_description', array(
-        'default' => 'Perfect for trying out our platform',
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_1_description', array(
-        'label' => __('Free Plan Description', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'text',
-        'priority' => 24,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_1_price', array(
-        'default' => '0',
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_1_price', array(
-        'label' => __('Free Plan Price', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'text',
-        'priority' => 25,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_1_features', array(
-        'default' => "Up to 50 products\nBasic analytics\nEmail support\nSSL certificate\nMobile responsive",
-        'sanitize_callback' => 'sanitize_textarea_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_1_features', array(
-        'label' => __('Free Plan Features (one per line)', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'textarea',
-        'priority' => 26,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_1_button_text', array(
-        'default' => 'Get Started Free',
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_1_button_text', array(
-        'label' => __('Free Plan Button Text', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'text',
-        'priority' => 27,
-    ));
-    
-    // Plan 2 - Starter
-    $wp_customize->add_setting('pricing_plan_2_enable', array(
-        'default' => true,
-        'sanitize_callback' => 'yoursite_sanitize_checkbox',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_2_enable', array(
-        'label' => __('Enable Starter Plan', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'checkbox',
-        'priority' => 28,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_2_name', array(
-        'default' => 'Starter',
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_2_name', array(
-        'label' => __('Starter Plan Name', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'text',
-        'priority' => 29,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_2_description', array(
-        'default' => 'Perfect for small businesses getting started',
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_2_description', array(
-        'label' => __('Starter Plan Description', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'text',
-        'priority' => 30,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_2_price', array(
-        'default' => '19',
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_2_price', array(
-        'label' => __('Starter Plan Price', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'text',
-        'priority' => 31,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_2_features', array(
-        'default' => "Up to 500 products\nAdvanced analytics\nPriority support\nCustom domain\nPayment processing\nInventory management",
-        'sanitize_callback' => 'sanitize_textarea_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_2_features', array(
-        'label' => __('Starter Plan Features (one per line)', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'textarea',
-        'priority' => 32,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_2_button_text', array(
-        'default' => 'Get Started',
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_2_button_text', array(
-        'label' => __('Starter Plan Button Text', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'text',
-        'priority' => 33,
-    ));
-    
-    // Plan 3 - Professional (Featured)
-    $wp_customize->add_setting('pricing_plan_3_enable', array(
-        'default' => true,
-        'sanitize_callback' => 'yoursite_sanitize_checkbox',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_3_enable', array(
-        'label' => __('Enable Professional Plan', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'checkbox',
-        'priority' => 34,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_3_featured', array(
-        'default' => true,
-        'sanitize_callback' => 'yoursite_sanitize_checkbox',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_3_featured', array(
-        'label' => __('Mark Professional as Featured Plan', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'checkbox',
-        'priority' => 35,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_3_name', array(
-        'default' => 'Professional',
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_3_name', array(
-        'label' => __('Professional Plan Name', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'text',
-        'priority' => 36,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_3_description', array(
-        'default' => 'Best for growing businesses',
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_3_description', array(
-        'label' => __('Professional Plan Description', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'text',
-        'priority' => 37,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_3_price', array(
-        'default' => '49',
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_3_price', array(
-        'label' => __('Professional Plan Price', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'text',
-        'priority' => 38,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_3_features', array(
-        'default' => "Up to 2,000 products\nAdvanced analytics\nPriority support\nCustom integrations\nMarketing automation\nMulti-location support\nAdvanced SEO tools",
-        'sanitize_callback' => 'sanitize_textarea_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_3_features', array(
-        'label' => __('Professional Plan Features (one per line)', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'textarea',
-        'priority' => 39,
-    ));
-    
-    $wp_customize->add_setting('pricing_plan_3_button_text', array(
-        'default' => 'Get Started',
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport' => 'refresh',
-    ));
-    
-    $wp_customize->add_control('pricing_plan_3_button_text', array(
-        'label' => __('Professional Plan Button Text', 'yoursite'),
-        'section' => 'pricing_page_editor',
-        'type' => 'text',
-        'priority' => 40,
     ));
     
     // ========================================
@@ -390,7 +186,7 @@ function yoursite_pricing_page_customizer($wp_customize) {
         'label' => __('Enable FAQ Section', 'yoursite'),
         'section' => 'pricing_page_editor',
         'type' => 'checkbox',
-        'priority' => 51,
+        'priority' => 31,
     ));
     
     // FAQ Title
@@ -404,7 +200,7 @@ function yoursite_pricing_page_customizer($wp_customize) {
         'label' => __('FAQ Section Title', 'yoursite'),
         'section' => 'pricing_page_editor',
         'type' => 'text',
-        'priority' => 52,
+        'priority' => 32,
     ));
     
     // FAQ Subtitle
@@ -418,10 +214,10 @@ function yoursite_pricing_page_customizer($wp_customize) {
         'label' => __('FAQ Section Subtitle', 'yoursite'),
         'section' => 'pricing_page_editor',
         'type' => 'text',
-        'priority' => 53,
+        'priority' => 33,
     ));
     
-    // FAQ Items
+    // FAQ Items (5 FAQ items)
     $default_faqs = array(
         array('question' => 'Can I change plans anytime?', 'answer' => 'Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle, and we\'ll prorate any differences.'),
         array('question' => 'Is there a free trial?', 'answer' => 'Yes, all paid plans come with a 14-day free trial. No credit card required to get started. You can also use our Free plan indefinitely.'),
@@ -443,7 +239,7 @@ function yoursite_pricing_page_customizer($wp_customize) {
             'label' => __("Enable FAQ {$i}", 'yoursite'),
             'section' => 'pricing_page_editor',
             'type' => 'checkbox',
-            'priority' => 54 + ($i - 1) * 3,
+            'priority' => 34 + ($i - 1) * 3,
         ));
         
         $wp_customize->add_setting("pricing_faq_{$i}_question", array(
@@ -456,7 +252,7 @@ function yoursite_pricing_page_customizer($wp_customize) {
             'label' => __("FAQ {$i} Question", 'yoursite'),
             'section' => 'pricing_page_editor',
             'type' => 'text',
-            'priority' => 55 + ($i - 1) * 3,
+            'priority' => 35 + ($i - 1) * 3,
         ));
         
         $wp_customize->add_setting("pricing_faq_{$i}_answer", array(
@@ -469,7 +265,7 @@ function yoursite_pricing_page_customizer($wp_customize) {
             'label' => __("FAQ {$i} Answer", 'yoursite'),
             'section' => 'pricing_page_editor',
             'type' => 'textarea',
-            'priority' => 56 + ($i - 1) * 3,
+            'priority' => 36 + ($i - 1) * 3,
         ));
     }
     
@@ -488,12 +284,12 @@ function yoursite_pricing_page_customizer($wp_customize) {
         'label' => __('Enable CTA Section', 'yoursite'),
         'section' => 'pricing_page_editor',
         'type' => 'checkbox',
-        'priority' => 71,
+        'priority' => 51,
     ));
     
     // CTA Title
     $wp_customize->add_setting('pricing_cta_title', array(
-        'default' => 'Ready to get started?',
+        'default' => 'Ready to grow your business?',
         'sanitize_callback' => 'sanitize_text_field',
         'transport' => 'refresh',
     ));
@@ -502,12 +298,12 @@ function yoursite_pricing_page_customizer($wp_customize) {
         'label' => __('CTA Section Title', 'yoursite'),
         'section' => 'pricing_page_editor',
         'type' => 'text',
-        'priority' => 72,
+        'priority' => 52,
     ));
     
     // CTA Subtitle
     $wp_customize->add_setting('pricing_cta_subtitle', array(
-        'default' => 'Join thousands of businesses already using our platform',
+        'default' => 'Join thousands of successful merchants using our platform',
         'sanitize_callback' => 'sanitize_text_field',
         'transport' => 'refresh',
     ));
@@ -516,21 +312,63 @@ function yoursite_pricing_page_customizer($wp_customize) {
         'label' => __('CTA Section Subtitle', 'yoursite'),
         'section' => 'pricing_page_editor',
         'type' => 'text',
-        'priority' => 73,
+        'priority' => 53,
     ));
     
-    // CTA Button Text
-    $wp_customize->add_setting('pricing_cta_button_text', array(
+    // CTA Primary Button Text
+    $wp_customize->add_setting('pricing_cta_primary_text', array(
         'default' => 'Start Your Free Trial',
         'sanitize_callback' => 'sanitize_text_field',
         'transport' => 'refresh',
     ));
     
-    $wp_customize->add_control('pricing_cta_button_text', array(
-        'label' => __('CTA Button Text', 'yoursite'),
+    $wp_customize->add_control('pricing_cta_primary_text', array(
+        'label' => __('Primary CTA Button Text', 'yoursite'),
         'section' => 'pricing_page_editor',
         'type' => 'text',
-        'priority' => 74,
+        'priority' => 54,
+    ));
+    
+    // CTA Primary Button URL
+    $wp_customize->add_setting('pricing_cta_primary_url', array(
+        'default' => '#',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('pricing_cta_primary_url', array(
+        'label' => __('Primary CTA Button URL', 'yoursite'),
+        'section' => 'pricing_page_editor',
+        'type' => 'url',
+        'priority' => 55,
+    ));
+    
+    // CTA Secondary Button Text
+    $wp_customize->add_setting('pricing_cta_secondary_text', array(
+        'default' => 'Talk to Sales',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('pricing_cta_secondary_text', array(
+        'label' => __('Secondary CTA Button Text', 'yoursite'),
+        'section' => 'pricing_page_editor',
+        'type' => 'text',
+        'priority' => 56,
+    ));
+    
+    // CTA Secondary Button URL
+    $wp_customize->add_setting('pricing_cta_secondary_url', array(
+        'default' => '/contact',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('pricing_cta_secondary_url', array(
+        'label' => __('Secondary CTA Button URL', 'yoursite'),
+        'section' => 'pricing_page_editor',
+        'type' => 'text',
+        'priority' => 57,
     ));
 }
 

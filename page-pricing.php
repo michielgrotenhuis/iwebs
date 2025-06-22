@@ -1,7 +1,7 @@
 <?php
 /**
- * Template Name: Pricing Page with Enhanced Comparison and Fixed Toggles
- * Updated page-pricing.php with improved comparison table and working toggles
+ * Template Name: Pricing Page - Complete Version
+ * Uses Customizer for content and WP-Admin for pricing plans
  */
 
 get_header();
@@ -9,34 +9,60 @@ get_header();
 // Load required files
 require_once get_template_directory() . '/inc/pricing-comparison-table.php';
 require_once get_template_directory() . '/inc/pricing-shortcodes.php';
+
+// Get customizer settings
+$hero_enable = get_theme_mod('pricing_hero_enable', true);
+$hero_title = get_theme_mod('pricing_hero_title', 'Simple, Transparent Pricing');
+$hero_subtitle = get_theme_mod('pricing_hero_subtitle', 'Choose the perfect plan for your business. Start free, upgrade when you\'re ready.');
+$monthly_text = get_theme_mod('pricing_billing_monthly_text', 'Monthly');
+$yearly_text = get_theme_mod('pricing_billing_yearly_text', 'Yearly');
+$save_text = get_theme_mod('pricing_billing_save_text', 'Save 20%');
+
+$comparison_enable = get_theme_mod('pricing_comparison_enable', true);
+$comparison_title = get_theme_mod('pricing_comparison_title', 'See What\'s Included in Each Plan');
+$comparison_subtitle = get_theme_mod('pricing_comparison_subtitle', 'Every feature designed to help your business grow');
+
+$faq_enable = get_theme_mod('pricing_faq_enable', true);
+$faq_title = get_theme_mod('pricing_faq_title', 'Frequently Asked Questions');
+$faq_subtitle = get_theme_mod('pricing_faq_subtitle', 'Quick answers to common pricing questions');
+
+$cta_enable = get_theme_mod('pricing_cta_enable', true);
+$cta_title = get_theme_mod('pricing_cta_title', 'Ready to grow your business?');
+$cta_subtitle = get_theme_mod('pricing_cta_subtitle', 'Join thousands of successful merchants using our platform');
+$cta_primary_text = get_theme_mod('pricing_cta_primary_text', 'Start Your Free Trial');
+$cta_primary_url = get_theme_mod('pricing_cta_primary_url', '#');
+$cta_secondary_text = get_theme_mod('pricing_cta_secondary_text', 'Talk to Sales');
+$cta_secondary_url = get_theme_mod('pricing_cta_secondary_url', '/contact');
 ?>
 
 <div class="pricing-page bg-gray-50 dark:bg-gray-900 min-h-screen">
     
+    <?php if ($hero_enable) : ?>
     <!-- Hero Section -->
     <section class="bg-white dark:bg-gray-800 py-20">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto text-center">
                 <h1 class="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                    Simple, Transparent Pricing
+                    <?php echo esc_html($hero_title); ?>
                 </h1>
                 <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
-                    Choose the perfect plan for your business. Start free, upgrade when you're ready.
+                    <?php echo esc_html($hero_subtitle); ?>
                 </p>
                 
                 <!-- Billing Toggle - Annual Default -->
                 <div class="flex items-center justify-center mb-8">
-                    <span class="text-gray-700 dark:text-gray-300 mr-4 font-medium billing-monthly">Monthly</span>
+                    <span class="text-gray-700 dark:text-gray-300 mr-4 font-medium billing-monthly"><?php echo esc_html($monthly_text); ?></span>
                     <div class="relative">
                         <input type="checkbox" id="billing-toggle" class="sr-only peer" checked>
                         <label for="billing-toggle" class="relative inline-flex items-center justify-between w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer transition-colors duration-300 peer-checked:bg-blue-600 peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800">
                             <span class="toggle-switch absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300"></span>
                         </label>
                     </div>
-                    <span class="text-gray-700 dark:text-gray-300 ml-4 font-medium billing-yearly">Annual</span>
-                    <span class="bg-emerald-500 text-emerald-50 dark:text-white text-sm font-semibold px-3 py-1 rounded-full ml-3 shadow-md">Save 20%</span>
+                    <span class="text-gray-700 dark:text-gray-300 ml-4 font-medium billing-yearly"><?php echo esc_html($yearly_text); ?></span>
+                    <span class="bg-emerald-500 text-emerald-50 dark:text-white text-sm font-semibold px-3 py-1 rounded-full ml-3 shadow-md"><?php echo esc_html($save_text); ?></span>
                 </div>
                 
+                <?php if ($comparison_enable) : ?>
                 <!-- Scroll to Comparison Button -->
                 <div class="mb-4">
                     <button class="btn-secondary hover:bg-gray-100 dark:hover:bg-gray-700" data-scroll-to-comparison onclick="document.querySelector('.pricing-comparison-wrapper').scrollIntoView({behavior: 'smooth'})">
@@ -48,16 +74,18 @@ require_once get_template_directory() . '/inc/pricing-shortcodes.php';
                         </span>
                     </button>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
-    <!-- Pricing Cards Section with Enhanced Toggle -->
+    <!-- Pricing Cards Section -->
     <section class="py-20" id="pricing-cards">
         <div class="container mx-auto px-4">
             <div class="max-w-7xl mx-auto">
                 
-                <!-- Dynamic Pricing Cards -->
+                <!-- Dynamic Pricing Cards from WP-Admin -->
                 <?php
                 $args = array(
                     'post_type' => 'pricing',
@@ -71,7 +99,7 @@ require_once get_template_directory() . '/inc/pricing-shortcodes.php';
                 $plans = get_posts($args);
                 
                 if (!empty($plans)) : ?>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-<?php echo count($plans) <= 3 ? count($plans) : '4'; ?> gap-8">
                         <?php foreach ($plans as $plan) : 
                             if (!function_exists('yoursite_get_pricing_meta_fields')) {
                                 require_once get_template_directory() . '/inc/pricing-meta-boxes.php';
@@ -185,88 +213,86 @@ require_once get_template_directory() . '/inc/pricing-shortcodes.php';
         </div>
     </section>
 
+    <?php if ($comparison_enable) : ?>
     <!-- Enhanced Plans Comparison Section -->
     <section class="py-20 bg-white dark:bg-gray-800" id="plans-comparison">
         <div class="container mx-auto px-4">
             <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        <?php echo esc_html($comparison_title); ?>
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300">
+                        <?php echo esc_html($comparison_subtitle); ?>
+                    </p>
+                </div>
                 <?php echo yoursite_render_pricing_comparison_table(); ?>
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
+    <?php if ($faq_enable) : ?>
     <!-- FAQ Section -->
     <section class="py-20 bg-gray-50 dark:bg-gray-900">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto">
                 <div class="text-center mb-16">
                     <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                        Frequently Asked Questions
+                        <?php echo esc_html($faq_title); ?>
                     </h2>
                     <p class="text-xl text-gray-600 dark:text-gray-300">
-                        Quick answers to common pricing questions
+                        <?php echo esc_html($faq_subtitle); ?>
                     </p>
                 </div>
                 
                 <div class="space-y-6">
-                    <?php
-                    $faqs = array(
-                        array(
-                            'question' => 'Can I change plans anytime?',
-                            'answer' => 'Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle, and we\'ll prorate any differences.'
-                        ),
-                        array(
-                            'question' => 'Is there a free trial?',
-                            'answer' => 'Yes, all paid plans come with a 14-day free trial. No credit card required to get started. You can also use our Starter plan free forever with basic features.'
-                        ),
-                        array(
-                            'question' => 'What payment methods do you accept?',
-                            'answer' => 'We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and bank transfers for enterprise customers. We also support multiple currencies.'
-                        ),
-                        array(
-                            'question' => 'Do you offer refunds?',
-                            'answer' => 'Yes, we offer a 30-day money-back guarantee. If you\'re not satisfied with our service, contact us within 30 days for a full refund.'
-                        ),
-                        array(
-                            'question' => 'Can I cancel anytime?',
-                            'answer' => 'Absolutely! You can cancel your subscription at any time. Your account will remain active until the end of your current billing period, and you\'ll retain access to export your data.'
-                        )
-                    );
-                    
-                    foreach ($faqs as $faq) : ?>
+                    <?php for ($i = 1; $i <= 5; $i++) : 
+                        $faq_enabled = get_theme_mod("pricing_faq_{$i}_enable", true);
+                        if (!$faq_enabled) continue;
+                        
+                        $question = get_theme_mod("pricing_faq_{$i}_question", '');
+                        $answer = get_theme_mod("pricing_faq_{$i}_answer", '');
+                        
+                        if (empty($question) || empty($answer)) continue;
+                    ?>
                         <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                             <button class="flex justify-between items-center w-full text-left faq-toggle">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white"><?php echo esc_html($faq['question']); ?></h3>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white"><?php echo esc_html($question); ?></h3>
                                 <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
                             <div class="faq-content hidden mt-4">
-                                <p class="text-gray-600 dark:text-gray-300"><?php echo esc_html($faq['answer']); ?></p>
+                                <p class="text-gray-600 dark:text-gray-300"><?php echo esc_html($answer); ?></p>
                             </div>
                         </div>
-                    <?php endforeach; ?>
+                    <?php endfor; ?>
                 </div>
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
+    <?php if ($cta_enable) : ?>
     <!-- CTA Section -->
     <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-4xl font-bold mb-6">Ready to grow your business?</h2>
-                <p class="text-xl text-blue-100 mb-8">Join thousands of successful merchants using our platform</p>
+                <h2 class="text-4xl font-bold mb-6"><?php echo esc_html($cta_title); ?></h2>
+                <p class="text-xl text-blue-100 mb-8"><?php echo esc_html($cta_subtitle); ?></p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="#" class="btn-primary bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 inline-block">
-                        Start Your Free Trial
+                    <a href="<?php echo esc_url($cta_primary_url); ?>" class="btn-primary bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 inline-block">
+                        <?php echo esc_html($cta_primary_text); ?>
                     </a>
-                    <a href="<?php echo esc_url(home_url('/contact')); ?>" class="btn-secondary border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-4 inline-block">
-                        Talk to Sales
+                    <a href="<?php echo esc_url(home_url($cta_secondary_url)); ?>" class="btn-secondary border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-4 inline-block">
+                        <?php echo esc_html($cta_secondary_text); ?>
                     </a>
                 </div>
             </div>
         </div>
     </section>
+    <?php endif; ?>
 </div>
 
 <!-- Enhanced Styles for Pricing Page -->
@@ -333,16 +359,6 @@ require_once get_template_directory() . '/inc/pricing-shortcodes.php';
 
 .dark .pricing-page:not(.yearly-active) .billing-yearly {
     color: #6b7280 !important;
-}
-
-/* Smooth scroll indicator */
-[data-scroll-to-comparison] {
-    position: relative;
-    overflow: hidden;
-}
-
-[data-scroll-to-comparison]:hover {
-    transform: translateY(-1px);
 }
 
 /* FAQ toggle styles */

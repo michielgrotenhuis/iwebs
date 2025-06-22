@@ -1,7 +1,7 @@
 <?php
 /**
  * Pricing Components Loader
- * Add this to functions.php or create as inc/pricing-loader.php
+ * Add this to inc/pricing-loader.php
  */
 
 if (!defined('ABSPATH')) {
@@ -13,6 +13,7 @@ if (!defined('ABSPATH')) {
  */
 function yoursite_load_pricing_components() {
     $pricing_files = array(
+        '/inc/pricing-features-helper.php',  // Load shared functions first
         '/inc/pricing-meta-boxes.php',
         '/inc/pricing-comparison-table.php', 
         '/inc/pricing-shortcodes.php'
@@ -28,13 +29,13 @@ function yoursite_load_pricing_components() {
 add_action('after_setup_theme', 'yoursite_load_pricing_components', 10);
 
 /**
- * Admin notice to guide users to create pricing plans
+ * Admin notice for empty pricing plans (different from the main one)
  */
-function yoursite_pricing_admin_notice() {
+function yoursite_pricing_empty_plans_notice() {
     $screen = get_current_screen();
     
-    // Only show on dashboard and pricing pages
-    if (!in_array($screen->id, array('dashboard', 'edit-pricing', 'pricing'))) {
+    // Only show on dashboard
+    if ($screen->id !== 'dashboard') {
         return;
     }
     
@@ -45,10 +46,11 @@ function yoursite_pricing_admin_notice() {
         'post_status' => 'publish'
     ));
     
+    // Only show if no plans exist
     if (empty($pricing_plans)) {
         ?>
         <div class="notice notice-info is-dismissible">
-            <h3><?php _e('Set up your pricing plans!', 'yoursite'); ?></h3>
+            <h3><?php _e('📝 Ready to set up pricing?', 'yoursite'); ?></h3>
             <p><?php _e('Your pricing page is ready, but you haven\'t created any pricing plans yet.', 'yoursite'); ?></p>
             <p>
                 <a href="<?php echo admin_url('post-new.php?post_type=pricing'); ?>" class="button button-primary">
@@ -62,27 +64,27 @@ function yoursite_pricing_admin_notice() {
         <?php
     }
 }
-add_action('admin_notices', 'yoursite_pricing_admin_notice');
+add_action('admin_notices', 'yoursite_pricing_empty_plans_notice');
 
 /**
- * Add quick action links to pricing plans
+ * Add quick action links to pricing plans (only on pricing admin pages)
  */
-function yoursite_pricing_quick_actions() {
+function yoursite_pricing_admin_quick_actions() {
     $screen = get_current_screen();
     
     if ($screen->id === 'edit-pricing') {
         echo '<div class="pricing-quick-actions" style="margin: 20px 0; padding: 15px; background: #f0f6fc; border: 1px solid #c3dcf2; border-radius: 4px;">';
         echo '<h4 style="margin-top: 0;">' . __('Quick Actions', 'yoursite') . '</h4>';
         echo '<p>';
-        echo '<a href="' . home_url('/pricing') . '" class="button" target="_blank">' . __('View Pricing Page', 'yoursite') . '</a> ';
-        echo '<a href="' . admin_url('post-new.php?post_type=pricing') . '" class="button button-primary">' . __('Add New Plan', 'yoursite') . '</a> ';
-        echo '<a href="' . admin_url('customize.php') . '" class="button">' . __('Customize Theme', 'yoursite') . '</a>';
+        echo '<a href="' . home_url('/pricing') . '" class="button" target="_blank">' . __('👁️ View Pricing Page', 'yoursite') . '</a> ';
+        echo '<a href="' . admin_url('post-new.php?post_type=pricing') . '" class="button button-primary">' . __('➕ Add New Plan', 'yoursite') . '</a> ';
+        echo '<a href="' . admin_url('customize.php?autofocus[section]=pricing_page_editor') . '" class="button">' . __('🎨 Customize Content', 'yoursite') . '</a>';
         echo '</p>';
-        echo '<p class="description">' . __('Tip: Use the comparison table to showcase detailed features and benefits of each plan.', 'yoursite') . '</p>';
+        echo '<p class="description">' . __('💡 Tip: Use the comparison table to showcase detailed features and benefits of each plan.', 'yoursite') . '</p>';
         echo '</div>';
     }
 }
-add_action('admin_notices', 'yoursite_pricing_quick_actions');
+add_action('admin_notices', 'yoursite_pricing_admin_quick_actions');
 
 /**
  * Add pricing help tab
@@ -160,7 +162,7 @@ add_action('current_screen', 'yoursite_add_pricing_help_tab');
 function yoursite_add_pricing_dashboard_widget() {
     wp_add_dashboard_widget(
         'yoursite_pricing_widget',
-        __('Pricing Plans Status', 'yoursite'),
+        __('💰 Pricing Plans Status', 'yoursite'),
         'yoursite_pricing_dashboard_widget_content'
     );
 }
@@ -183,43 +185,57 @@ function yoursite_pricing_dashboard_widget_content() {
     echo '<div class="pricing-widget-content">';
     
     if (empty($pricing_plans)) {
-        echo '<p>' . __('No pricing plans created yet.', 'yoursite') . '</p>';
+        echo '<div style="text-align: center; padding: 20px;">';
+        echo '<p style="font-size: 16px; margin-bottom: 15px;">📋 ' . __('No pricing plans created yet.', 'yoursite') . '</p>';
         echo '<p><a href="' . admin_url('post-new.php?post_type=pricing') . '" class="button button-primary">' . __('Create Your First Plan', 'yoursite') . '</a></p>';
+        echo '</div>';
     } else {
         echo '<div class="pricing-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin: 15px 0;">';
         
-        echo '<div class="stat-card" style="text-align: center; padding: 15px; background: #f0f0f1; border-radius: 4px;">';
-        echo '<div style="font-size: 24px; font-weight: bold; color: #1d2327;">' . count($pricing_plans) . '</div>';
-        echo '<div style="font-size: 12px; color: #646970; text-transform: uppercase;">Total Plans</div>';
+        echo '<div class="stat-card" style="text-align: center; padding: 15px; background: #f0f0f1; border-radius: 6px;">';
+        echo '<div style="font-size: 28px; font-weight: bold; color: #1d2327;">' . count($pricing_plans) . '</div>';
+        echo '<div style="font-size: 12px; color: #646970; text-transform: uppercase; letter-spacing: 0.5px;">Total Plans</div>';
         echo '</div>';
         
-        echo '<div class="stat-card" style="text-align: center; padding: 15px; background: #f0f0f1; border-radius: 4px;">';
-        echo '<div style="font-size: 24px; font-weight: bold; color: #1d2327;">' . count($featured_plans) . '</div>';
-        echo '<div style="font-size: 12px; color: #646970; text-transform: uppercase;">Featured</div>';
+        echo '<div class="stat-card" style="text-align: center; padding: 15px; background: #f0f0f1; border-radius: 6px;">';
+        echo '<div style="font-size: 28px; font-weight: bold; color: #1d2327;">' . count($featured_plans) . '</div>';
+        echo '<div style="font-size: 12px; color: #646970; text-transform: uppercase; letter-spacing: 0.5px;">Featured</div>';
+        echo '</div>';
+        
+        $active_plans = array_filter($pricing_plans, function($plan) {
+            return $plan->post_status === 'publish';
+        });
+        
+        echo '<div class="stat-card" style="text-align: center; padding: 15px; background: #f0f0f1; border-radius: 6px;">';
+        echo '<div style="font-size: 28px; font-weight: bold; color: #1d2327;">' . count($active_plans) . '</div>';
+        echo '<div style="font-size: 12px; color: #646970; text-transform: uppercase; letter-spacing: 0.5px;">Active</div>';
         echo '</div>';
         
         echo '</div>';
         
-        echo '<p>';
+        echo '<div style="margin: 15px 0;">';
         echo '<a href="' . admin_url('edit.php?post_type=pricing') . '" class="button">' . __('Manage Plans', 'yoursite') . '</a> ';
-        echo '<a href="' . home_url('/pricing') . '" class="button" target="_blank">' . __('View Pricing Page', 'yoursite') . '</a>';
-        echo '</p>';
+        echo '<a href="' . home_url('/pricing') . '" class="button" target="_blank">' . __('View Pricing Page', 'yoursite') . '</a> ';
+        echo '<a href="' . admin_url('post-new.php?post_type=pricing') . '" class="button button-primary">' . __('Add New Plan', 'yoursite') . '</a>';
+        echo '</div>';
         
         if (!empty($featured_plans)) {
-            echo '<h4>' . __('Featured Plans:', 'yoursite') . '</h4>';
-            echo '<ul>';
+            echo '<div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd;">';
+            echo '<h4 style="margin-top: 0;">' . __('⭐ Featured Plans:', 'yoursite') . '</h4>';
+            echo '<ul style="margin: 0;">';
             foreach ($featured_plans as $plan) {
                 $monthly_price = get_post_meta($plan->ID, '_pricing_monthly_price', true);
                 $currency = get_post_meta($plan->ID, '_pricing_currency', true) ?: 'USD';
-                echo '<li>';
+                echo '<li style="margin-bottom: 8px;">';
                 echo '<strong>' . esc_html($plan->post_title) . '</strong>';
                 if ($monthly_price) {
-                    echo ' - ' . $currency . ' ' . number_format($monthly_price, 2) . '/month';
+                    echo ' <span style="color: #646970;">- ' . esc_html($currency) . ' ' . number_format(floatval($monthly_price), 2) . '/month</span>';
                 }
-                echo ' <a href="' . get_edit_post_link($plan->ID) . '">Edit</a>';
+                echo ' <a href="' . get_edit_post_link($plan->ID) . '" style="text-decoration: none;">✏️</a>';
                 echo '</li>';
             }
             echo '</ul>';
+            echo '</div>';
         }
     }
     
@@ -227,46 +243,105 @@ function yoursite_pricing_dashboard_widget_content() {
 }
 
 /**
- * Enqueue admin styles for pricing
+ * Enqueue admin styles for pricing (enhanced version)
  */
-function yoursite_pricing_admin_styles() {
+function yoursite_pricing_loader_admin_styles() {
     $screen = get_current_screen();
     
-    if (in_array($screen->id, array('pricing', 'edit-pricing'))) {
+    if (in_array($screen->id, array('pricing', 'edit-pricing', 'dashboard'))) {
         wp_add_inline_style('wp-admin', '
             .pricing-quick-actions {
-                background: #f0f6fc;
+                background: linear-gradient(135deg, #f0f6fc 0%, #e8f4f8 100%);
                 border: 1px solid #c3dcf2;
-                border-radius: 4px;
-                padding: 15px;
+                border-radius: 8px;
+                padding: 20px;
                 margin: 20px 0;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             }
             
             .pricing-quick-actions h4 {
                 margin-top: 0;
                 color: #0073aa;
+                font-size: 16px;
             }
             
             .pricing-widget-content .stat-card {
-                background: #f0f0f1;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                 padding: 15px;
-                border-radius: 4px;
+                border-radius: 8px;
                 text-align: center;
+                border: 1px solid #dee2e6;
+                transition: transform 0.2s ease;
+            }
+            
+            .pricing-widget-content .stat-card:hover {
+                transform: translateY(-2px);
             }
             
             .pricing-widget-content .stat-card div:first-child {
-                font-size: 24px;
+                font-size: 28px;
                 font-weight: bold;
                 color: #1d2327;
+                margin-bottom: 5px;
             }
             
             .pricing-widget-content .stat-card div:last-child {
-                font-size: 12px;
+                font-size: 11px;
                 color: #646970;
                 text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 500;
+            }
+            
+            .pricing-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 15px;
+                margin: 15px 0;
+            }
+            
+            @media (max-width: 782px) {
+                .pricing-stats {
+                    grid-template-columns: 1fr;
+                }
             }
         ');
     }
 }
-add_action('admin_enqueue_scripts', 'yoursite_pricing_admin_styles');
+add_action('admin_enqueue_scripts', 'yoursite_pricing_loader_admin_styles');
+
+/**
+ * Add helpful tooltips for pricing fields
+ */
+function yoursite_add_pricing_tooltips() {
+    $screen = get_current_screen();
+    
+    if ($screen->id === 'pricing') {
+        add_action('admin_footer', function() {
+            ?>
+            <script>
+            jQuery(document).ready(function($) {
+                // Add helpful tooltips and auto-calculations
+                if ($('#pricing_monthly_price').length) {
+                    $('#pricing_monthly_price').after('<p class="description">💡 Annual price will auto-calculate with 20% discount if left empty</p>');
+                }
+                
+                if ($('#pricing_features').length) {
+                    $('#pricing_features').before('<p class="description"><strong>💡 Feature Tips:</strong> Use "Yes/✓" for included features, "No/✗" for excluded, numbers for limits, or descriptive text.</p>');
+                }
+                
+                // Auto-format currency inputs
+                $('#pricing_monthly_price, #pricing_annual_price').on('blur', function() {
+                    let value = parseFloat($(this).val());
+                    if (!isNaN(value)) {
+                        $(this).val(value.toFixed(2));
+                    }
+                });
+            });
+            </script>
+            <?php
+        });
+    }
+}
+add_action('current_screen', 'yoursite_add_pricing_tooltips');
 ?>
