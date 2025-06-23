@@ -2379,3 +2379,76 @@ Common breakpoints:
         position: static !important;
     }
 }
+
+/* Webinars page specific styles */
+.webinar-filter {
+    border: 2px solid #e5e7eb;
+    color: #6b7280;
+    background: white;
+    text-decoration: none;
+}
+
+.webinar-filter:hover {
+    border-color: #3b82f6;
+    color: #3b82f6;
+    background: #eff6ff;
+    text-decoration: none;
+}
+
+.webinar-filter.active {
+    border-color: #1d4ed8;
+    background: #1d4ed8;
+    color: white;
+    text-decoration: none;
+}
+
+.webinar-card {
+    transition: all 0.3s ease;
+}
+
+.webinar-card:hover {
+    transform: translateY(-2px);
+}
+
+.webinar-thumbnail {
+    background-size: cover;
+    background-position: center;
+}
+
+/* Newsletter form */
+.webinar-newsletter-form input:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* FAQ hover effects */
+.faq-item {
+    transition: all 0.2s ease;
+}
+
+.faq-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Button animations */
+.webinar-card a {
+    position: relative;
+    overflow: hidden;
+}
+
+.webinar-card a:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.webinar-card a:hover:before {
+    width: 300px;
+    height: 300px;
+}

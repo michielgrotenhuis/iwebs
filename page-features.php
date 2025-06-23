@@ -3,7 +3,13 @@
 Template Name: Features Page
 */
 
-get_header(); ?>
+get_header(); 
+
+// Load the pricing comparison table functionality
+if (file_exists(get_template_directory() . '/inc/pricing-comparison-table.php')) {
+    require_once get_template_directory() . '/inc/pricing-comparison-table.php';
+}
+?>
 
 <?php if (get_theme_mod('features_hero_enable', true)) : ?>
 <!-- Hero Section -->
@@ -309,10 +315,10 @@ get_header(); ?>
 </section>
 
 <?php if (get_theme_mod('features_comparison_enable', true)) : ?>
-<!-- Feature Comparison -->
+<!-- Dynamic Feature Comparison Section - Replaces Static Table -->
 <section class="bg-gray-50 py-20">
     <div class="container mx-auto px-4">
-        <div class="max-w-6xl mx-auto">
+        <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
                     <?php echo esc_html(get_theme_mod('features_comparison_title', __('Compare Our Plans', 'yoursite'))); ?>
@@ -322,110 +328,22 @@ get_header(); ?>
                 </p>
             </div>
             
-            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Features</th>
-                                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-900">Starter</th>
-                                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-900 bg-blue-50">Professional</th>
-                                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-900">Business</th>
-                                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-900">Enterprise</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-6 py-4 text-sm text-gray-900">Products</td>
-                                <td class="px-6 py-4 text-center text-sm text-gray-600">1,000</td>
-                                <td class="px-6 py-4 text-center text-sm text-gray-600 bg-blue-50">10,000</td>
-                                <td class="px-6 py-4 text-center text-sm text-gray-600">Unlimited</td>
-                                <td class="px-6 py-4 text-center text-sm text-gray-600">Unlimited</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 text-sm text-gray-900">Storage</td>
-                                <td class="px-6 py-4 text-center text-sm text-gray-600">10GB</td>
-                                <td class="px-6 py-4 text-center text-sm text-gray-600 bg-blue-50">100GB</td>
-                                <td class="px-6 py-4 text-center text-sm text-gray-600">500GB</td>
-                                <td class="px-6 py-4 text-center text-sm text-gray-600">Unlimited</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 text-sm text-gray-900">Email Marketing</td>
-                                <td class="px-6 py-4 text-center">
-                                    <svg class="w-5 h-5 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </td>
-                                <td class="px-6 py-4 text-center bg-blue-50">
-                                    <svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 text-sm text-gray-900">Priority Support</td>
-                                <td class="px-6 py-4 text-center">
-                                    <svg class="w-5 h-5 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </td>
-                                <td class="px-6 py-4 text-center bg-blue-50">
-                                    <svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <?php 
+            // Check if the comparison table function exists and render it
+            if (function_exists('yoursite_render_pricing_comparison_table')) {
+                echo yoursite_render_pricing_comparison_table();
+            } else {
+                // Fallback message if the comparison table is not available
+                echo '<div class="text-center py-12">';
+                echo '<p class="text-gray-500 text-lg mb-4">Feature comparison table is not available.</p>';
+                if (current_user_can('manage_options')) {
+                    echo '<p class="text-sm text-gray-400">Admin: Make sure pricing plans are created in WP-Admin → Pricing Plans</p>';
+                }
+                echo '</div>';
+            }
+            ?>
         </div>
     </div>
 </section>
 <?php endif; ?>
-
-<?php if (get_theme_mod('features_cta_enable', true)) : ?>
-<!-- CTA Section -->
-<section class="hero-gradient text-white py-20">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl lg:text-5xl font-bold mb-6">
-                <?php echo esc_html(get_theme_mod('features_cta_title', __('Ready to explore all features?', 'yoursite'))); ?>
-            </h2>
-            <p class="text-xl mb-8 opacity-90">
-                <?php echo esc_html(get_theme_mod('features_cta_description', __('Start your free trial and experience the power of our platform', 'yoursite'))); ?>
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="<?php echo esc_url(get_theme_mod('features_cta_primary_url', '#')); ?>" class="btn-primary text-lg px-8 py-4 bg-white text-purple-600 hover:bg-gray-100">
-                    <?php echo esc_html(get_theme_mod('features_cta_primary_text', __('Start Free Trial', 'yoursite'))); ?>
-                </a>
-                <a href="<?php echo esc_url(get_theme_mod('features_cta_secondary_url', '/pricing')); ?>" class="btn-secondary text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-purple-600">
-                    <?php echo esc_html(get_theme_mod('features_cta_secondary_text', __('View Pricing', 'yoursite'))); ?>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
-
 <?php get_footer(); ?>

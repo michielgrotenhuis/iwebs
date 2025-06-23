@@ -42,7 +42,80 @@ foreach ($jobs as $job) {
 // Get customizer background colors
 $hero_bg_start = get_theme_mod('careers_hero_bg_color', '#f3e8ff');
 $hero_bg_end = get_theme_mod('careers_hero_bg_color_end', '#dbeafe');
+
+// Define culture defaults
+$culture_defaults = array(
+    1 => array(
+        'title' => 'Innovation First', 
+        'desc' => 'We\'re constantly pushing boundaries and exploring new technologies to stay ahead of the curve.', 
+        'color' => '#3b82f6'
+    ),
+    2 => array(
+        'title' => 'Collaborative Team', 
+        'desc' => 'Work with talented individuals from around the world in a supportive, inclusive environment.', 
+        'color' => '#10b981'
+    ),
+    3 => array(
+        'title' => 'Growth Focused', 
+        'desc' => 'Continuous learning opportunities, mentorship programs, and clear career advancement paths.', 
+        'color' => '#8b5cf6'
+    ),
+    4 => array(
+        'title' => 'Global Impact', 
+        'desc' => 'Help millions of businesses worldwide succeed with our platform and integrations.', 
+        'color' => '#f59e0b'
+    ),
+    5 => array(
+        'title' => 'Work-Life Balance', 
+        'desc' => 'Flexible schedules, unlimited PTO, and a culture that respects your time and well-being.', 
+        'color' => '#ef4444'
+    ),
+    6 => array(
+        'title' => 'Competitive Benefits', 
+        'desc' => 'Great salary, equity, health benefits, and perks that make a real difference.', 
+        'color' => '#6366f1'
+    )
+);
 ?>
+
+<style>
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background-color: #2563eb;
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid currentColor;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: currentColor;
+    color: white;
+}
+
+.job-card:hover {
+    transform: translateY(-2px);
+}
+</style>
 
 <?php if (get_theme_mod('careers_hero_enable', true)) : ?>
 <!-- Hero Section -->
@@ -50,10 +123,10 @@ $hero_bg_end = get_theme_mod('careers_hero_bg_color_end', '#dbeafe');
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-4xl lg:text-6xl font-bold text-gray-900 mb-6">
-                <?php echo esc_html(get_theme_mod('careers_hero_title', __('Join Our Amazing Team', 'yoursite'))); ?>
+                <?php echo esc_html(get_theme_mod('careers_hero_title', 'Join Our Amazing Team')); ?>
             </h1>
             <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                <?php echo esc_html(get_theme_mod('careers_hero_subtitle', __('We\'re building the future of e-commerce, one integration at a time. Join our passionate team and help businesses around the world grow and succeed.', 'yoursite'))); ?>
+                <?php echo esc_html(get_theme_mod('careers_hero_subtitle', 'We\'re building the future of e-commerce, one integration at a time. Join our passionate team and help businesses around the world grow and succeed.')); ?>
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
                 <div class="bg-white/80 backdrop-blur-sm rounded-lg px-6 py-3">
@@ -81,10 +154,10 @@ $hero_bg_end = get_theme_mod('careers_hero_bg_color_end', '#dbeafe');
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                    <?php echo esc_html(get_theme_mod('careers_culture_title', __('Why Work With Us?', 'yoursite'))); ?>
+                    <?php echo esc_html(get_theme_mod('careers_culture_title', 'Why Work With Us?')); ?>
                 </h2>
                 <p class="text-xl text-gray-600">
-                    <?php echo esc_html(get_theme_mod('careers_culture_subtitle', __('Join a company that values innovation, collaboration, and personal growth', 'yoursite'))); ?>
+                    <?php echo esc_html(get_theme_mod('careers_culture_subtitle', 'Join a company that values innovation, collaboration, and personal growth')); ?>
                 </p>
             </div>
             
@@ -101,10 +174,18 @@ $hero_bg_end = get_theme_mod('careers_hero_bg_color_end', '#dbeafe');
                 );
                 
                 for ($i = 1; $i <= 6; $i++) {
-                    if (get_theme_mod("careers_culture_{$i}_enable", true)) :
-                        $title = get_theme_mod("careers_culture_{$i}_title", '');
-                        $description = get_theme_mod("careers_culture_{$i}_description", '');
-                        $color = get_theme_mod("careers_culture_{$i}_color", '#3b82f6');
+                    // Use customizer values if available, otherwise use defaults
+                    $culture_enabled = get_theme_mod("careers_culture_{$i}_enable", true);
+                    
+                    if ($culture_enabled) :
+                        $title = get_theme_mod("careers_culture_{$i}_title", $culture_defaults[$i]['title']);
+                        $description = get_theme_mod("careers_culture_{$i}_description", $culture_defaults[$i]['desc']);
+                        $color = get_theme_mod("careers_culture_{$i}_color", $culture_defaults[$i]['color']);
+                        
+                        // Fallback to defaults if customizer returns empty
+                        if (empty($title)) $title = $culture_defaults[$i]['title'];
+                        if (empty($description)) $description = $culture_defaults[$i]['desc'];
+                        if (empty($color)) $color = $culture_defaults[$i]['color'];
                         ?>
                         <div class="text-center">
                             <div class="w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-6" style="background-color: <?php echo esc_attr($color); ?>20;">
@@ -127,7 +208,7 @@ $hero_bg_end = get_theme_mod('careers_hero_bg_color_end', '#dbeafe');
 
 <!-- Open Positions -->
 <?php if (!empty($jobs)) : ?>
-<section class="py-20 bg-gray-50">
+<section id="open-positions" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
@@ -279,21 +360,21 @@ $hero_bg_end = get_theme_mod('careers_hero_bg_color_end', '#dbeafe');
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl lg:text-5xl font-bold mb-6">
-                <?php echo esc_html(get_theme_mod('careers_cta_title', __('Ready to Make an Impact?', 'yoursite'))); ?>
+                <?php echo esc_html(get_theme_mod('careers_cta_title', 'Ready to Make an Impact?')); ?>
             </h2>
             <p class="text-xl mb-8 opacity-90">
-                <?php echo esc_html(get_theme_mod('careers_cta_description', __('Join our mission to empower businesses worldwide with seamless integrations', 'yoursite'))); ?>
+                <?php echo esc_html(get_theme_mod('careers_cta_description', 'Join our mission to empower businesses worldwide with seamless integrations')); ?>
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <?php if (!empty($jobs)) : ?>
-                    <a href="#" onclick="document.querySelector('.job-card').scrollIntoView({behavior: 'smooth'})" 
+                    <a href="#open-positions" 
                        class="btn-primary text-lg px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 rounded-lg font-semibold transition-all">
-                        <?php echo esc_html(get_theme_mod('careers_cta_primary_text', __('View Open Positions', 'yoursite'))); ?>
+                        <?php echo esc_html(get_theme_mod('careers_cta_primary_text', 'View Open Positions')); ?>
                     </a>
                 <?php endif; ?>
                 <a href="<?php echo esc_url(get_theme_mod('careers_cta_secondary_url', '/contact')); ?>" 
                    class="btn-secondary text-lg px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-blue-600 rounded-lg font-semibold transition-all">
-                    <?php echo esc_html(get_theme_mod('careers_cta_secondary_text', __('Contact Us', 'yoursite'))); ?>
+                    <?php echo esc_html(get_theme_mod('careers_cta_secondary_text', 'Contact Us')); ?>
                 </a>
             </div>
         </div>
@@ -310,18 +391,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const departmentSections = document.querySelectorAll('.department-section');
     
     function filterJobs() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const selectedDepartment = departmentFilter.value;
-        const selectedRemote = remoteFilter.value;
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        const selectedDepartment = departmentFilter ? departmentFilter.value : '';
+        const selectedRemote = remoteFilter ? remoteFilter.value : '';
         
         departmentSections.forEach(section => {
             let hasVisibleJobs = false;
             const sectionJobs = section.querySelectorAll('.job-card');
             
             sectionJobs.forEach(card => {
-                const title = card.getAttribute('data-title');
-                const department = card.getAttribute('data-department');
-                const remote = card.getAttribute('data-remote');
+                const title = card.getAttribute('data-title') || '';
+                const department = card.getAttribute('data-department') || '';
+                const remote = card.getAttribute('data-remote') || '';
                 
                 let showCard = true;
                 
@@ -359,11 +440,5 @@ document.addEventListener('DOMContentLoaded', function() {
     if (remoteFilter) remoteFilter.addEventListener('change', filterJobs);
 });
 </script>
-
-<style>
-.job-card:hover {
-    transform: translateY(-2px);
-}
-</style>
 
 <?php get_footer(); ?>

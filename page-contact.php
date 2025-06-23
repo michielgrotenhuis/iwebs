@@ -175,11 +175,17 @@ get_header(); ?>
             </div>
             
             <div class="space-y-6">
-                <?php for ($i = 1; $i <= 5; $i++) {
-                    if (get_theme_mod("contact_faq_{$i}_enable", true)) :
+                <?php 
+                // Simply loop through all FAQ items and display enabled ones with content
+                $faq_count = 0;
+                
+                for ($i = 1; $i <= 5; $i++) {
+                    if (get_theme_mod("contact_faq_{$i}_enable", true)) {
                         $question = get_theme_mod("contact_faq_{$i}_question", '');
                         $answer = get_theme_mod("contact_faq_{$i}_answer", '');
-                        if ($question && $answer) :
+                        
+                        if (!empty($question) && !empty($answer)) {
+                            $faq_count++;
                 ?>
                 <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                     <button class="flex justify-between items-center w-full text-left faq-toggle">
@@ -193,9 +199,17 @@ get_header(); ?>
                     </div>
                 </div>
                 <?php 
-                        endif;
-                    endif;
-                } ?>
+                        }
+                    }
+                }
+                
+                // Show a message if no FAQs are configured (only for logged-in admins)
+                if ($faq_count === 0 && current_user_can('manage_options')) {
+                    echo '<div class="text-center p-8 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">';
+                    echo '<p class="text-yellow-800 dark:text-yellow-200">No FAQ items are configured. <a href="' . admin_url('customize.php?autofocus[section]=contact_page_editor') . '" class="underline">Configure them here</a>.</p>';
+                    echo '</div>';
+                }
+                ?>
             </div>
         </div>
     </div>

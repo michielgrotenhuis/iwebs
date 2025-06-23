@@ -46,7 +46,7 @@ $has_webinars = $webinars_query->have_posts();
     </section>
 
     <!-- Filter Tabs -->
-    <section class="bg-white py-8 border-b border-gray-200 sticky top-16 z-40">
+      <section class="bg-white py-8 border-b border-gray-200">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto">
                 <div class="flex flex-wrap justify-center gap-2">
@@ -657,26 +657,28 @@ $has_webinars = $webinars_query->have_posts();
                 </div>
             </div>
 
-            <!-- Still have questions CTA -->
-            <div class="text-center mt-12 p-8 bg-white rounded-lg shadow-sm border border-gray-200">
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Still have questions?</h3>
-                <p class="text-gray-600 mb-6">Our support team is here to help you get started</p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="/contact" class="btn-primary inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                        </svg>
-                        Contact Support
-                    </a>
-                    <a href="/webinars" class="btn-secondary inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                        </svg>
-                        Join a Webinar
-                    </a>
-                </div>
-            </div>
-        </div>
+         <!-- Still have questions CTA -->
+<!-- Replace the button section in your FAQ area with this: -->
+
+<!-- Still have questions CTA -->
+<div class="text-center mt-12 p-8 bg-white rounded-lg shadow-sm border border-gray-200">
+    <h3 class="text-xl font-semibold text-gray-900 mb-2">Still have questions?</h3>
+    <p class="text-gray-600 mb-6">Our support team is here to help you get started</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/contact" class="btn-primary px-6 py-3 rounded-lg font-semibold transition-all" style="display: flex !important; align-items: center !important; justify-content: center !important; flex-direction: row !important;">
+            <svg class="w-5 h-5" style="margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+            </svg>
+            Contact Support
+        </a>
+        <a href="/webinars" class="btn-secondary px-6 py-3 rounded-lg font-semibold transition-all" style="display: flex !important; align-items: center !important; justify-content: center !important; flex-direction: row !important;">
+            <svg class="w-5 h-5" style="margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+            Join a Webinar
+        </a>
+    </div>
+</div>
     </div>
 </section>
 

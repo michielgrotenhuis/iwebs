@@ -74,9 +74,9 @@ $categories = get_categories(array(
         </div>
     </section>
 
-    <!-- Category Filter -->
+    <!-- Category Filter - REMOVED STICKY POSITIONING -->
     <?php if (!empty($categories)) : ?>
-        <section class="bg-white py-8 border-b border-gray-200 sticky top-16 z-40">
+        <section class="bg-white py-8 border-b border-gray-200">
             <div class="container mx-auto px-4">
                 <div class="max-w-6xl mx-auto">
                     <div class="flex flex-wrap justify-center gap-3">
@@ -400,7 +400,7 @@ $categories = get_categories(array(
     overflow: hidden;
 }
 
-/* Category filter styles */
+/* Category filter styles - REMOVED STICKY POSITIONING */
 .category-filter {
     border-color: #e5e7eb;
     color: #6b7280;
@@ -527,20 +527,7 @@ $categories = get_categories(array(
     user-select: none;
 }
 
-/* Admin bar adjustment */
-.sticky {
-    top: 64px;
-}
-
-body.admin-bar .sticky {
-    top: 96px;
-}
-
-@media screen and (max-width: 782px) {
-    body.admin-bar .sticky {
-        top: 110px;
-    }
-}
+/* REMOVED ALL STICKY POSITIONING AND ADMIN BAR ADJUSTMENTS */
 </style>
 
 <script>

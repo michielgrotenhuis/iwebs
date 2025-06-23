@@ -374,3 +374,302 @@ function yoursite_pricing_page_customizer($wp_customize) {
 
 // Hook the function to the customizer
 add_action('customize_register', 'yoursite_pricing_page_customizer');
+/**
+ * Add DIFM Banner customizer options to pricing page section
+ */
+function yoursite_difm_banner_customizer($wp_customize) {
+    
+    // Add DIFM Banner subsection to pricing page
+    $wp_customize->add_section('pricing_difm_banner', array(
+        'title' => __('DIFM Banner (Pricing Page)', 'yoursite'),
+        'description' => __('Customize the "Done-For-You" service banner that appears on the pricing page.', 'yoursite'),
+        'panel' => 'yoursite_pages',
+        'priority' => 35,
+    ));
+    
+    // ========================================
+    // BANNER ENABLE/DISABLE
+    // ========================================
+    
+    $wp_customize->add_setting('difm_banner_enable', array(
+        'default' => true,
+        'sanitize_callback' => 'yoursite_sanitize_checkbox',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_enable', array(
+        'label' => __('Enable DIFM Banner', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'checkbox',
+        'priority' => 10,
+    ));
+    
+    // ========================================
+    // CONTENT SETTINGS
+    // ========================================
+    
+    // Badge Text
+    $wp_customize->add_setting('difm_banner_badge_text', array(
+        'default' => 'Done-For-You Service',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_badge_text', array(
+        'label' => __('Badge Text', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'text',
+        'priority' => 11,
+    ));
+    
+    // Main Title
+    $wp_customize->add_setting('difm_banner_title', array(
+        'default' => 'Don\'t Want to Build It Yourself?',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_title', array(
+        'label' => __('Main Title', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'text',
+        'priority' => 12,
+    ));
+    
+    // Subtitle
+    $wp_customize->add_setting('difm_banner_subtitle', array(
+        'default' => 'Let our expert team build your perfect website while you focus on your business.',
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_subtitle', array(
+        'label' => __('Subtitle', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'textarea',
+        'priority' => 13,
+    ));
+    
+    // ========================================
+    // FEATURES LIST
+    // ========================================
+    
+    // Feature 1
+    $wp_customize->add_setting('difm_banner_feature_1', array(
+        'default' => 'Professional Design',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_feature_1', array(
+        'label' => __('Feature 1', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'text',
+        'priority' => 21,
+    ));
+    
+    // Feature 2
+    $wp_customize->add_setting('difm_banner_feature_2', array(
+        'default' => 'Fast Delivery',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_feature_2', array(
+        'label' => __('Feature 2', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'text',
+        'priority' => 22,
+    ));
+    
+    // Feature 3
+    $wp_customize->add_setting('difm_banner_feature_3', array(
+        'default' => 'Full Setup Included',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_feature_3', array(
+        'label' => __('Feature 3', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'text',
+        'priority' => 23,
+    ));
+    
+    // Feature 4
+    $wp_customize->add_setting('difm_banner_feature_4', array(
+        'default' => 'Ongoing Support',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_feature_4', array(
+        'label' => __('Feature 4', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'text',
+        'priority' => 24,
+    ));
+    
+    // ========================================
+    // CALL-TO-ACTION BUTTONS
+    // ========================================
+    
+    // Primary Button Text
+    $wp_customize->add_setting('difm_banner_primary_text', array(
+        'default' => 'Build My Website',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_primary_text', array(
+        'label' => __('Primary Button Text', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'text',
+        'priority' => 31,
+    ));
+    
+    // Primary Button URL
+    $wp_customize->add_setting('difm_banner_primary_url', array(
+        'default' => '/build-my-website',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_primary_url', array(
+        'label' => __('Primary Button URL', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'text',
+        'description' => __('Relative URL (e.g., /build-my-website) or full URL', 'yoursite'),
+        'priority' => 32,
+    ));
+    
+    // Secondary Button Text
+    $wp_customize->add_setting('difm_banner_secondary_text', array(
+        'default' => 'Ask Questions',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_secondary_text', array(
+        'label' => __('Secondary Button Text', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'text',
+        'priority' => 33,
+    ));
+    
+    // Secondary Button URL
+    $wp_customize->add_setting('difm_banner_secondary_url', array(
+        'default' => '/contact',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control('difm_banner_secondary_url', array(
+        'label' => __('Secondary Button URL', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'type' => 'text',
+        'description' => __('Relative URL (e.g., /contact) or full URL', 'yoursite'),
+        'priority' => 34,
+    ));
+    
+    // ========================================
+    // DESIGN SETTINGS
+    // ========================================
+    
+    // Background Color
+    $wp_customize->add_setting('difm_banner_bg_color', array(
+        'default' => '#f8fafc',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'difm_banner_bg_color', array(
+        'label' => __('Background Color', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'priority' => 41,
+    )));
+    
+    // Primary Button Color
+    $wp_customize->add_setting('difm_banner_primary_color', array(
+        'default' => '#3b82f6',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport' => 'refresh',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'difm_banner_primary_color', array(
+        'label' => __('Primary Button Color', 'yoursite'),
+        'section' => 'pricing_difm_banner',
+        'priority' => 42,
+    )));
+}
+
+// Hook the DIFM banner customizer to the existing pricing customizer
+add_action('customize_register', 'yoursite_difm_banner_customizer');
+
+/**
+ * Generate dynamic CSS for DIFM banner
+ */
+function yoursite_difm_banner_dynamic_css() {
+    $bg_color = get_theme_mod('difm_banner_bg_color', '#f8fafc');
+    $primary_color = get_theme_mod('difm_banner_primary_color', '#3b82f6');
+    
+    // Generate secondary color (darker version of primary)
+    $primary_rgb = sscanf($primary_color, "#%02x%02x%02x");
+    $primary_darker = sprintf("#%02x%02x%02x", 
+        max(0, $primary_rgb[0] - 20), 
+        max(0, $primary_rgb[1] - 20), 
+        max(0, $primary_rgb[2] - 20)
+    );
+    
+    echo '<style id="difm-banner-dynamic-css">';
+    echo '.difm-banner-section { background-color: ' . esc_attr($bg_color) . '; }';
+    echo '.difm-banner-primary-btn { background: linear-gradient(135deg, ' . esc_attr($primary_color) . ' 0%, ' . esc_attr($primary_darker) . ' 100%); }';
+    echo '.difm-banner-primary-btn:hover { background: linear-gradient(135deg, ' . esc_attr($primary_darker) . ' 0%, ' . esc_attr($primary_color) . ' 100%); }';
+    echo '</style>';
+}
+add_action('wp_head', 'yoursite_difm_banner_dynamic_css');
+
+/**
+ * Add DIFM banner CSS classes to buttons
+ */
+function yoursite_difm_banner_button_classes($content) {
+    // Add custom classes to buttons for styling
+    $content = str_replace(
+        'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700',
+        'difm-banner-primary-btn',
+        $content
+    );
+    
+    return $content;
+}
+
+/**
+ * Helper function to check if DIFM banner should be displayed
+ */
+function yoursite_should_show_difm_banner() {
+    return get_theme_mod('difm_banner_enable', true);
+}
+
+/**
+ * Shortcode for DIFM banner (optional - for use in other pages)
+ */
+function yoursite_difm_banner_shortcode($atts) {
+    if (!yoursite_should_show_difm_banner()) {
+        return '';
+    }
+    
+    $atts = shortcode_atts(array(
+        'show_visual' => 'true',
+        'layout' => 'default' // default, compact, minimal
+    ), $atts);
+    
+    ob_start();
+    
+    // Include the banner section code here (simplified version for shortcode)
+    echo '<div class="difm-banner-shortcode py-12">';
+    // Simplified version of the banner
+    echo '</div>';
+    
+    return ob_get_clean();
+}
+add_shortcode('difm_banner', 'yoursite_difm_banner_shortcode');

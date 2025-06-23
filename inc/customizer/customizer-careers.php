@@ -9,6 +9,25 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Sanitize checkbox function
+ */
+function yoursite_sanitize_checkbox($checked) {
+    return ((isset($checked) && true == $checked) ? true : false);
+}
+
+/**
+ * Get job meta fields helper function
+ */
+function yoursite_get_job_meta_fields($job_id) {
+    return array(
+        'job_remote' => get_post_meta($job_id, '_job_remote', true) ?: 'no',
+        'job_salary_min' => get_post_meta($job_id, '_job_salary_min', true),
+        'job_salary_max' => get_post_meta($job_id, '_job_salary_max', true),
+        'job_salary_currency' => get_post_meta($job_id, '_job_salary_currency', true) ?: 'USD'
+    );
+}
+
+/**
  * Add Careers Page customizer options
  */
 function yoursite_careers_page_customizer($wp_customize) {
