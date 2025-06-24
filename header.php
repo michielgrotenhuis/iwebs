@@ -13,7 +13,25 @@
 <div id="page" class="site">
     <a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e('Skip to content', 'yoursite'); ?></a>
 
-    <header id="masthead" class="site-header bg-white shadow-sm border-b border-gray-200" style="margin-top: <?php echo is_admin_bar_showing() ? '32px' : '0'; ?>;">
+    <!-- Announcement Bar (Optional) -->
+    <?php if (get_theme_mod('show_announcement_bar', true)) : ?>
+    <div class="announcement-bar bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm py-2 px-4 text-center relative">
+        <div class="container mx-auto flex items-center justify-center">
+            <span class="animate-pulse mr-2">🎉</span>
+            <span><?php echo esc_html(get_theme_mod('announcement_text', 'Limited Time: Get 50% OFF on all annual plans! Use code SAVE50')); ?></span>
+            <a href="<?php echo esc_url(get_theme_mod('announcement_link', '/pricing')); ?>" class="ml-3 underline font-semibold hover:no-underline">
+                <?php echo esc_html(get_theme_mod('announcement_cta', 'Claim Now')); ?> →
+            </a>
+        </div>
+        <button class="announcement-close absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-200" aria-label="Close announcement">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+    <?php endif; ?>
+
+    <header id="masthead" class="site-header bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100 sticky top-0 z-50 transition-all duration-300">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between py-4">
                 
@@ -21,50 +39,39 @@
                 <div class="site-branding flex items-center">
                     <?php if (has_custom_logo()) : ?>
                         <div class="site-logo">
-                            <?php 
-                            $custom_logo_id = get_theme_mod('custom_logo');
-                            $logo = wp_get_attachment_image_src($custom_logo_id, 'full');
-                            if ($logo) :
-                            ?>
-                                <a href="<?php echo esc_url(home_url('/')); ?>" rel="home" class="custom-logo-link">
-                                    <img src="<?php echo esc_url($logo[0]); ?>" 
-                                         alt="<?php echo esc_attr(get_bloginfo('name')); ?>" 
-                                         class="custom-logo">
-                                </a>
-                            <?php endif; ?>
+                            <?php the_custom_logo(); ?>
                         </div>
                     <?php else : ?>
                         <div class="site-title-wrapper">
-                            <h1 class="site-title text-xl font-bold text-gray-900 no-hover-effect">
-                                <a href="<?php echo esc_url(home_url('/')); ?>" rel="home" class="text-gray-900 hover:text-gray-900 no-underline">
+                            <h1 class="site-title text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                <a href="<?php echo esc_url(home_url('/')); ?>" rel="home">
                                     <?php bloginfo('name'); ?>
                                 </a>
                             </h1>
-                            <?php
-                            $description = get_bloginfo('description', 'display');
-                            if ($description || is_customize_preview()) :
-                            ?>
-                                <p class="site-description text-xs text-gray-600 mt-0.5"><?php echo $description; ?></p>
-                            <?php endif; ?>
                         </div>
                     <?php endif; ?>
                 </div>
 
                 <!-- Desktop Navigation -->
-                <nav id="site-navigation" class="main-navigation hidden lg:block">
-                    <?php
-                    wp_nav_menu(array(
-                        'theme_location' => 'primary',
-                        'menu_id'        => 'primary-menu',
-                        'menu_class'     => 'flex items-center space-x-6',
-                        'container'      => false,
-                        'fallback_cb'    => 'yoursite_fallback_menu',
-                    ));
-                    ?>
-                </nav>
+                <nav id="site-navigation" class="main-navigation hidden lg:flex items-center space-x-8">
+                    <!-- Main Menu -->
+                    <div class="nav-menu-wrapper">
+                        <?php
+                        wp_nav_menu(array(
+                            'theme_location' => 'primary',
+                            'menu_id'        => 'primary-menu',
+                            'menu_class'     => 'flex items-center space-x-6',
+                            'container'      => false,
+                            'fallback_cb'    => 'yoursite_fallback_menu',
+                            'walker'         => new YourSite_Dropdown_Walker(),
+                        ));
+                        ?>
+                    </div>
+                
 
-                <!-- Header Actions (CTA Buttons + Theme Toggle) -->
-                <div class="header-actions hidden lg:flex items-center space-x-3">
+                <!-- Header Actions -->
+                <div class="header-actions hidden lg:flex items-center space-x-4">
+                    
                     <!-- Theme Toggle -->
                     <?php if (get_theme_mod('show_theme_toggle', true)) : ?>
                         <div class="theme-toggle-wrapper">
@@ -74,438 +81,400 @@
                     
                     <!-- Login Button -->
                     <a href="<?php echo esc_url(get_theme_mod('header_login_url', '/login')); ?>" 
-                       class="login-btn flex items-center px-3 py-1.5 text-sm text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium">
-                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
+                       class="login-btn text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200">
                         <?php echo esc_html(get_theme_mod('header_login_text', 'Login')); ?>
                     </a>
                     
-                    <!-- CTA Button -->
+                    <!-- Primary CTA Button -->
                     <a href="<?php echo esc_url(get_theme_mod('header_cta_url', '/signup')); ?>" 
-                       class="cta-btn bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-1.5 rounded-md text-sm font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 flex items-center">
-                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                        <?php echo esc_html(get_theme_mod('header_cta_text', 'Start Free Trial')); ?>
+                       class="cta-btn relative bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 overflow-hidden group">
+                        <span class="relative z-10 flex items-center">
+                            <?php echo esc_html(get_theme_mod('header_cta_text', 'Start Free Trial')); ?>
+                            <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </span>
+                        <span class="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                     </a>
                 </div>
 
                 <!-- Mobile Menu Button -->
-                <button class="mobile-menu-toggle lg:hidden flex items-center justify-center w-9 h-9 border border-gray-300 rounded-md text-gray-600 hover:text-gray-800 hover:border-gray-400 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                <button class="mobile-menu-toggle lg:hidden relative w-10 h-10 flex items-center justify-center rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors" aria-label="Menu">
+                    <span class="hamburger-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobile-navigation" class="mobile-navigation fixed inset-0 z-40 hidden">
+        <!-- Overlay Background -->
+        <div class="mobile-overlay absolute inset-0 bg-black bg-opacity-50"></div>
+        
+        <!-- Mobile Menu Panel -->
+        <nav class="mobile-menu-panel absolute right-0 top-0 h-full w-80 max-w-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300">
+            <!-- Mobile Menu Header -->
+            <div class="mobile-menu-header flex items-center justify-between p-4 border-b border-gray-200">
+                <span class="text-lg font-semibold text-gray-900">Menu</span>
+                <button class="mobile-menu-close p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
-
-            <!-- Mobile Navigation -->
-            <nav id="mobile-navigation" class="mobile-navigation hidden lg:hidden border-t border-gray-200 py-4">
+            
+            <!-- Mobile Menu Content -->
+            <div class="mobile-menu-content p-4 space-y-6 overflow-y-auto max-h-[calc(100vh-200px)]">
+                <!-- Mobile Search -->
+                <form role="search" method="get" class="mobile-search" action="<?php echo home_url('/'); ?>">
+                    <div class="relative">
+                        <input type="search" 
+                               class="w-full px-4 py-3 pr-10 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500" 
+                               placeholder="Search..." 
+                               value="<?php echo get_search_query(); ?>" 
+                               name="s" />
+                        <button type="submit" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Mobile Menu -->
                 <?php
                 wp_nav_menu(array(
                     'theme_location' => 'primary',
                     'menu_id'        => 'mobile-menu',
-                    'menu_class'     => 'mobile-menu-list',
+                    'menu_class'     => 'mobile-menu-list space-y-2',
                     'container'      => false,
                     'fallback_cb'    => 'yoursite_mobile_fallback_menu',
                 ));
                 ?>
                 
-                <!-- Mobile Actions -->
-                <div class="mobile-actions mt-4 pt-4 border-t border-gray-200 space-y-3">
-                    <!-- Mobile Theme Toggle -->
-                    <?php if (get_theme_mod('show_theme_toggle', true)) : ?>
-                        <div class="mobile-theme-toggle-row">
-                            <span class="mobile-theme-label"><?php esc_html_e('Dark Mode', 'yoursite'); ?></span>
+                <!-- Mobile Theme Toggle -->
+                <?php if (get_theme_mod('show_theme_toggle', true)) : ?>
+                    <div class="mobile-theme-toggle-wrapper pt-4 border-t border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700 font-medium">Dark Mode</span>
                             <?php echo yoursite_get_mobile_theme_toggle_button(); ?>
                         </div>
-                        <div class="border-t border-gray-200 pt-3"></div>
-                    <?php endif; ?>
-                    
-                    <!-- Mobile CTA Buttons -->
-                    <a href="<?php echo esc_url(get_theme_mod('header_login_url', '/login')); ?>" 
-                       class="mobile-login-btn flex items-center justify-center w-full px-4 py-2.5 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200 font-medium">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
-                        <?php echo esc_html(get_theme_mod('header_login_text', 'Login')); ?>
-                    </a>
-                    
-                    <a href="<?php echo esc_url(get_theme_mod('header_cta_url', '/signup')); ?>" 
-                       class="mobile-cta-btn bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2.5 rounded-md text-sm font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-sm flex items-center justify-center w-full">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                        <?php echo esc_html(get_theme_mod('header_cta_text', 'Start Free Trial')); ?>
-                    </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+            
+            <!-- Mobile CTA Section -->
+            <div class="mobile-cta-section absolute bottom-0 left-0 right-0 p-4 bg-gray-50 border-t border-gray-200">
+                <a href="<?php echo esc_url(get_theme_mod('header_login_url', '/login')); ?>" 
+                   class="block w-full text-center px-4 py-3 mb-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-white transition-colors">
+                    <?php echo esc_html(get_theme_mod('header_login_text', 'Login')); ?>
+                </a>
+                
+                <a href="<?php echo esc_url(get_theme_mod('header_cta_url', '/signup')); ?>" 
+                   class="block w-full text-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold shadow-lg">
+                    <?php echo esc_html(get_theme_mod('header_cta_text', 'Start Free Trial')); ?>
+                </a>
+                
+                <!-- Trust Indicators -->
+                <div class="flex items-center justify-center mt-3 text-xs text-gray-600">
+                    <svg class="w-4 h-4 mr-1 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span>No credit card required</span>
                 </div>
-            </nav>
-        </div>
-    </header>
+            </div>
+        </nav>
+    </div>
 
     <style>
-    /* Header Specific Styles - Improved and Cleaner */
+    /* Header Styles */
     .site-header {
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+    
+    .site-header.scrolled {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Announcement Bar */
+    .announcement-bar {
+        font-size: 14px;
+    }
+    
+    .announcement-bar.hidden {
+        display: none;
+    }
+    
+    /* Hamburger Icon Animation */
+    .hamburger-icon {
+        width: 24px;
+        height: 18px;
         position: relative;
-        min-height: 64px;
+        display: block;
     }
     
-    /* Logo Styles */
-    .site-title a,
-    .site-title a:hover,
-    .site-title a:visited,
-    .site-title a:focus {
-        color: #111827 !important;
-        text-decoration: none !important;
+    .hamburger-icon span {
+        display: block;
+        position: absolute;
+        height: 2px;
+        width: 100%;
+        background: #374151;
+        border-radius: 2px;
+        opacity: 1;
+        left: 0;
+        transform: rotate(0deg);
+        transition: 0.25s ease-in-out;
     }
     
-    .no-hover-effect a:hover {
-        color: inherit !important;
+    .hamburger-icon span:nth-child(1) {
+        top: 0px;
     }
     
-    /* Custom Logo Styles */
-    .custom-logo-link {
-        display: inline-block !important;
-        max-width: 160px !important;
-        width: auto !important;
-        height: auto !important;
-    }
-
-    .custom-logo {
-        max-width: 100% !important;
-        width: auto !important;
-        height: auto !important;
-        max-height: 40px !important;
-        object-fit: contain !important;
-        display: block !important;
-        transition: opacity 0.3s ease !important;
-    }
-
-    .custom-logo-link:hover .custom-logo {
-        opacity: 0.8 !important;
-    }
-
-    /* Mobile responsive logo */
-    @media (max-width: 768px) {
-        .custom-logo-link {
-            max-width: 120px !important;
-        }
-        
-        .custom-logo {
-            max-height: 32px !important;
-        }
+    .hamburger-icon span:nth-child(2) {
+        top: 8px;
     }
     
-    /* Navigation Menu Styling */
-    #primary-menu {
-        list-style: none;
-        margin: 0;
-        padding: 0;
+    .hamburger-icon span:nth-child(3) {
+        top: 16px;
     }
     
-    #primary-menu li {
-        margin: 0 !important;
-        padding: 0 !important;
+    .mobile-menu-toggle.active .hamburger-icon span:nth-child(1) {
+        top: 8px;
+        transform: rotate(135deg);
     }
     
-    #primary-menu a {
-        color: #374151 !important;
-        font-weight: 500 !important;
-        font-size: 1rem !important;
-        padding: 6px 12px !important;
-        border-radius: 4px !important;
-        transition: all 0.2s ease !important;
-        text-decoration: none !important;
-        display: block !important;
+    .mobile-menu-toggle.active .hamburger-icon span:nth-child(2) {
+        opacity: 0;
+        left: -60px;
     }
     
-    #primary-menu a:hover {
-        color: #667eea !important;
-        background-color: #f3f4f6 !important;
-        text-decoration: none !important;
+    .mobile-menu-toggle.active .hamburger-icon span:nth-child(3) {
+        top: 8px;
+        transform: rotate(-135deg);
     }
     
-    /* Mobile Menu */
-    .mobile-menu-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
+    /* Mobile Navigation */
+    #mobile-navigation.active {
+        display: block;
     }
     
-    .mobile-menu-list li {
-        margin: 0 !important;
-        padding: 0 !important;
+    #mobile-navigation.active .mobile-menu-panel {
+        transform: translateX(0);
     }
     
     .mobile-menu-list a {
-        color: #374151 !important;
-        font-weight: 500 !important;
-        font-size: 0.875rem !important;
-        padding: 10px 12px !important;
-        border-radius: 4px !important;
-        transition: all 0.2s ease !important;
-        text-decoration: none !important;
-        display: block !important;
-        margin-bottom: 2px !important;
+        display: block;
+        padding: 12px 16px;
+        color: #374151;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.2s ease;
     }
     
     .mobile-menu-list a:hover {
-        color: #667eea !important;
-        background-color: #f3f4f6 !important;
-        text-decoration: none !important;
+        background: #f3f4f6;
+        color: #667eea;
     }
     
-    /* Mobile Navigation Responsive Visibility */
-    #mobile-navigation {
-        display: none;
+    /* Dropdown Menu Styles */
+    .nav-menu-wrapper .menu-item-has-children {
+        position: relative;
     }
     
-    @media (max-width: 1023px) {
-        #mobile-navigation.hidden {
-            display: none !important;
+    .nav-menu-wrapper .sub-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 220px;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        padding: 8px;
+    }
+    
+    .nav-menu-wrapper .menu-item-has-children:hover .sub-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    .nav-menu-wrapper .sub-menu a {
+        display: block;
+        padding: 10px 16px;
+        color: #374151;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    
+    .nav-menu-wrapper .sub-menu a:hover {
+        background: #f3f4f6;
+        color: #667eea;
+    }
+    
+    /* Search Bar Animation */
+    .search-bar {
+        animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Dark Mode Adjustments */
+    body.dark-mode .site-header {
+        background-color: rgba(31, 41, 55, 0.95);
+        border-bottom-color: #374151;
+    }
+    
+    body.dark-mode .announcement-bar {
+        background: linear-gradient(to right, #4338ca, #7c3aed);
+    }
+    
+    body.dark-mode .mobile-menu-panel {
+        background-color: #1f2937;
+    }
+    
+    body.dark-mode .mobile-menu-list a {
+        color: #e5e7eb;
+    }
+    
+    body.dark-mode .mobile-menu-list a:hover {
+        background: #374151;
+        color: #60a5fa;
+    }
+    
+    body.dark-mode .hamburger-icon span {
+        background: #e5e7eb;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 380px) {
+        .site-header .container {
+            padding-left: 12px;
+            padding-right: 12px;
         }
         
-        #mobile-navigation:not(.hidden) {
-            display: block !important;
+        .mobile-menu-panel {
+            width: 100%;
         }
-    }
-    
-    @media (min-width: 1024px) {
-        #mobile-navigation {
-            display: none !important;
-        }
-    }
-    
-    /* Admin Bar Adjustment */
-    body.admin-bar .site-header {
-        margin-top: 32px !important;
-    }
-    
-    @media screen and (max-width: 782px) {
-        body.admin-bar .site-header {
-            margin-top: 46px !important;
-        }
-    }
-    
-    /* Better CTA Button Styling */
-    .cta-btn {
-        font-size: 0.875rem !important;
-        padding: 0.375rem 1rem !important;
-        border-radius: 0.375rem !important;
-        line-height: 1.5 !important;
-    }
-    
-    .cta-btn:hover {
-        transform: translateY(-1px) !important;
-    }
-    
-    /* Login Button Styling */
-    .login-btn {
-        font-size: 0.875rem !important;
-        line-height: 1.5 !important;
-    }
-    
-    /* Mobile Menu Toggle Button */
-    .mobile-menu-toggle {
-        display: none;
-        width: 36px !important;
-        height: 36px !important;
-        padding: 0 !important;
-        border-radius: 0.375rem !important;
-        transition: all 0.2s ease !important;
-    }
-    
-    @media (max-width: 1023px) {
-        .mobile-menu-toggle {
-            display: flex !important;
-        }
-    }
-    
-    @media (min-width: 1024px) {
-        .mobile-menu-toggle {
-            display: none !important;
-        }
-    }
-    
-    .mobile-menu-toggle:focus {
-        outline: 2px solid #667eea;
-        outline-offset: 2px;
-    }
-    
-    .mobile-menu-toggle:active {
-        transform: scale(0.95);
-    }
-    
-    /* Header Actions Spacing */
-    .header-actions {
-        align-items: center;
-        gap: 0.75rem;
-    }
-    
-    .theme-toggle-wrapper {
-        display: flex;
-        align-items: center;
-    }
-    
-    /* Theme Toggle Size Adjustment */
-    .theme-toggle {
-        width: 52px !important;
-        height: 28px !important;
-        padding: 3px !important;
-    }
-    
-    .theme-toggle-slider {
-        width: 18px !important;
-        height: 18px !important;
-        top: 3px !important;
-        left: 3px !important;
-    }
-    
-    .theme-toggle-slider svg {
-        width: 10px !important;
-        height: 10px !important;
-    }
-    
-    body.dark-mode .theme-toggle-slider {
-        transform: translateX(24px) !important;
-    }
-    
-    /* Mobile Actions Styling */
-    .mobile-actions {
-        background-color: rgba(249, 250, 251, 0.5);
-        border-radius: 6px;
-        padding: 0.75rem;
-        margin-top: 0.75rem;
-    }
-    
-    .mobile-theme-toggle-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 6px 0;
-    }
-    
-    .mobile-theme-label {
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: #374151;
-    }
-    
-    body.dark-mode .mobile-theme-label {
-        color: var(--text-secondary);
-    }
-    
-    /* Site branding flex adjustments */
-    .site-branding {
-        display: flex !important;
-        align-items: center !important;
-        gap: 10px !important;
-    }
-
-    .site-logo {
-        flex-shrink: 0 !important;
-    }
-
-    .site-title-wrapper {
-        min-width: 0 !important;
-    }
-    
-    /* Ensure proper header height and alignment */
-    .site-header > .container > .flex {
-        min-height: 64px !important;
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
-    }
-    
-    /* Smooth transitions */
-    * {
-        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    }
-    
-    /* Dark mode support */
-    body.dark-mode .site-header {
-        background: rgba(17, 24, 39, 0.98) !important;
-        border-color: var(--border-primary) !important;
-    }
-    
-    body.dark-mode .mobile-menu-toggle {
-        border-color: var(--border-secondary) !important;
-        color: var(--text-secondary) !important;
-    }
-    
-    body.dark-mode .mobile-menu-toggle:hover {
-        color: var(--text-primary) !important;
-        border-color: var(--border-primary) !important;
-        background-color: rgba(55, 65, 81, 0.5) !important;
-    }
-    
-    body.dark-mode .login-btn {
-        color: var(--text-secondary) !important;
-    }
-    
-    body.dark-mode .login-btn:hover {
-        color: #667eea !important;
-    }
-    
-    body.dark-mode #primary-menu a,
-    body.dark-mode .mobile-menu-list a {
-        color: var(--text-secondary) !important;
-    }
-    
-    body.dark-mode #primary-menu a:hover,
-    body.dark-mode .mobile-menu-list a:hover {
-        color: #667eea !important;
-        background-color: var(--bg-tertiary) !important;
-    }
-    
-    body.dark-mode #mobile-navigation {
-        background-color: var(--bg-primary) !important;
-        border-color: var(--border-primary) !important;
-    }
-    
-    body.dark-mode .mobile-actions {
-        background-color: rgba(55, 65, 81, 0.5);
     }
     </style>
 
     <script>
-    // Mobile Menu Toggle - Improved
     document.addEventListener('DOMContentLoaded', function() {
+        // Mobile Menu Toggle
         const mobileToggle = document.querySelector('.mobile-menu-toggle');
         const mobileNav = document.querySelector('#mobile-navigation');
+        const mobileOverlay = document.querySelector('.mobile-overlay');
+        const mobileClose = document.querySelector('.mobile-menu-close');
         
-        if (mobileToggle && mobileNav) {
-            mobileToggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                mobileNav.classList.toggle('hidden');
-                
-                // Update button icon
-                const icon = mobileToggle.querySelector('svg path');
-                if (mobileNav.classList.contains('hidden')) {
-                    icon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
-                } else {
-                    icon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+        function toggleMobileMenu() {
+            mobileToggle.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            document.body.classList.toggle('mobile-menu-open');
+        }
+        
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', toggleMobileMenu);
+        }
+        
+        if (mobileOverlay) {
+            mobileOverlay.addEventListener('click', toggleMobileMenu);
+        }
+        
+        if (mobileClose) {
+            mobileClose.addEventListener('click', toggleMobileMenu);
+        }
+        
+        // Search Toggle
+        const searchToggle = document.querySelector('.search-toggle');
+        const searchBar = document.querySelector('.search-bar');
+        
+        if (searchToggle && searchBar) {
+            searchToggle.addEventListener('click', function() {
+                searchBar.classList.toggle('hidden');
+                if (!searchBar.classList.contains('hidden')) {
+                    searchBar.querySelector('.search-field').focus();
                 }
-                
-                // Add animation
-                mobileToggle.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    mobileToggle.style.transform = 'scale(1)';
-                }, 100);
             });
             
-            // Close menu when clicking outside
+            // Close search on ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !searchBar.classList.contains('hidden')) {
+                    searchBar.classList.add('hidden');
+                }
+            });
+            
+            // Close search when clicking outside
             document.addEventListener('click', function(e) {
-                if (!mobileToggle.contains(e.target) && !mobileNav.contains(e.target) && !mobileNav.classList.contains('hidden')) {
-                    mobileNav.classList.add('hidden');
-                    const icon = mobileToggle.querySelector('svg path');
-                    icon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+                if (!searchBar.contains(e.target) && !searchToggle.contains(e.target)) {
+                    searchBar.classList.add('hidden');
                 }
             });
         }
+        
+        // Announcement Bar Close
+        const announcementClose = document.querySelector('.announcement-close');
+        const announcementBar = document.querySelector('.announcement-bar');
+        
+        if (announcementClose && announcementBar) {
+            announcementClose.addEventListener('click', function() {
+                announcementBar.classList.add('hidden');
+                // Save to localStorage to remember user preference
+                localStorage.setItem('announcementClosed', 'true');
+            });
+            
+            // Check if announcement was previously closed
+            if (localStorage.getItem('announcementClosed') === 'true') {
+                announcementBar.classList.add('hidden');
+            }
+        }
+        
+        // Header Scroll Effect
+        let lastScroll = 0;
+        const header = document.querySelector('.site-header');
+        
+        window.addEventListener('scroll', function() {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            lastScroll = currentScroll;
+        });
     });
     </script>
 
     <main id="primary" class="site-main">
+
+
+  <?php
+// Custom Walker for Dropdown Menus
+class YourSite_Dropdown_Walker extends Walker_Nav_Menu {
+    function start_lvl(&$output, $depth = 0, $args = null) {
+        $indent = str_repeat("\t", $depth);
+        $output .= "\n$indent<ul class=\"sub-menu\">\n";
+    }
+}
+?>
+
+<main id="primary" class="site-main">

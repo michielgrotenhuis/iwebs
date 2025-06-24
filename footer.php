@@ -1,99 +1,213 @@
 </main><!-- #primary -->
 
-    <footer id="colophon" class="site-footer bg-gray-900 text-white">
+    <!-- Pre-Footer CTA Section -->
+    <section class="pre-footer-cta bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 relative overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-10"></div>
+        <div class="container mx-auto px-4 py-16 relative z-10">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+                    Ready to Transform Your Business?
+                </h2>
+                <p class="text-xl mb-8 opacity-90">
+                    Join 100,000+ businesses already growing with YourSite.biz
+                </p>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                    <a href="/signup" class="inline-flex items-center justify-center bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200">
+                        Start Free Trial
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </a>
+                    <a href="/demo" class="inline-flex items-center justify-center bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-blue-600 transition-all duration-200">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Watch Demo
+                    </a>
+                </div>
+                
+                <!-- Trust Indicators -->
+                <div class="flex flex-wrap items-center justify-center gap-6 text-sm">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>14-day free trial</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>No credit card required</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Cancel anytime</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Background Pattern -->
+        <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+    </section>
+
+    <footer id="colophon" class="site-footer bg-gray-900 text-gray-300">
+        <!-- Main Footer Content -->
         <div class="container mx-auto px-4 py-16">
-            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
                 <!-- Company Info -->
                 <div class="lg:col-span-2">
                     <div class="mb-6">
-                        <?php
-                        if (has_custom_logo()) {
-                            // Get custom logo and modify for footer (white version)
-                            $custom_logo_id = get_theme_mod('custom_logo');
-                            $logo = wp_get_attachment_image_src($custom_logo_id, 'full');
-                            if ($logo) {
-                                echo '<img src="' . esc_url($logo[0]) . '" alt="' . get_bloginfo('name') . '" class="h-8 filter brightness-0 invert">';
-                            }
-                        } else {
-                            ?>
-                            <h3 class="text-2xl font-bold text-white">
+                        <?php if (has_custom_logo()) : ?>
+                            <div class="footer-logo mb-4">
+                                <?php
+                                $custom_logo_id = get_theme_mod('custom_logo');
+                                $logo = wp_get_attachment_image_src($custom_logo_id, 'full');
+                                if ($logo) {
+                                    echo '<img src="' . esc_url($logo[0]) . '" alt="' . get_bloginfo('name') . '" class="h-8 filter brightness-0 invert">';
+                                }
+                                ?>
+                            </div>
+                        <?php else : ?>
+                            <h3 class="text-2xl font-bold text-white mb-4">
                                 <?php bloginfo('name'); ?>
                             </h3>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                    <p class="text-gray-300 mb-6 max-w-md">
-                        Build your online store in minutes with our powerful, easy-to-use eCommerce platform. 
-                        No coding required - just launch and sell.
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="Twitter">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-                            </svg>
-                        </a>
-                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="Facebook">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                            </svg>
-                        </a>
-                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="LinkedIn">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                            </svg>
-                        </a>
-                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="Instagram">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.89 2.747.099.12.112.225.085.347-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.747 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/>
-                            </svg>
-                        </a>
+                        <?php endif; ?>
+                        
+                        <p class="text-gray-400 mb-6 max-w-sm">
+                            Build and scale your online store with confidence. Trusted by 100,000+ businesses worldwide.
+                        </p>
+                        
+                        <!-- Trust Badges -->
+                        <div class="flex flex-wrap gap-4 mb-6">
+                            <!-- SOC2 Badge -->
+                            <div class="trust-badge group">
+                                <svg class="h-10 w-auto" viewBox="0 0 120 40" fill="none">
+                                    <rect x="0.5" y="0.5" width="119" height="39" rx="3.5" fill="#1a1a1a" stroke="#333"/>
+                                    <circle cx="20" cy="20" r="12" fill="#2563eb"/>
+                                    <path d="M18 20l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <text x="38" y="18" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#2563eb">SOC 2</text>
+                                    <text x="38" y="28" font-family="Arial, sans-serif" font-size="9" fill="#666">Type II Compliant</text>
+                                </svg>
+                            </div>
+                            
+                            <!-- GDPR Badge -->
+                            <div class="trust-badge group">
+                                <svg class="h-10 w-auto" viewBox="0 0 120 40" fill="none">
+                                    <rect x="0.5" y="0.5" width="119" height="39" rx="3.5" fill="#1a1a1a" stroke="#333"/>
+                                    <g transform="translate(12, 8)">
+                                        <circle cx="12" cy="12" r="11" fill="#10b981" stroke="#10b981" stroke-width="2"/>
+                                        <circle cx="12" cy="12" r="8" fill="none" stroke="white" stroke-width="1.5"/>
+                                        <circle cx="12" cy="12" r="5" fill="none" stroke="white" stroke-width="1.5"/>
+                                        <circle cx="12" cy="12" r="2" fill="white"/>
+                                    </g>
+                                    <text x="38" y="18" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#10b981">GDPR</text>
+                                    <text x="38" y="28" font-family="Arial, sans-serif" font-size="9" fill="#666">Compliant</text>
+                                </svg>
+                            </div>
+                            
+                            <!-- PCI DSS Badge -->
+                            <div class="trust-badge group">
+                                <svg class="h-10 w-auto" viewBox="0 0 120 40" fill="none">
+                                    <rect x="0.5" y="0.5" width="119" height="39" rx="3.5" fill="#1a1a1a" stroke="#333"/>
+                                    <g transform="translate(12, 10)">
+                                        <rect x="0" y="0" width="20" height="20" rx="2" fill="#f59e0b"/>
+                                        <path d="M10 5v10m-5-7.5v5m10-5v5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                    </g>
+                                    <text x="38" y="18" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#f59e0b">PCI DSS</text>
+                                    <text x="38" y="28" font-family="Arial, sans-serif" font-size="9" fill="#666">Level 1 Certified</text>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Social Links -->
+                        <div class="flex space-x-4">
+                            <a href="#" class="social-link" aria-label="Twitter">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="social-link" aria-label="LinkedIn">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="social-link" aria-label="YouTube">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="social-link" aria-label="Instagram">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.405a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z"/>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Product Links -->
+                <!-- Product -->
                 <div>
-                    <h4 class="text-lg font-semibold mb-6">Product</h4>
+                    <h4 class="text-white font-semibold mb-4">Product</h4>
                     <ul class="space-y-3">
-                        <li><a href="<?php echo home_url('/features'); ?>" class="text-gray-300 hover:text-white transition-colors">Features</a></li>
-                        <li><a href="<?php echo home_url('/templates'); ?>" class="text-gray-300 hover:text-white transition-colors">Templates</a></li>
-                        <li><a href="<?php echo home_url('/pricing'); ?>" class="text-gray-300 hover:text-white transition-colors">Pricing</a></li>
-                        <li><a href="<?php echo home_url('/integrations'); ?>" class="text-gray-300 hover:text-white transition-colors">Integrations</a></li>
-                        <li><a href="<?php echo home_url('/api'); ?>" class="text-gray-300 hover:text-white transition-colors">API</a></li>
+                        <li><a href="/features" class="footer-link">Features</a></li>
+                        <li><a href="/pricing" class="footer-link">Pricing</a></li>
+                        <li><a href="/templates" class="footer-link">Templates</a></li>
+                        <li><a href="/integrations" class="footer-link">Integrations</a></li>
+                        <li><a href="/build-my-website" class="footer-link">Build My Website</a></li>
+                        <li><a href="/api" class="footer-link">API</a></li>
                     </ul>
                 </div>
 
-                <!-- Resources Links -->
+                <!-- Free Tools -->
                 <div>
-                    <h4 class="text-lg font-semibold mb-6">Resources</h4>
+                    <h4 class="text-white font-semibold mb-4">Free Tools <span class="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full ml-2">New</span></h4>
                     <ul class="space-y-3">
-                        <li><a href="<?php echo home_url('/blog'); ?>" class="text-gray-300 hover:text-white transition-colors">Blog</a></li>
-                        <li><a href="<?php echo home_url('/help'); ?>" class="text-gray-300 hover:text-white transition-colors">Help Center</a></li>
-                        <li><a href="<?php echo home_url('/guides'); ?>" class="text-gray-300 hover:text-white transition-colors">Guides</a></li>
-                        <li><a href="<?php echo home_url('/webinars'); ?>" class="text-gray-300 hover:text-white transition-colors">Webinars</a></li>
-                        <li><a href="<?php echo home_url('/case-studies'); ?>" class="text-gray-300 hover:text-white transition-colors">Case Studies</a></li>
+                        <li><a href="/tools/privacy-policy-generator" class="footer-link">Privacy Policy Generator</a></li>
+                        <li><a href="/tools/product-description-generator" class="footer-link">Product Description AI</a></li>
+                        <li><a href="/tools/slogan-generator" class="footer-link">Slogan Generator</a></li>
+                        <li><a href="/tools" class="footer-link">All Business Tools →</a></li>
                     </ul>
                 </div>
 
-                <!-- Company Links -->
+                <!-- Resources -->
                 <div>
-                    <h4 class="text-lg font-semibold mb-6">Company</h4>
+                    <h4 class="text-white font-semibold mb-4">Learn</h4>
                     <ul class="space-y-3">
-                        <li><a href="<?php echo home_url('/about'); ?>" class="text-gray-300 hover:text-white transition-colors">About Us</a></li>
-                        <li><a href="<?php echo home_url('/careers'); ?>" class="text-gray-300 hover:text-white transition-colors">Careers</a></li>
-                        <li><a href="<?php echo home_url('/partners'); ?>" class="text-gray-300 hover:text-white transition-colors">Partners</a></li>
-                        <li><a href="<?php echo home_url('/contact'); ?>" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
-                        <li><a href="<?php echo home_url('/press'); ?>" class="text-gray-300 hover:text-white transition-colors">Press Kit</a></li>
+                        <li><a href="/blog" class="footer-link">Blog</a></li>
+                        <li><a href="/guides" class="footer-link">Guides</a></li>
+                        <li><a href="/webinars" class="footer-link">Webinars</a></li>
+                        <li><a href="/case-studies" class="footer-link">Case Studies</a></li>
+                        <li><a href="/help" class="footer-link">Help Center</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Company</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/about" class="footer-link">About Us</a></li>
+                        <li><a href="/careers" class="footer-link">Careers</a></li>
+                        <li><a href="/partners" class="footer-link">Partners</a></li>
+                        <li><a href="/press-kit" class="footer-link">Press Kit</a></li>
+                        <li><a href="/contact" class="footer-link">Contact</a></li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Newsletter Signup -->
-            <div class="border-t border-gray-800 pt-8 mt-12">
-                <div class="max-w-md">
-                    <h4 class="text-lg font-semibold mb-4">Stay updated</h4>
-                    <p class="text-gray-300 mb-4">Get the latest news, updates, and tips delivered to your inbox.</p>
-                    <form class="flex flex-col sm:flex-row gap-3" method="post" action="<?php echo admin_url('admin-ajax.php'); ?>">
+            <!-- Newsletter Section -->
+            <div class="border-t border-gray-800 pt-8 mb-8">
+                <div class="max-w-2xl mx-auto text-center">
+                    <h3 class="text-xl font-semibold text-white mb-3">Stay in the Loop</h3>
+                    <p class="text-gray-400 mb-6">Get the latest updates, tips, and exclusive offers delivered to your inbox.</p>
+                    
+                    <form class="newsletter-form flex flex-col sm:flex-row gap-3 max-w-md mx-auto" method="post" action="<?php echo admin_url('admin-ajax.php'); ?>">
                         <input type="hidden" name="action" value="newsletter_signup">
                         <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('newsletter_nonce'); ?>">
                         <input 
@@ -101,91 +215,481 @@
                             name="email"
                             placeholder="Enter your email" 
                             required
-                            class="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                            class="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         >
                         <button 
                             type="submit" 
-                            class="btn-primary px-6 py-3 whitespace-nowrap"
+                            class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 whitespace-nowrap"
                         >
                             Subscribe
                         </button>
                     </form>
+                    <p class="text-xs text-gray-500 mt-3">
+                        By subscribing, you agree to our <a href="/privacy" class="underline hover:text-gray-400">Privacy Policy</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Payment Methods & Certifications -->
+            <div class="border-t border-gray-800 pt-8 mb-8">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+                    <!-- Payment Methods -->
+                    <div class="flex items-center gap-4">
+                        <span class="text-gray-400 text-sm">Accepted payments:</span>
+                        <div class="flex gap-2">
+                            <svg class="h-8 w-12 opacity-70 hover:opacity-100 transition-opacity" viewBox="0 0 48 32" fill="none">
+                                <rect width="48" height="32" rx="4" fill="#1434CB"/>
+                                <path d="M19.2 21.6H16.8L18.4 10.4H20.8L19.2 21.6Z" fill="white"/>
+                                <path d="M27.2 10.6C26.72 10.4 25.92 10.2 24.96 10.2C22.56 10.2 20.88 11.4 20.88 13.2C20.88 14.5 22.08 15.2 23.04 15.6C24 16 24.32 16.3 24.32 16.7C24.32 17.3 23.6 17.6 22.96 17.6C21.92 17.6 21.36 17.4 20.56 17L20.24 16.8L19.92 19C20.56 19.3 21.6 19.5 22.72 19.5C25.28 19.5 26.88 18.3 26.88 16.4C26.88 15.3 26.24 14.5 24.8 13.8C23.92 13.4 23.44 13.1 23.44 12.6C23.44 12.2 23.92 11.8 24.8 11.8C25.52 11.8 26.08 11.9 26.48 12.1L26.72 12.2L27.04 10.1L27.2 10.6Z" fill="white"/>
+                                <path d="M32.64 10.4H30.72C30.08 10.4 29.6 10.6 29.36 11.2L25.6 21.6H28.16L28.64 20H31.68L31.92 21.6H34.08L32.16 10.4H32.64ZM29.44 18C29.44 18 30.88 13.9 30.88 13.9L31.52 16.3C31.52 16.3 31.84 17.7 31.92 18H29.44Z" fill="white"/>
+                                <path d="M14.4 10.4L12 17.3L11.76 16C11.28 14.6 9.76 13 8 12L10.08 21.6H12.64L16.96 10.4H14.4Z" fill="white"/>
+                                <path d="M9.28 10.4H5.12L5.12 10.6C8.32 11.4 10.56 13.5 11.36 15.6L10.56 11.2C10.4 10.6 9.92 10.4 9.28 10.4Z" fill="#EC982D"/>
+                            </svg>
+                            <svg class="h-8 w-12 opacity-70 hover:opacity-100 transition-opacity" viewBox="0 0 48 32" fill="none">
+                                <rect width="48" height="32" rx="4" fill="#EB001B"/>
+                                <circle cx="19" cy="16" r="8" fill="#FF5F00"/>
+                                <circle cx="29" cy="16" r="8" fill="#F79E1B"/>
+                            </svg>
+                            <svg class="h-8 w-12 opacity-70 hover:opacity-100 transition-opacity" viewBox="0 0 48 32" fill="none">
+                                <rect width="48" height="32" rx="4" fill="#635BFF"/>
+                                <path d="M14 12C14 10.8954 14.8954 10 16 10H20V14H16C14.8954 14 14 13.1046 14 12Z" fill="white"/>
+                                <path d="M20 18H16C14.8954 18 14 19.1046 14 20C14 21.1046 14.8954 22 16 22H20V18Z" fill="white"/>
+                                <rect x="20" y="10" width="14" height="12" fill="white"/>
+                            </svg>
+                            <svg class="h-8 w-12 opacity-70 hover:opacity-100 transition-opacity" viewBox="0 0 48 32" fill="none">
+                                <rect width="48" height="32" rx="4" fill="#108043"/>
+                                <path d="M20 10L16 22H20L24 10H20Z" fill="white"/>
+                                <path d="M28 10L24 22H28L32 10H28Z" fill="white"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Customer Support -->
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <span class="text-gray-400 text-sm">24/7 Customer Support</span>
+                        <span class="text-gray-500">•</span>
+                        <a href="/contact" class="text-blue-400 hover:text-blue-300 text-sm font-medium">Get Help Now</a>
+                    </div>
                 </div>
             </div>
 
             <!-- Bottom Bar -->
-            <div class="border-t border-gray-800 pt-8 mt-12">
-                <div class="flex flex-col lg:flex-row justify-between items-center">
-                    <div class="text-gray-300 text-sm mb-4 lg:mb-0">
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
+                    <!-- Copyright -->
+                    <div class="text-gray-400 text-sm text-center lg:text-left">
                         © <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. All rights reserved.
                     </div>
                     
-                    <!-- Breadcrumbs - Subtle in footer -->
-                    <div class="breadcrumbs-footer mb-4 lg:mb-0 order-first lg:order-none">
-                        <?php if (function_exists('rank_math_the_breadcrumbs')) rank_math_the_breadcrumbs(); ?>
+                    <!-- Legal Links -->
+                    <div class="flex flex-wrap justify-center items-center gap-6 text-sm">
+                        <a href="/privacy-policy" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+                        <a href="/terms-of-service" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+                        <a href="/cookie-policy" class="text-gray-400 hover:text-white transition-colors">Cookie Policy</a>
+                        <a href="/sitemap" class="text-gray-400 hover:text-white transition-colors">Sitemap</a>
                     </div>
                     
-                    <!-- Footer Navigation -->
-                    <div class="flex flex-wrap justify-center lg:justify-end items-center space-x-6 text-sm">
-                        <?php
-                        if (has_nav_menu('footer')) {
-                            wp_nav_menu(array(
-                                'theme_location' => 'footer',
-                                'menu_class' => 'flex flex-wrap items-center space-x-6',
-                                'container' => false,
-                                'fallback_cb' => 'yoursite_footer_menu',
-                                'walker' => new YourSite_Footer_Walker_Nav_Menu(),
-                            ));
-                        } else {
-                            yoursite_footer_menu();
-                        }
-                        ?>
+                    <!-- Language/Currency Selector -->
+                    <div class="flex items-center gap-3">
+                        <!-- Language Selector -->
+                        <div class="fancy-selector-wrapper">
+                            <button class="fancy-selector" id="language-toggle">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                                </svg>
+                                <span class="selector-text">EN</span>
+                                <svg class="w-4 h-4 text-gray-400 chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="fancy-dropdown hidden" id="language-dropdown">
+                                <a href="#" data-lang="en" data-code="EN" class="dropdown-item active">
+                                    <span class="flag">🇺🇸</span> English
+                                </a>
+                                <a href="#" data-lang="es" data-code="ES" class="dropdown-item">
+                                    <span class="flag">🇪🇸</span> Español
+                                </a>
+                                <a href="#" data-lang="fr" data-code="FR" class="dropdown-item">
+                                    <span class="flag">🇫🇷</span> Français
+                                </a>
+                                <a href="#" data-lang="de" data-code="DE" class="dropdown-item">
+                                    <span class="flag">🇩🇪</span> Deutsch
+                                </a>
+                                <a href="#" data-lang="it" data-code="IT" class="dropdown-item">
+                                    <span class="flag">🇮🇹</span> Italiano
+                                </a>
+                                <a href="#" data-lang="pt" data-code="PT" class="dropdown-item">
+                                    <span class="flag">🇵🇹</span> Português
+                                </a>
+                                <a href="#" data-lang="ja" data-code="JP" class="dropdown-item">
+                                    <span class="flag">🇯🇵</span> 日本語
+                                </a>
+                                <a href="#" data-lang="zh" data-code="CN" class="dropdown-item">
+                                    <span class="flag">🇨🇳</span> 中文
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Currency Selector -->
+                        <div class="fancy-selector-wrapper">
+                            <button class="fancy-selector" id="currency-toggle">
+                                <span class="currency-symbol">$</span>
+                                <span class="selector-text">USD</span>
+                                <svg class="w-4 h-4 text-gray-400 chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="fancy-dropdown hidden" id="currency-dropdown">
+                                <a href="#" data-currency="USD" data-symbol="$" class="dropdown-item active">
+                                    <span class="currency-flag">🇺🇸</span> USD <span class="text-gray-500">($)</span>
+                                </a>
+                                <a href="#" data-currency="EUR" data-symbol="€" class="dropdown-item">
+                                    <span class="currency-flag">🇪🇺</span> EUR <span class="text-gray-500">(€)</span>
+                                </a>
+                                <a href="#" data-currency="GBP" data-symbol="£" class="dropdown-item">
+                                    <span class="currency-flag">🇬🇧</span> GBP <span class="text-gray-500">(£)</span>
+                                </a>
+                                <a href="#" data-currency="CAD" data-symbol="C$" class="dropdown-item">
+                                    <span class="currency-flag">🇨🇦</span> CAD <span class="text-gray-500">(C$)</span>
+                                </a>
+                                <a href="#" data-currency="AUD" data-symbol="A$" class="dropdown-item">
+                                    <span class="currency-flag">🇦🇺</span> AUD <span class="text-gray-500">(A$)</span>
+                                </a>
+                                <a href="#" data-currency="INR" data-symbol="₹" class="dropdown-item">
+                                    <span class="currency-flag">🇮🇳</span> INR <span class="text-gray-500">(₹)</span>
+                                </a>
+                                <a href="#" data-currency="JPY" data-symbol="¥" class="dropdown-item">
+                                    <span class="currency-flag">🇯🇵</span> JPY <span class="text-gray-500">(¥)</span>
+                                </a>
+                                <a href="#" data-currency="CNY" data-symbol="¥" class="dropdown-item">
+                                    <span class="currency-flag">🇨🇳</span> CNY <span class="text-gray-500">(¥)</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-                    
-                   
+        </div>
     </footer><!-- #colophon -->
 
 </div><!-- #page -->
 
 <?php wp_footer(); ?>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Mobile menu functionality
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    
-    if (mobileMenuButton && mobileMenu) {
-        mobileMenuButton.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
-        });
+<style>
+/* Footer Styles */
+.site-footer {
+    background: linear-gradient(to bottom, #111827, #000000);
+}
+
+.footer-link {
+    color: #9ca3af;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.footer-link:hover {
+    color: #ffffff;
+    transform: translateX(2px);
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #9ca3af;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* Trust Badges */
+.trust-badge {
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.trust-badge:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+/* Fancy Language/Currency Selectors */
+.fancy-selector-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.fancy-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: #e5e7eb;
+    font-size: 14px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.fancy-selector::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.fancy-selector:hover::before {
+    left: 100%;
+}
+
+.fancy-selector:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.fancy-selector .currency-symbol {
+    color: #60a5fa;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.fancy-selector .chevron {
+    transition: transform 0.3s ease;
+}
+
+.fancy-selector-wrapper.active .chevron {
+    transform: rotate(180deg);
+}
+
+/* Fancy Dropdown */
+.fancy-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 180px;
+    background: rgba(17, 24, 39, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    padding: 8px;
+}
+.fancy-selector[aria-expanded="true"] .chevron {
+    transform: rotate(180deg);
+}
+
+.fancy-selector-wrapper.active .fancy-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    color: #d1d5db;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.dropdown-item:hover {
+    background: rgba(99, 102, 241, 0.2);
+    color: #ffffff;
+    transform: translateX(4px);
+}
+
+.dropdown-item.active {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%);
+    color: #ffffff;
+}
+
+.dropdown-item .flag,
+.dropdown-item .currency-flag {
+    font-size: 18px;
+}
+
+/* Glow effect on active selector */
+.fancy-selector-wrapper.active .fancy-selector {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .fancy-selector {
+        padding: 8px 12px;
+        font-size: 13px;
     }
     
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(event) {
-        if (mobileMenu && !mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
-            mobileMenu.classList.add('hidden');
-        }
-    });
+    .fancy-dropdown {
+        left: auto;
+        right: 0;
+    }
+}
+
+/* Remove all old selector styles */
+.selector-wrapper,
+.language-selector,
+.currency-selector {
+    display: none !important;
+}
+
+/* Newsletter Form */
+.newsletter-form input:focus {
+    background-color: #1f2937;
+}
+
+.newsletter-form button {
+    position: relative;
+    overflow: hidden;
+}
+
+.newsletter-form button:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.newsletter-form button:hover:before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Pre-footer CTA Animation */
+.pre-footer-cta {
+    position: relative;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.3), transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(255, 219, 98, 0.3), transparent 50%);
+}
+
+/* Dark Mode Adjustments */
+body.dark-mode .site-footer {
+    background: linear-gradient(to bottom, #0f172a, #020617);
+}
+
+body.dark-mode .footer-link {
+    color: #64748b;
+}
+
+body.dark-mode .footer-link:hover {
+    color: #e2e8f0;
+}
+
+body.dark-mode .newsletter-form input {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+
+body.dark-mode .language-selector,
+body.dark-mode .currency-selector {
+    background-color: rgba(30, 41, 59, 0.8);
+    border-color: rgba(51, 65, 85, 0.5);
+    color: #e2e8f0;
+}
+
+body.dark-mode .language-selector:hover,
+body.dark-mode .currency-selector:hover {
+    background-color: rgba(30, 41, 59, 1);
+    border-color: rgba(99, 102, 241, 0.5);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .pre-footer-cta h2 {
+        font-size: 1.875rem;
+    }
     
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
+    .pre-footer-cta p {
+        font-size: 1rem;
+    }
     
+    .site-footer {
+        padding-top: 3rem;
+        padding-bottom: 2rem;
+    }
+    
+    .selector-wrapper {
+        width: 100%;
+    }
+    
+    .language-selector,
+    .currency-selector {
+        width: 100%;
+    }
+}
+
+/* Footer Pattern */
+.site-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1) 50%, transparent);
+}
+
+/* Currency Symbol Animation */
+.currency-selector:focus + span,
+.currency-selector:hover + span {
+    color: #6366f1;
+}
+
+/* Custom Dropdown Arrow Animation */
+.selector-wrapper:hover svg:last-child {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.selector-wrapper svg:last-child {
+    transition: transform 0.3s ease;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
     // Newsletter form submission
-    const newsletterForm = document.querySelector('form[action*="admin-ajax.php"]');
+    const newsletterForm = document.querySelector('.newsletter-form');
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -205,11 +709,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success) {
                     this.reset();
-                    button.textContent = 'Subscribed!';
+                    button.textContent = '✓ Subscribed!';
+                    button.style.background = 'linear-gradient(to right, #10b981, #059669)';
+                    
                     setTimeout(() => {
                         button.textContent = originalText;
+                        button.style.background = '';
                         button.disabled = false;
-                    }, 2000);
+                    }, 3000);
                 } else {
                     throw new Error(data.data || 'Subscription failed');
                 }
@@ -217,75 +724,79 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Newsletter signup error:', error);
                 button.textContent = 'Try Again';
+                button.style.background = 'linear-gradient(to right, #ef4444, #dc2626)';
+                
                 setTimeout(() => {
                     button.textContent = originalText;
+                    button.style.background = '';
                     button.disabled = false;
-                }, 2000);
+                }, 3000);
             });
         });
     }
     
-    // Add animation classes on scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in-up');
-            }
+  // Currency selector - Custom dropdown
+const currencyToggle = document.getElementById('currency-toggle');
+const currencyDropdown = document.getElementById('currency-dropdown');
+
+if (currencyToggle && currencyDropdown) {
+    const wrapper = currencyToggle.closest('.fancy-selector-wrapper');
+    const symbolSpan = currencyToggle.querySelector('.currency-symbol');
+    const textSpan = currencyToggle.querySelector('.selector-text');
+
+    currencyToggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        wrapper.classList.toggle('active');
+    });
+
+    currencyDropdown.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const symbol = this.dataset.symbol;
+            const code = this.dataset.currency;
+
+            symbolSpan.textContent = symbol;
+            textSpan.textContent = code;
+
+            // Mark active item
+            currencyDropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+
+            // Close dropdown
+            wrapper.classList.remove('active');
         });
-    }, observerOptions);
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!wrapper.contains(e.target)) {
+            wrapper.classList.remove('active');
+        }
+    });
+}
+
     
-    // Observe elements for animation
-    document.querySelectorAll('.feature-card, .hero-gradient > div').forEach(el => {
-        observer.observe(el);
+    // Smooth scroll to top
+    const scrollToTop = document.querySelector('.scroll-to-top');
+    if (scrollToTop) {
+        scrollToTop.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+    
+    // Dynamic copyright year
+    const currentYear = new Date().getFullYear();
+    const copyrightElements = document.querySelectorAll('.current-year');
+    copyrightElements.forEach(el => {
+        el.textContent = currentYear;
     });
 });
 </script>
 
 </body>
 </html>
-
-<?php
-// Default footer menu fallback
-function yoursite_footer_menu() {
-    ?>
-    <div class="flex flex-wrap items-center space-x-6">
-        <a href="<?php echo home_url('/privacy-policy'); ?>" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
-        <a href="<?php echo home_url('/terms-of-service'); ?>" class="text-gray-300 hover:text-white transition-colors">Terms of Service</a>
-        <a href="<?php echo home_url('/cookie-policy'); ?>" class="text-gray-300 hover:text-white transition-colors">Cookie Policy</a>
-    </div>
-    <?php
-}
-
-// Custom Walker class for footer navigation
-class YourSite_Footer_Walker_Nav_Menu extends Walker_Nav_Menu {
-    function start_lvl(&$output, $depth = 0, $args = null) {
-        // No submenus in footer
-    }
-
-    function end_lvl(&$output, $depth = 0, $args = null) {
-        // No submenus in footer
-    }
-
-    function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
-        $attributes = ! empty($item->attr_title) ? ' title="'  . esc_attr($item->attr_title) .'"' : '';
-        $attributes .= ! empty($item->target) ? ' target="' . esc_attr($item->target     ) .'"' : '';
-        $attributes .= ! empty($item->xfn) ? ' rel="'    . esc_attr($item->xfn        ) .'"' : '';
-        $attributes .= ! empty($item->url) ? ' href="'   . esc_attr($item->url        ) .'"' : '';
-        
-        $item_output = '<a class="text-gray-300 hover:text-white transition-colors"' . $attributes .'>';
-        $item_output .= apply_filters('the_title', $item->title, $item->ID);
-        $item_output .= '</a>';
-        
-        $output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
-    }
-
-    function end_el(&$output, $item, $depth = 0, $args = null) {
-        // Items are inline, no closing tags needed
-    }
-}
-?>
