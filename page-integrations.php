@@ -372,27 +372,7 @@ $categories = array(
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="hero-gradient bg-gradient-to-r from-purple-600 to-blue-600 text-white py-20">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl lg:text-5xl font-bold mb-6">
-                Ready to connect your tools?
-            </h2>
-            <p class="text-xl mb-8 opacity-90">
-                Start your free trial and integrate with your favorite apps today
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="#" class="btn-primary text-lg px-8 py-4 bg-white text-purple-600 hover:bg-gray-100 rounded-lg font-semibold transition-all">
-                    Start Free Trial
-                </a>
-                <a href="/api" class="btn-secondary text-lg px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-purple-600 rounded-lg font-semibold transition-all">
-                    View API Docs
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

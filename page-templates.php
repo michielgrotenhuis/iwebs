@@ -275,29 +275,7 @@ get_header(); ?>
 </section>
 <?php endif; ?>
 
-<?php if (get_theme_mod('templates_cta_enable', true)) : ?>
-<!-- CTA Section -->
-<section class="templates-cta-section hero-gradient text-white py-20">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl lg:text-5xl font-bold mb-6">
-                <?php echo esc_html(get_theme_mod('templates_cta_title', __('Ready to build your store?', 'yoursite'))); ?>
-            </h2>
-            <p class="text-xl mb-8 opacity-90">
-                <?php echo esc_html(get_theme_mod('templates_cta_description', __('Choose a template and customize it to match your brand in minutes', 'yoursite'))); ?>
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="<?php echo esc_url(get_theme_mod('templates_cta_primary_url', '#')); ?>" class="templates-cta-primary text-lg px-8 py-4">
-                    <?php echo esc_html(get_theme_mod('templates_cta_primary_text', __('Start Free Trial', 'yoursite'))); ?>
-                </a>
-                <a href="<?php echo esc_url(get_theme_mod('templates_cta_secondary_url', '/pricing')); ?>" class="templates-cta-secondary text-lg px-8 py-4">
-                    <?php echo esc_html(get_theme_mod('templates_cta_secondary_text', __('View Pricing', 'yoursite'))); ?>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
+
 
 <style>
 /* Templates Page Dark Mode Styles */

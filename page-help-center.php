@@ -528,27 +528,6 @@ get_header();
     </div>
 </section>
 
-<!-- Final CTA -->
-<section class="hero-gradient text-white py-20">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl lg:text-5xl font-bold mb-6">
-                Still need help?
-            </h2>
-            <p class="text-xl mb-8 opacity-90">
-                Our support team is here to help you succeed. Get in touch and we'll get back to you quickly.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="https://iwebs.in/contact/" class="btn-primary text-lg px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 rounded-lg font-semibold">
-                    Contact Support
-                </a>
-                <a href="https://iwebs.in/webinars/" class="btn-secondary text-lg px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-blue-600 rounded-lg font-semibold">
-                    Join Next Webinar
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

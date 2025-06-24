@@ -354,33 +354,7 @@ $culture_defaults = array(
 </section>
 <?php endif; ?>
 
-<?php if (get_theme_mod('careers_cta_enable', true)) : ?>
-<!-- CTA Section -->
-<section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl lg:text-5xl font-bold mb-6">
-                <?php echo esc_html(get_theme_mod('careers_cta_title', 'Ready to Make an Impact?')); ?>
-            </h2>
-            <p class="text-xl mb-8 opacity-90">
-                <?php echo esc_html(get_theme_mod('careers_cta_description', 'Join our mission to empower businesses worldwide with seamless integrations')); ?>
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <?php if (!empty($jobs)) : ?>
-                    <a href="#open-positions" 
-                       class="btn-primary text-lg px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 rounded-lg font-semibold transition-all">
-                        <?php echo esc_html(get_theme_mod('careers_cta_primary_text', 'View Open Positions')); ?>
-                    </a>
-                <?php endif; ?>
-                <a href="<?php echo esc_url(get_theme_mod('careers_cta_secondary_url', '/contact')); ?>" 
-                   class="btn-secondary text-lg px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-blue-600 rounded-lg font-semibold transition-all">
-                    <?php echo esc_html(get_theme_mod('careers_cta_secondary_text', 'Contact Us')); ?>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

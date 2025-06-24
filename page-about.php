@@ -196,28 +196,5 @@ get_header(); ?>
 </section>
 <?php endif; ?>
 
-<?php if (get_theme_mod('about_cta_enable', true)) : ?>
-<!-- CTA Section -->
-<section class="hero-gradient text-white py-20">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl lg:text-5xl font-bold mb-6">
-                <?php echo esc_html(get_theme_mod('about_cta_title', __('Ready to join our mission?', 'yoursite'))); ?>
-            </h2>
-            <p class="text-xl mb-8 opacity-90">
-                <?php echo esc_html(get_theme_mod('about_cta_description', __('Whether you\'re looking to build your store or join our team, we\'d love to connect', 'yoursite'))); ?>
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="<?php echo esc_url(get_theme_mod('about_cta_primary_url', '#')); ?>" class="btn-primary text-lg px-8 py-4 bg-white text-purple-600 hover:bg-gray-100">
-                    <?php echo esc_html(get_theme_mod('about_cta_primary_text', __('Start Your Store', 'yoursite'))); ?>
-                </a>
-                <a href="<?php echo esc_url(get_theme_mod('about_cta_secondary_url', '/careers')); ?>" class="btn-secondary text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-purple-600">
-                    <?php echo esc_html(get_theme_mod('about_cta_secondary_text', __('View Careers', 'yoursite'))); ?>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
 
 <?php get_footer(); ?>

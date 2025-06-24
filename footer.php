@@ -1,53 +1,91 @@
 </main><!-- #primary -->
 
     <!-- Pre-Footer CTA Section -->
-    <section class="pre-footer-cta bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 relative overflow-hidden">
-        <div class="absolute inset-0 bg-black opacity-10"></div>
-        <div class="container mx-auto px-4 py-16 relative z-10">
-            <div class="max-w-4xl mx-auto text-center text-white">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-                    Ready to Transform Your Business?
+   <!-- Pre-Footer CTA Section - Updated to Match Homepage -->
+    <section class="final-cta-section relative py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white overflow-hidden">
+        <!-- Animated Background -->
+        <div class="absolute inset-0">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-600/90 to-purple-600/90"></div>
+            <div class="absolute top-0 left-0 w-full h-full">
+                <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-white/5 rounded-full animate-pulse"></div>
+                <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-white/5 rounded-full animate-pulse delay-1000"></div>
+            </div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <!-- Trust Badge -->
+                <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6 border border-white/20">
+                    <svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Join 50,000+ successful merchants
+                </div>
+                
+                <!-- Main Headline -->
+                <h2 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight text-white">
+                    Ready to Launch Your Dream Store?
                 </h2>
-                <p class="text-xl mb-8 opacity-90">
-                    Join 100,000+ businesses already growing with YourSite.biz
+                
+                <!-- Subheadline -->
+                <p class="text-xl lg:text-2xl mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed text-white">
+                    Start your 14-day free trial today. No credit card required, no setup fees, cancel anytime.
                 </p>
                 
+                <!-- Urgency/Scarcity -->
+                <div class="bg-yellow-400 text-yellow-900 px-6 py-3 rounded-full inline-block font-bold text-lg mb-8">
+                    🔥 Limited Time: Free setup worth $200
+                </div>
+                
                 <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                    <a href="/signup" class="inline-flex items-center justify-center bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200">
-                        Start Free Trial
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+                    <!-- Primary CTA -->
+                    <a href="/signup" 
+                       class="group inline-flex items-center justify-center px-10 py-5 bg-white text-gray-900 font-bold text-xl rounded-2xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-2 transition-all duration-300 min-w-[280px]">
+                        <svg class="w-6 h-6 mr-3 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        Start Your Free Store Now
+                        <svg class="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </a>
-                    <a href="/demo" class="inline-flex items-center justify-center bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-blue-600 transition-all duration-200">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    
+                    <!-- Secondary CTA -->
+                    <a href="/demo" 
+                       class="group inline-flex items-center justify-center px-10 py-5 bg-transparent border-2 border-white/60 hover:border-white text-white font-bold text-xl rounded-2xl hover:bg-white/10 transition-all duration-300 min-w-[280px]">
+                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        Watch Demo
+                        Book a Demo
                     </a>
                 </div>
                 
-                <!-- Trust Indicators -->
-                <div class="flex flex-wrap items-center justify-center gap-6 text-sm">
+                <!-- Risk Reversal & Trust Elements -->
+                <div class="flex flex-wrap justify-center items-center gap-6 text-sm opacity-90">
                     <div class="flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        <span>14-day free trial</span>
+                        14-day free trial
                     </div>
                     <div class="flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        <span>No credit card required</span>
+                        No credit card required
                     </div>
                     <div class="flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        <span>Cancel anytime</span>
+                        30-day money-back guarantee
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Cancel anytime
                     </div>
                 </div>
             </div>

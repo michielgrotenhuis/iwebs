@@ -355,24 +355,6 @@ Response:
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-20">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl lg:text-5xl font-bold mb-6 text-white">
-                Ready to start building?
-            </h2>
-            <p class="text-xl mb-8 text-white opacity-90">
-                Get your API key and start integrating with our platform today
-            </p>
-            <div class="flex justify-center items-center">
-                <a href="<?php echo home_url('/contact'); ?>" class="btn-primary text-lg px-8 py-4 bg-white text-purple-600 hover:bg-gray-100 rounded-lg font-semibold transition-all">
-                    Get API Key
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

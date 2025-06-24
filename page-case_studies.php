@@ -292,27 +292,7 @@ $industries = get_terms(array(
     </div>
 </section>
 
-<!-- Final CTA -->
-<section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl lg:text-5xl font-bold mb-6">
-                Your Success Story Starts Here
-            </h2>
-            <p class="text-xl mb-8 opacity-90">
-                Join our growing list of successful clients and transform your business with our expert solutions.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="/contact" class="btn-primary text-lg px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 rounded-lg font-semibold">
-                    Get Started Today
-                </a>
-                <a href="/pricing" class="btn-secondary text-lg px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-blue-600 rounded-lg font-semibold">
-                    View Our Plans
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+
 
 <style>
 .line-clamp-3 {
