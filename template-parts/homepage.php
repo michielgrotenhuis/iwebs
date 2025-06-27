@@ -528,7 +528,8 @@ if (!empty($pricing_plans)) :
                         <div class="text-center">
                             <a href="<?php echo esc_url($button_url ?: '#signup'); ?>" 
                                class="block w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-200 <?php echo $is_featured ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 shadow-lg hover:shadow-xl' : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'; ?>">
-                                <?php echo esc_html($button_text ?: __('Get Started', 'yoursite')); ?>
+                                <?php echo esc_html($button_text ?? __('Get Started', 'yoursite')); ?>
+
                             </a>
                             
                             <?php if ($index === 0) : ?>
