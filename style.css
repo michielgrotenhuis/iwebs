@@ -2458,9 +2458,10 @@ Common breakpoints:
    ========================================================================== */
 
 .faq-toggle {
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 12px 12px 0 0;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    border-radius: 12px 12px 0 0 !important;
+    outline: none !important;
 }
 
 .faq-toggle:hover {
@@ -2473,7 +2474,7 @@ body.dark-mode .faq-toggle:hover {
 
 .faq-toggle.faq-active {
     background-color: #f9fafb !important;
-    border-radius: 12px 12px 0 0;
+    border-radius: 12px 12px 0 0 !important;
 }
 
 body.dark-mode .faq-toggle.faq-active {
@@ -2481,8 +2482,9 @@ body.dark-mode .faq-toggle.faq-active {
 }
 
 .faq-toggle svg {
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease !important;
     color: #6b7280 !important;
+    flex-shrink: 0 !important;
 }
 
 body.dark-mode .faq-toggle svg {
@@ -2490,26 +2492,35 @@ body.dark-mode .faq-toggle svg {
 }
 
 .faq-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    padding-bottom: 0;
-    border-radius: 0 0 12px 12px;
-    background-color: #ffffff;
-    border-top: 1px solid #e5e7eb;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding-bottom: 0 !important;
+    border-radius: 0 0 12px 12px !important;
+    background-color: #ffffff !important;
+    border-top: none !important;
 }
 
 body.dark-mode .faq-content {
-    background-color: #1f2937;
-    border-top-color: #374151;
+    background-color: #1f2937 !important;
 }
 
 .faq-content.faq-open {
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid #e5e7eb !important;
 }
 
 body.dark-mode .faq-content.faq-open {
-    border-top-color: #374151;
+    border-top-color: #374151 !important;
+}
+
+/* Ensure FAQ content text is visible */
+.faq-content p {
+    color: #4b5563 !important;
+    margin: 0 !important;
+}
+
+body.dark-mode .faq-content p {
+    color: #d1d5db !important;
 }
 
 /* ==========================================================================
@@ -2520,7 +2531,8 @@ body.dark-mode .faq-content.faq-open {
 .btn-primary,
 .hero-gradient .btn-primary,
 .templates-cta-section .btn-primary,
-a.btn-primary {
+a.btn-primary,
+button.btn-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     color: #ffffff !important;
     border: none !important;
@@ -2535,12 +2547,14 @@ a.btn-primary {
     cursor: pointer !important;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
     box-shadow: 0 4px 14px 0 rgba(102, 126, 234, 0.3) !important;
+    font-size: 1rem !important;
 }
 
 .btn-primary:hover,
 .hero-gradient .btn-primary:hover,
 .templates-cta-section .btn-primary:hover,
-a.btn-primary:hover {
+a.btn-primary:hover,
+button.btn-primary:hover {
     background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
     color: #ffffff !important;
     text-decoration: none !important;
@@ -2551,9 +2565,10 @@ a.btn-primary:hover {
 .btn-primary:focus,
 .hero-gradient .btn-primary:focus,
 .templates-cta-section .btn-primary:focus,
-a.btn-primary:focus {
+a.btn-primary:focus,
+button.btn-primary:focus {
     color: #ffffff !important;
-    outline: 2px solid #ffffff !important;
+    outline: 3px solid #ffffff !important;
     outline-offset: 2px !important;
 }
 
@@ -2564,13 +2579,14 @@ a.btn-primary:visited {
     color: #ffffff !important;
 }
 
-/* Secondary Buttons - Dark text on light background */
+/* Secondary Buttons - Dark text on light background with better contrast */
 .btn-secondary,
 .hero-gradient .btn-secondary,
 .templates-cta-section .btn-secondary,
-a.btn-secondary {
+a.btn-secondary,
+button.btn-secondary {
     background: #ffffff !important;
-    color: #374151 !important;
+    color: #1f2937 !important;
     border: 2px solid #e5e7eb !important;
     padding: 12px 24px !important;
     border-radius: 8px !important;
@@ -2582,14 +2598,16 @@ a.btn-secondary {
     transition: all 0.3s ease !important;
     cursor: pointer !important;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1) !important;
+    font-size: 1rem !important;
 }
 
 .btn-secondary:hover,
 .hero-gradient .btn-secondary:hover,
 .templates-cta-section .btn-secondary:hover,
-a.btn-secondary:hover {
+a.btn-secondary:hover,
+button.btn-secondary:hover {
     background: #f8fafc !important;
-    color: #1f2937 !important;
+    color: #111827 !important;
     border-color: #667eea !important;
     text-decoration: none !important;
     transform: translateY(-1px) !important;
@@ -2599,9 +2617,10 @@ a.btn-secondary:hover {
 .btn-secondary:focus,
 .hero-gradient .btn-secondary:focus,
 .templates-cta-section .btn-secondary:focus,
-a.btn-secondary:focus {
-    color: #1f2937 !important;
-    outline: 2px solid #667eea !important;
+a.btn-secondary:focus,
+button.btn-secondary:focus {
+    color: #111827 !important;
+    outline: 3px solid #667eea !important;
     outline-offset: 2px !important;
 }
 
@@ -2609,29 +2628,22 @@ a.btn-secondary:focus {
 .hero-gradient .btn-secondary:visited,
 .templates-cta-section .btn-secondary:visited,
 a.btn-secondary:visited {
-    color: #374151 !important;
+    color: #1f2937 !important;
 }
 
 /* Special case for hero section secondary buttons on gradient backgrounds */
 .hero-gradient .btn-secondary {
-    background: rgba(255, 255, 255, 0.9) !important;
-    color: #1f2937 !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #111827 !important;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important;
     backdrop-filter: blur(10px) !important;
+    text-shadow: none !important;
 }
 
 .hero-gradient .btn-secondary:hover {
     background: #ffffff !important;
-    color: #1f2937 !important;
+    color: #111827 !important;
     border-color: rgba(255, 255, 255, 0.8) !important;
-}
-
-/* Button groups in hero */
-.hero-gradient .space-y-4.lg\\:space-y-0.lg\\:space-x-4.lg\\:flex.lg\\:items-center a,
-.hero-gradient .space-x-4 a {
-    text-align: center !important;
-    min-height: 56px !important;
-    font-size: 1.125rem !important;
 }
 
 /* ==========================================================================
@@ -2661,18 +2673,20 @@ a.btn-secondary:visited {
         text-align: center !important;
     }
     
-    /* Hero buttons mobile layout */
-    .hero-gradient .space-y-4.lg\\:space-y-0.lg\\:space-x-4.lg\\:flex.lg\\:items-center {
+    /* Hero buttons mobile layout - CRITICAL FIX */
+    .hero-gradient .space-y-4.lg\\:space-y-0.lg\\:space-x-4.lg\\:flex.lg\\:items-center,
+    .hero-gradient .flex.flex-col.sm\\:flex-row.gap-4 {
         display: flex !important;
         flex-direction: column !important;
         gap: 1rem !important;
-        align-items: stretch !important;
+        align-items: center !important;
         width: 100% !important;
         max-width: 320px !important;
         margin: 0 auto !important;
     }
     
-    .hero-gradient .space-y-4.lg\\:space-y-0.lg\\:space-x-4.lg\\:flex.lg\\:items-center > a {
+    .hero-gradient .space-y-4.lg\\:space-y-0.lg\\:space-x-4.lg\\:flex.lg\\:items-center > a,
+    .hero-gradient .flex.flex-col.sm\\:flex-row.gap-4 > a {
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
@@ -2683,11 +2697,12 @@ a.btn-secondary:visited {
         align-items: center !important;
         justify-content: center !important;
         text-align: center !important;
+        border-radius: 12px !important;
     }
     
     /* Hero text adjustments */
     .hero-gradient h1 {
-        font-size: 2.5rem !important;
+        font-size: 2.25rem !important;
         line-height: 1.2 !important;
         margin-bottom: 1.5rem !important;
     }
@@ -2696,35 +2711,49 @@ a.btn-secondary:visited {
         font-size: 1.125rem !important;
         line-height: 1.6 !important;
         margin-bottom: 2rem !important;
+        padding: 0 1rem !important;
     }
     
     /* Hero benefits pills mobile */
     .hero-gradient .flex.flex-wrap.gap-3.justify-center.lg\\:justify-start {
         justify-content: center !important;
         margin-bottom: 2rem !important;
+        padding: 0 1rem !important;
     }
     
     .hero-gradient .flex.flex-wrap.gap-3.justify-center.lg\\:justify-start span {
         font-size: 0.875rem !important;
         padding: 0.5rem 1rem !important;
     }
+    
+    /* Trust badge mobile */
+    .hero-gradient .inline-flex.items-center.px-4.py-2 {
+        font-size: 0.875rem !important;
+        padding: 0.5rem 1rem !important;
+        margin-bottom: 1.5rem !important;
+    }
 }
 
-/* Ensure proper spacing and alignment */
+/* Extra small screens */
 @media (max-width: 640px) {
     .hero-gradient .py-20.lg\\:py-32 {
         padding-top: 3rem !important;
         padding-bottom: 3rem !important;
     }
     
-    .hero-gradient .space-y-4.lg\\:space-y-0.lg\\:space-x-4.lg\\:flex.lg\\:items-center {
+    .hero-gradient .space-y-4.lg\\:space-y-0.lg\\:space-x-4.lg\\:flex.lg\\:items-center,
+    .hero-gradient .flex.flex-col.sm\\:flex-row.gap-4 {
         max-width: 100% !important;
+        padding: 0 0.5rem !important;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 2rem !important;
         padding: 0 1rem !important;
     }
     
-    .hero-gradient .inline-flex.items-center.px-4.py-2 {
-        font-size: 0.875rem !important;
-        padding: 0.5rem 1rem !important;
+    .hero-gradient p {
+        padding: 0 1rem !important;
     }
 }
 
@@ -2732,7 +2761,6 @@ a.btn-secondary:visited {
    GENERAL MOBILE LAYOUT IMPROVEMENTS
    ========================================================================== */
 
-/* Ensure all button containers are properly aligned */
 @media (max-width: 768px) {
     .container {
         padding-left: 1rem !important;
@@ -2759,12 +2787,6 @@ a.btn-secondary:visited {
         gap: 1.5rem !important;
     }
     
-    /* Card spacing */
-    .feature-card,
-    .pricing-card {
-        margin-bottom: 1rem !important;
-    }
-    
     /* Text sizing */
     h1 {
         font-size: 2rem !important;
@@ -2783,25 +2805,30 @@ a.btn-secondary:visited {
 }
 
 /* ==========================================================================
-   ACCESSIBILITY AND FOCUS IMPROVEMENTS
+   DARK MODE BUTTON FIXES
    ========================================================================== */
 
-/* Improve focus visibility */
-.btn-primary:focus,
-.btn-secondary:focus,
-.faq-toggle:focus {
-    outline: 3px solid #3b82f6 !important;
-    outline-offset: 2px !important;
+body.dark-mode .btn-secondary {
+    background: #374151 !important;
+    color: #f9fafb !important;
+    border-color: #4b5563 !important;
 }
 
-/* Ensure buttons meet touch target requirements on mobile */
-@media (max-width: 768px) {
-    .btn-primary,
-    .btn-secondary,
-    .faq-toggle {
-        min-height: 44px !important;
-        min-width: 44px !important;
-    }
+body.dark-mode .btn-secondary:hover {
+    background: #4b5563 !important;
+    color: #ffffff !important;
+    border-color: #667eea !important;
+}
+
+body.dark-mode .hero-gradient .btn-secondary {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #111827 !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+body.dark-mode .hero-gradient .btn-secondary:hover {
+    background: #ffffff !important;
+    color: #111827 !important;
 }
 
 /* ==========================================================================
@@ -2825,52 +2852,32 @@ a.btn-secondary:visited {
     border: 2px solid rgba(255, 255, 255, 0.3) !important;
     border-top: 2px solid white !important;
     border-radius: 50% !important;
-    animation: spin 1s linear infinite !important;
+    animation: btn-spin 1s linear infinite !important;
 }
 
-@keyframes spin {
+@keyframes btn-spin {
     0% { transform: translate(-50%, -50%) rotate(0deg); }
     100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /* ==========================================================================
-   DARK MODE BUTTON FIXES
+   ACCESSIBILITY IMPROVEMENTS
    ========================================================================== */
 
-body.dark-mode .btn-secondary {
-    background: #374151 !important;
-    color: #f9fafb !important;
-    border-color: #4b5563 !important;
+/* Improve focus visibility */
+.btn-primary:focus,
+.btn-secondary:focus,
+.faq-toggle:focus {
+    outline: 3px solid #3b82f6 !important;
+    outline-offset: 2px !important;
 }
 
-body.dark-mode .btn-secondary:hover {
-    background: #4b5563 !important;
-    color: #ffffff !important;
-    border-color: #667eea !important;
-}
-
-body.dark-mode .hero-gradient .btn-secondary {
-    background: rgba(255, 255, 255, 0.95) !important;
-    color: #1f2937 !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-}
-
-body.dark-mode .hero-gradient .btn-secondary:hover {
-    background: #ffffff !important;
-    color: #1f2937 !important;
-}
-
-/* ==========================================================================
-   PRINT STYLES
-   ========================================================================== */
-
-@media print {
-    .hero-gradient .space-y-4.lg\\:space-y-0.lg\\:space-x-4.lg\\:flex.lg\\:items-center {
-        display: none !important;
-    }
-    
-    .faq-content {
-        max-height: none !important;
-        display: block !important;
+/* Ensure buttons meet touch target requirements on mobile */
+@media (max-width: 768px) {
+    .btn-primary,
+    .btn-secondary,
+    .faq-toggle {
+        min-height: 44px !important;
+        min-width: 44px !important;
     }
 }
