@@ -2453,431 +2453,293 @@ Common breakpoints:
     height: 300px;
 }
 
+/* Target the specific DIFM banner primary button */
+.difm-banner-section .bg-gradient-to-r.from-blue-600.to-purple-600,
+.bg-gradient-to-r.from-blue-600.to-purple-600.text-white,
+a[class*="bg-gradient-to-r"][class*="from-blue-600"][class*="to-purple-600"] {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* Hover states */
+.difm-banner-section .bg-gradient-to-r.from-blue-600.to-purple-600:hover,
+.bg-gradient-to-r.from-blue-600.to-purple-600.text-white:hover,
+a[class*="bg-gradient-to-r"][class*="from-blue-600"][class*="to-purple-600"]:hover {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* Focus and visited states */
+.bg-gradient-to-r.from-blue-600.to-purple-600:focus,
+.bg-gradient-to-r.from-blue-600.to-purple-600:visited,
+.bg-gradient-to-r.from-blue-600.to-purple-600:active {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* Ensure all child elements are white */
+.bg-gradient-to-r.from-blue-600.to-purple-600 *,
+.bg-gradient-to-r.from-blue-600.to-purple-600.text-white * {
+    color: #ffffff !important;
+}
+
+/* SVG icons specifically */
+.bg-gradient-to-r.from-blue-600.to-purple-600 svg,
+.bg-gradient-to-r.from-blue-600.to-purple-600.text-white svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+/* Override any conflicting link styles */
+a.bg-gradient-to-r.from-blue-600.to-purple-600,
+a.bg-gradient-to-r.from-blue-600.to-purple-600.text-white {
+    color: #ffffff !important;
+}
+
+a.bg-gradient-to-r.from-blue-600.to-purple-600:hover,
+a.bg-gradient-to-r.from-blue-600.to-purple-600:focus,
+a.bg-gradient-to-r.from-blue-600.to-purple-600:visited,
+a.bg-gradient-to-r.from-blue-600.to-purple-600:active {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* Override theme link colors specifically */
+.site-content a.bg-gradient-to-r.from-blue-600.to-purple-600,
+.entry-content a.bg-gradient-to-r.from-blue-600.to-purple-600,
+.homepage a.bg-gradient-to-r.from-blue-600.to-purple-600 {
+    color: #ffffff !important;
+}
+
+/* High specificity override for stubborn themes */
+body a.bg-gradient-to-r.from-blue-600.to-purple-600.text-white {
+    color: #ffffff !important;
+}
+
+body a.bg-gradient-to-r.from-blue-600.to-purple-600.text-white:hover,
+body a.bg-gradient-to-r.from-blue-600.to-purple-600.text-white:focus,
+body a.bg-gradient-to-r.from-blue-600.to-purple-600.text-white:visited {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* Dark mode compatibility */
+body.dark-mode .bg-gradient-to-r.from-blue-600.to-purple-600,
+body.dark-mode .bg-gradient-to-r.from-blue-600.to-purple-600.text-white {
+    color: #ffffff !important;
+}
+
+/* Ensure text shadow for better readability */
+.bg-gradient-to-r.from-blue-600.to-purple-600 {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Alternative: If you want to target by URL */
+a[href*="/build-my-website"] {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+a[href*="/build-my-website"]:hover,
+a[href*="/build-my-website"]:focus,
+a[href*="/build-my-website"]:visited {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+a[href*="/build-my-website"] svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
 /* ==========================================================================
-   FIXED FAQ STYLES
+   PRICING FEATURES LIST - IMPROVED SPACING
    ========================================================================== */
 
-.faq-toggle {
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    border-radius: 12px 12px 0 0 !important;
-    outline: none !important;
+/* ELIMINATE spacing between feature list items for tight layout */
+.pricing-card .space-y-3,
+.pricing-card .space-y-2,
+.pricing-card .space-y-1 {
+    gap: 2px !important; /* Minimal gap */
 }
 
-.faq-toggle:hover {
-    background-color: #f3f4f6 !important;
+.pricing-card ul.space-y-3 > li,
+.pricing-card ul.space-y-2 > li,
+.pricing-card ul.space-y-1 > li {
+    margin-bottom: 2px !important; /* Almost no spacing */
 }
 
-body.dark-mode .faq-toggle:hover {
-    background-color: #374151 !important;
+.pricing-card ul.space-y-3 > li:last-child,
+.pricing-card ul.space-y-2 > li:last-child,
+.pricing-card ul.space-y-1 > li:last-child {
+    margin-bottom: 0 !important;
 }
 
-.faq-toggle.faq-active {
-    background-color: #f9fafb !important;
-    border-radius: 12px 12px 0 0 !important;
-}
-
-body.dark-mode .faq-toggle.faq-active {
-    background-color: #374151 !important;
-}
-
-.faq-toggle svg {
-    transition: transform 0.3s ease !important;
-    color: #6b7280 !important;
+/* Optimize icon size and positioning */
+.pricing-card .flex.items-center svg {
+    width: 16px !important; /* Reduced from 20px */
+    height: 16px !important; /* Reduced from 20px */
+    margin-right: 8px !important; /* Reduced from 12px */
     flex-shrink: 0 !important;
 }
 
-body.dark-mode .faq-toggle svg {
-    color: #9ca3af !important;
+/* Improve text sizing and line height */
+.pricing-card .flex.items-center span {
+    font-size: 14px !important; /* Slightly smaller for better fit */
+    line-height: 1.4 !important; /* Tighter line height */
 }
 
-.faq-content {
-    max-height: 0 !important;
-    overflow: hidden !important;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    padding-bottom: 0 !important;
-    border-radius: 0 0 12px 12px !important;
-    background-color: #ffffff !important;
-    border-top: none !important;
+/* Alternative: Even more compact version */
+.pricing-card.compact .space-y-3 {
+    gap: 6px !important;
 }
 
-body.dark-mode .faq-content {
-    background-color: #1f2937 !important;
+.pricing-card.compact ul.space-y-3 > li {
+    margin-bottom: 6px !important;
 }
 
-.faq-content.faq-open {
-    border-top: 1px solid #e5e7eb !important;
+.pricing-card.compact .flex.items-center svg {
+    width: 14px !important;
+    height: 14px !important;
+    margin-right: 6px !important;
 }
 
-body.dark-mode .faq-content.faq-open {
-    border-top-color: #374151 !important;
+.pricing-card.compact .flex.items-center span {
+    font-size: 13px !important;
+    line-height: 1.3 !important;
 }
 
-/* Ensure FAQ content text is visible */
-.faq-content p {
-    color: #4b5563 !important;
-    margin: 0 !important;
+/* Mobile responsive adjustments - ULTRA TIGHT */
+@media (max-width: 768px) {
+    .pricing-card .space-y-3,
+    .pricing-card .space-y-2,
+    .pricing-card .space-y-1 {
+        gap: 1px !important; /* Almost touching */
+    }
+    
+    .pricing-card ul.space-y-3 > li,
+    .pricing-card ul.space-y-2 > li,
+    .pricing-card ul.space-y-1 > li {
+        margin-bottom: 1px !important;
+    }
+    
+    .pricing-card .flex.items-center svg {
+        width: 14px !important;
+        height: 14px !important;
+        margin-right: 6px !important;
+    }
+    
+    .pricing-card .flex.items-center span {
+        font-size: 13px !important;
+        line-height: 1.2 !important; /* Tighter line height */
+    }
 }
 
-body.dark-mode .faq-content p {
+/* For the specific pricing page template - ULTRA TIGHT */
+.homepage-pricing-grid .feature-card ul {
+    margin-bottom: 0 !important;
+    padding-left: 0 !important;
+    list-style: none !important;
+}
+
+.homepage-pricing-grid .feature-card li {
+    display: flex !important;
+    align-items: flex-start !important;
+    margin-bottom: 2px !important; /* Minimal spacing */
+    padding: 0 !important;
+    line-height: 1.3 !important; /* Tight line height */
+}
+
+.homepage-pricing-grid .feature-card li:last-child {
+    margin-bottom: 0 !important;
+}
+
+.homepage-pricing-grid .feature-card li svg {
+    margin-top: 2px !important; /* Slight offset to align with text baseline */
+    margin-right: 8px !important;
+    width: 16px !important;
+    height: 16px !important;
+    flex-shrink: 0 !important;
+}
+
+.homepage-pricing-grid .feature-card li span {
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    color: #374151 !important;
+}
+
+/* Dark mode adjustments */
+body.dark-mode .homepage-pricing-grid .feature-card li span {
     color: #d1d5db !important;
 }
 
-/* ==========================================================================
-   FIXED BUTTON STYLES - HIGH CONTRAST AND READABLE
-   ========================================================================== */
-
-/* Primary Buttons - Always white text with good contrast */
-.btn-primary,
-.hero-gradient .btn-primary,
-.templates-cta-section .btn-primary,
-a.btn-primary,
-button.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: #ffffff !important;
-    border: none !important;
-    padding: 12px 24px !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    text-decoration: none !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    transition: all 0.3s ease !important;
-    cursor: pointer !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-    box-shadow: 0 4px 14px 0 rgba(102, 126, 234, 0.3) !important;
-    font-size: 1rem !important;
+/* Ensure consistent spacing in pricing comparison shortcodes */
+.enhanced-pricing-section .pricing-card ul.space-y-3 {
+    margin-bottom: 1.5rem !important;
 }
 
-.btn-primary:hover,
-.hero-gradient .btn-primary:hover,
-.templates-cta-section .btn-primary:hover,
-a.btn-primary:hover,
-button.btn-primary:hover {
-    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 20px 0 rgba(102, 126, 234, 0.4) !important;
+.enhanced-pricing-section .pricing-card ul.space-y-3 > li {
+    margin-bottom: 8px !important;
 }
 
-.btn-primary:focus,
-.hero-gradient .btn-primary:focus,
-.templates-cta-section .btn-primary:focus,
-a.btn-primary:focus,
-button.btn-primary:focus {
-    color: #ffffff !important;
-    outline: 3px solid #ffffff !important;
-    outline-offset: 2px !important;
+.enhanced-pricing-section .pricing-card ul.space-y-3 > li:last-child {
+    margin-bottom: 0 !important;
 }
 
-.btn-primary:visited,
-.hero-gradient .btn-primary:visited,
-.templates-cta-section .btn-primary:visited,
-a.btn-primary:visited {
-    color: #ffffff !important;
+/* Improve overall card content distribution */
+.pricing-card .mb-8.flex-grow {
+    margin-bottom: 1.5rem !important; /* Reduced bottom margin */
 }
 
-/* Secondary Buttons - Dark text on light background with better contrast */
-.btn-secondary,
-.hero-gradient .btn-secondary,
-.templates-cta-section .btn-secondary,
-a.btn-secondary,
-button.btn-secondary {
-    background: #ffffff !important;
-    color: #1f2937 !important;
-    border: 2px solid #e5e7eb !important;
-    padding: 12px 24px !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    text-decoration: none !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    transition: all 0.3s ease !important;
-    cursor: pointer !important;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1) !important;
-    font-size: 1rem !important;
+.pricing-card .mb-8.flex-grow ul {
+    margin-bottom: 0 !important;
 }
 
-.btn-secondary:hover,
-.hero-gradient .btn-secondary:hover,
-.templates-cta-section .btn-secondary:hover,
-a.btn-secondary:hover,
-button.btn-secondary:hover {
-    background: #f8fafc !important;
-    color: #111827 !important;
-    border-color: #667eea !important;
-    text-decoration: none !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15) !important;
+/* Better balance between price and features sections */
+.pricing-card .mb-6 {
+    margin-bottom: 1.5rem !important; /* Reduced from 24px to match features */
 }
 
-.btn-secondary:focus,
-.hero-gradient .btn-secondary:focus,
-.templates-cta-section .btn-secondary:focus,
-a.btn-secondary:focus,
-button.btn-secondary:focus {
-    color: #111827 !important;
-    outline: 3px solid #667eea !important;
-    outline-offset: 2px !important;
+/* Ensure proper spacing in carousel cards */
+.pricing-card-carousel .space-y-3 {
+    gap: 8px !important;
 }
 
-.btn-secondary:visited,
-.hero-gradient .btn-secondary:visited,
-.templates-cta-section .btn-secondary:visited,
-a.btn-secondary:visited {
-    color: #1f2937 !important;
+.pricing-card-carousel ul.space-y-3 > li {
+    margin-bottom: 8px !important;
 }
 
-/* Special case for hero section secondary buttons on gradient backgrounds */
-.hero-gradient .btn-secondary {
-    background: rgba(255, 255, 255, 0.95) !important;
-    color: #111827 !important;
-    border: 2px solid rgba(255, 255, 255, 0.4) !important;
-    backdrop-filter: blur(10px) !important;
-    text-shadow: none !important;
+.pricing-card-carousel .flex.items-center svg {
+    width: 16px !important;
+    height: 16px !important;
+    margin-right: 8px !important;
 }
 
-.hero-gradient .btn-secondary:hover {
-    background: #ffffff !important;
-    color: #111827 !important;
-    border-color: rgba(255, 255, 255, 0.8) !important;
+/* Fix for WordPress generated content */
+.pricing-card .wp-block-list li {
+    margin-bottom: 8px !important;
 }
 
-/* ==========================================================================
-   MOBILE LAYOUT FIXES FOR HERO BUTTONS
-   ========================================================================== */
-
-/* Hero section mobile improvements */
-@media (max-width: 1024px) {
-    .hero-gradient .container {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-    
-    .hero-gradient .max-w-6xl {
-        max-width: 100% !important;
-    }
+.pricing-card .wp-block-list li:last-child {
+    margin-bottom: 0 !important;
 }
 
-@media (max-width: 768px) {
-    /* Hero content mobile styling */
-    .hero-gradient .grid.lg\\:grid-cols-2 {
-        grid-template-columns: 1fr !important;
-        gap: 2rem !important;
-    }
-    
-    .hero-gradient .text-center.lg\\:text-left {
-        text-align: center !important;
-    }
-    
-    /* Hero buttons mobile layout - CRITICAL FIX */
-    .hero-gradient .space-y-4.lg\\:space-y-0.lg\\:space-x-4.lg\\:flex.lg\\:items-center,
-    .hero-gradient .flex.flex-col.sm\\:flex-row.gap-4 {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 1rem !important;
-        align-items: center !important;
-        width: 100% !important;
-        max-width: 320px !important;
-        margin: 0 auto !important;
-    }
-    
-    .hero-gradient .space-y-4.lg\\:space-y-0.lg\\:space-x-4.lg\\:flex.lg\\:items-center > a,
-    .hero-gradient .flex.flex-col.sm\\:flex-row.gap-4 > a {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 1rem 1.5rem !important;
-        font-size: 1.125rem !important;
-        min-height: 56px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        text-align: center !important;
-        border-radius: 12px !important;
-    }
-    
-    /* Hero text adjustments */
-    .hero-gradient h1 {
-        font-size: 2.25rem !important;
-        line-height: 1.2 !important;
-        margin-bottom: 1.5rem !important;
-    }
-    
-    .hero-gradient p {
-        font-size: 1.125rem !important;
-        line-height: 1.6 !important;
-        margin-bottom: 2rem !important;
-        padding: 0 1rem !important;
-    }
-    
-    /* Hero benefits pills mobile */
-    .hero-gradient .flex.flex-wrap.gap-3.justify-center.lg\\:justify-start {
-        justify-content: center !important;
-        margin-bottom: 2rem !important;
-        padding: 0 1rem !important;
-    }
-    
-    .hero-gradient .flex.flex-wrap.gap-3.justify-center.lg\\:justify-start span {
-        font-size: 0.875rem !important;
-        padding: 0.5rem 1rem !important;
-    }
-    
-    /* Trust badge mobile */
-    .hero-gradient .inline-flex.items-center.px-4.py-2 {
-        font-size: 0.875rem !important;
-        padding: 0.5rem 1rem !important;
-        margin-bottom: 1.5rem !important;
-    }
+/* Alternative ultra-compact style (add .ultra-compact class to pricing cards) */
+.pricing-card.ultra-compact .space-y-3 {
+    gap: 4px !important;
 }
 
-/* Extra small screens */
-@media (max-width: 640px) {
-    .hero-gradient .py-20.lg\\:py-32 {
-        padding-top: 3rem !important;
-        padding-bottom: 3rem !important;
-    }
-    
-    .hero-gradient .space-y-4.lg\\:space-y-0.lg\\:space-x-4.lg\\:flex.lg\\:items-center,
-    .hero-gradient .flex.flex-col.sm\\:flex-row.gap-4 {
-        max-width: 100% !important;
-        padding: 0 0.5rem !important;
-    }
-    
-    .hero-gradient h1 {
-        font-size: 2rem !important;
-        padding: 0 1rem !important;
-    }
-    
-    .hero-gradient p {
-        padding: 0 1rem !important;
-    }
+.pricing-card.ultra-compact ul.space-y-3 > li {
+    margin-bottom: 4px !important;
 }
 
-/* ==========================================================================
-   GENERAL MOBILE LAYOUT IMPROVEMENTS
-   ========================================================================== */
-
-@media (max-width: 768px) {
-    .container {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-    
-    /* Section spacing adjustments */
-    .py-20 {
-        padding-top: 3rem !important;
-        padding-bottom: 3rem !important;
-    }
-    
-    .py-16 {
-        padding-top: 2.5rem !important;
-        padding-bottom: 2.5rem !important;
-    }
-    
-    /* Grid layouts mobile */
-    .grid.md\\:grid-cols-2,
-    .grid.md\\:grid-cols-3,
-    .grid.lg\\:grid-cols-3,
-    .grid.lg\\:grid-cols-4 {
-        grid-template-columns: 1fr !important;
-        gap: 1.5rem !important;
-    }
-    
-    /* Text sizing */
-    h1 {
-        font-size: 2rem !important;
-        line-height: 1.2 !important;
-    }
-    
-    h2 {
-        font-size: 1.75rem !important;
-        line-height: 1.3 !important;
-    }
-    
-    h3 {
-        font-size: 1.5rem !important;
-        line-height: 1.4 !important;
-    }
+.pricing-card.ultra-compact .flex.items-center svg {
+    width: 12px !important;
+    height: 12px !important;
+    margin-right: 6px !important;
 }
 
-/* ==========================================================================
-   DARK MODE BUTTON FIXES
-   ========================================================================== */
-
-body.dark-mode .btn-secondary {
-    background: #374151 !important;
-    color: #f9fafb !important;
-    border-color: #4b5563 !important;
-}
-
-body.dark-mode .btn-secondary:hover {
-    background: #4b5563 !important;
-    color: #ffffff !important;
-    border-color: #667eea !important;
-}
-
-body.dark-mode .hero-gradient .btn-secondary {
-    background: rgba(255, 255, 255, 0.95) !important;
-    color: #111827 !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
-}
-
-body.dark-mode .hero-gradient .btn-secondary:hover {
-    background: #ffffff !important;
-    color: #111827 !important;
-}
-
-/* ==========================================================================
-   LOADING STATES AND ANIMATIONS
-   ========================================================================== */
-
-.btn-loading {
-    position: relative !important;
-    color: transparent !important;
-    pointer-events: none !important;
-}
-
-.btn-loading::after {
-    content: '' !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 20px !important;
-    height: 20px !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    border-top: 2px solid white !important;
-    border-radius: 50% !important;
-    animation: btn-spin 1s linear infinite !important;
-}
-
-@keyframes btn-spin {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* ==========================================================================
-   ACCESSIBILITY IMPROVEMENTS
-   ========================================================================== */
-
-/* Improve focus visibility */
-.btn-primary:focus,
-.btn-secondary:focus,
-.faq-toggle:focus {
-    outline: 3px solid #3b82f6 !important;
-    outline-offset: 2px !important;
-}
-
-/* Ensure buttons meet touch target requirements on mobile */
-@media (max-width: 768px) {
-    .btn-primary,
-    .btn-secondary,
-    .faq-toggle {
-        min-height: 44px !important;
-        min-width: 44px !important;
-    }
+.pricing-card.ultra-compact .flex.items-center span {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
 }

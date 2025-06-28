@@ -330,7 +330,8 @@ function yoursite_load_components() {
         'ajax-handlers.php',
         'admin-functions.php',
         'theme-activation.php',
-        'theme-modes.php'
+        'theme-modes.php',
+        'feature-pages.php'
     );
     
     foreach ($components as $component) {
@@ -844,6 +845,7 @@ function yoursite_pricing_admin_styles() {
         .admin-color-fresh .pricing-admin-header {
             background: linear-gradient(135deg, #00a0d2 0%, #0073aa 100%);
         }
+        
         </style>
         
         <script>

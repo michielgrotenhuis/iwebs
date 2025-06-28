@@ -34,7 +34,7 @@ if (in_array($hero_background_type, array('image', 'image_with_gradient')) && $h
                     <!-- Trust Badge -->
                     <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white/90 mb-6 border border-white/20">
                         <svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                         <?php echo esc_html(get_theme_mod('hero_trust_badge', __('Trusted by 50,000+ merchants', 'yoursite'))); ?>
                     </div>
@@ -680,17 +680,25 @@ if (!empty($pricing_plans)) :
                                 
                                 <!-- CTA Buttons -->
                                 <div class="flex flex-col sm:flex-row gap-4">
-                                    <!-- Primary CTA -->
-                                    <a href="<?php echo esc_url(home_url(get_theme_mod('difm_banner_primary_url', '/build-my-website'))); ?>" 
-                                       class="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200">
-                                        <svg class="w-6 h-6 mr-3 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-2m-2 0H7m5 0v-9a1 1 0 00-1-1H9a1 1 0 00-1 1v9m5 0H9m6-12v4m-8-4v4"></path>
-                                        </svg>
-                                        <?php echo esc_html(get_theme_mod('difm_banner_primary_text', 'Build My Store')); ?>
-                                        <svg class="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                        </svg>
-                                    </a>
+<!-- FIXED PRIMARY CTA BUTTON WITH GUARANTEED WHITE TEXT -->
+<a href="<?php echo esc_url(home_url(get_theme_mod('difm_banner_primary_url', '/build-my-website'))); ?>" 
+   class="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
+   style="color: #ffffff !important; text-decoration: none !important;">
+    <svg class="w-6 h-6 mr-3 group-hover:scale-110 transition-transform duration-200" 
+         style="color: #ffffff !important; stroke: #ffffff !important;" 
+         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-2m-2 0H7m5 0v-9a1 1 0 00-1-1H9a1 1 0 00-1 1v9m5 0H9m6-12v4m-8-4v4"></path>
+    </svg>
+    <span style="color: #ffffff !important;">
+        <?php echo esc_html(get_theme_mod('difm_banner_primary_text', 'Build My Store')); ?>
+    </span>
+    <svg class="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform duration-200" 
+         style="color: #ffffff !important; stroke: #ffffff !important;" 
+         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    </svg>
+</a>
+
                                     
                                     <!-- Secondary CTA -->
                                     <a href="<?php echo esc_url(home_url(get_theme_mod('difm_banner_secondary_url', '/contact'))); ?>" 
@@ -945,7 +953,7 @@ if (!empty($pricing_plans)) :
     </div>
 </section>
 
-<!-- FAQ Section -->
+<!-- CORRECTED FAQ HTML STRUCTURE -->
 <section class="py-20 bg-gray-50 dark:bg-gray-900">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto">
@@ -986,16 +994,16 @@ if (!empty($pricing_plans)) :
                 foreach ($faqs as $index => $faq) :
                     if (!empty(trim($faq['question'])) && !empty(trim($faq['answer']))) :
                 ?>
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                        <button class="faq-toggle w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200" data-index="<?php echo $index; ?>">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white pr-8">
+                    <div class="faq-item bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                        <button class="faq-toggle" data-index="<?php echo $index; ?>" type="button" aria-expanded="false">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                                 <?php echo esc_html($faq['question']); ?>
                             </h3>
                             <svg class="w-6 h-6 text-gray-500 dark:text-gray-400 transform transition-transform duration-200 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="faq-content hidden px-8 pb-6">
+                        <div class="faq-content">
                             <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
                                 <?php echo esc_html($faq['answer']); ?>
                             </p>
@@ -1009,6 +1017,96 @@ if (!empty($pricing_plans)) :
         </div>
     </div>
 </section>
+
+<script>
+// INLINE FAQ SCRIPT - Add this directly after the FAQ HTML
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Initializing FAQ...');
+    
+    const faqToggles = document.querySelectorAll('.faq-toggle');
+    console.log('Found', faqToggles.length, 'FAQ items');
+    
+    if (faqToggles.length === 0) {
+        console.log('❌ No FAQ toggles found');
+        return;
+    }
+    
+    faqToggles.forEach((toggle, index) => {
+        const content = toggle.nextElementSibling;
+        
+        // Set initial state
+        if (content && content.classList.contains('faq-content')) {
+            content.style.maxHeight = '0px';
+            content.style.paddingBottom = '0px';
+            content.style.overflow = 'hidden';
+            content.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        }
+        
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('FAQ clicked:', index);
+            
+            const content = this.nextElementSibling;
+            const icon = this.querySelector('svg');
+            const isCurrentlyOpen = content.classList.contains('faq-open');
+            
+            // Close all other FAQs first
+            faqToggles.forEach((otherToggle, otherIndex) => {
+                if (otherIndex !== index) {
+                    const otherContent = otherToggle.nextElementSibling;
+                    const otherIcon = otherToggle.querySelector('svg');
+                    
+                    // Close other FAQ
+                    otherToggle.classList.remove('faq-active');
+                    otherToggle.setAttribute('aria-expanded', 'false');
+                    if (otherContent) {
+                        otherContent.classList.remove('faq-open');
+                        otherContent.style.maxHeight = '0px';
+                        otherContent.style.paddingBottom = '0px';
+                    }
+                    
+                    if (otherIcon) {
+                        otherIcon.style.transform = 'rotate(0deg)';
+                    }
+                }
+            });
+            
+            // Toggle current FAQ
+            if (isCurrentlyOpen) {
+                // Close current FAQ
+                this.classList.remove('faq-active');
+                this.setAttribute('aria-expanded', 'false');
+                content.classList.remove('faq-open');
+                content.style.maxHeight = '0px';
+                content.style.paddingBottom = '0px';
+                
+                if (icon) {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+                console.log('FAQ closed:', index);
+            } else {
+                // Open current FAQ
+                this.classList.add('faq-active');
+                this.setAttribute('aria-expanded', 'true');
+                content.classList.add('faq-open');
+                
+                // Calculate and set the height
+                const contentHeight = content.scrollHeight + 24; // Add padding
+                content.style.maxHeight = contentHeight + 'px';
+                content.style.paddingBottom = '1.5rem';
+                
+                if (icon) {
+                    icon.style.transform = 'rotate(180deg)';
+                }
+                console.log('FAQ opened:', index, 'Height:', contentHeight);
+            }
+        });
+    });
+    
+    console.log('✅ FAQ initialized successfully');
+});
+</script>
+
 
 
 
@@ -1084,21 +1182,192 @@ if (!empty($pricing_plans)) :
     color: #6b7280;
 }
 
-/* FAQ Styles */
-.faq-toggle.active svg {
-    transform: rotate(180deg);
+/* ===== COMPLETE FAQ STYLES FIX ===== */
+
+/* FAQ Toggle Button */
+.faq-toggle {
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    border-radius: 12px 12px 0 0 !important;
+    outline: none !important;
+    width: 100% !important;
+    text-align: left !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: inherit !important;
+    font-family: inherit !important;
+    padding: 1.5rem 2rem !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
 }
 
+.faq-toggle:hover {
+    background-color: #f3f4f6 !important;
+}
+
+body.dark-mode .faq-toggle:hover {
+    background-color: #374151 !important;
+}
+
+.faq-toggle.faq-active {
+    background-color: #f9fafb !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+body.dark-mode .faq-toggle.faq-active {
+    background-color: #374151 !important;
+}
+
+/* FAQ Toggle Icon */
+.faq-toggle svg {
+    transition: transform 0.3s ease !important;
+    color: #6b7280 !important;
+    flex-shrink: 0 !important;
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+}
+
+body.dark-mode .faq-toggle svg {
+    color: #9ca3af !important;
+}
+
+/* FAQ Content Container */
 .faq-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: all 0.3s ease;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-radius: 0 0 12px 12px !important;
+    background-color: #ffffff !important;
+    border-top: none !important;
 }
 
-.faq-content.active {
-    max-height: 200px;
-    padding-bottom: 1.5rem;
+body.dark-mode .faq-content {
+    background-color: #1f2937 !important;
 }
+
+/* When FAQ is open */
+.faq-content.faq-open {
+    border-top: 1px solid #e5e7eb !important;
+    padding-bottom: 1.5rem !important;
+}
+
+body.dark-mode .faq-content.faq-open {
+    border-top-color: #374151 !important;
+}
+
+/* FAQ Content Text */
+.faq-content p {
+    color: #4b5563 !important;
+    margin: 0 !important;
+    line-height: 1.6 !important;
+    font-size: 1rem !important;
+}
+
+body.dark-mode .faq-content p {
+    color: #d1d5db !important;
+}
+
+/* FAQ Question Text */
+.faq-toggle h3 {
+    color: #111827 !important;
+    margin: 0 !important;
+    padding-right: 1rem !important;
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+}
+
+body.dark-mode .faq-toggle h3 {
+    color: #f9fafb !important;
+}
+
+/* FAQ Container */
+.faq-item,
+.faq-container {
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    margin-bottom: 1rem !important;
+    overflow: hidden !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .faq-item,
+body.dark-mode .faq-container {
+    background: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+.faq-item:hover,
+.faq-container:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.dark-mode .faq-item:hover,
+body.dark-mode .faq-container:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .faq-toggle {
+        padding: 1.25rem 1.5rem !important;
+    }
+    
+    .faq-toggle h3 {
+        font-size: 1rem !important;
+        padding-right: 0.75rem !important;
+    }
+    
+    .faq-content {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+    
+    .faq-toggle svg {
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+    }
+}
+
+/* Focus states for accessibility */
+.faq-toggle:focus {
+    outline: 3px solid #3b82f6 !important;
+    outline-offset: 2px !important;
+}
+
+/* Animation improvements */
+.faq-toggle svg {
+    transform-origin: center !important;
+}
+
+/* Ensure proper z-index */
+.faq-toggle.faq-active {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Loading state (optional) */
+.faq-toggle.loading {
+    opacity: 0.7 !important;
+    pointer-events: none !important;
+}
+
+/* Enhanced hover effects */
+.faq-item:hover .faq-toggle {
+    background-color: #f8fafc !important;
+}
+
+body.dark-mode .faq-item:hover .faq-toggle {
+    background-color: #374151 !important;
+}
+
 
 /* Dark Mode Enhancements */
 body.dark-mode .final-cta-section {
@@ -1332,46 +1601,119 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // ===== FAQ FUNCTIONALITY =====
+    // ===== COMPLETE FAQ FUNCTIONALITY FIX =====
+document.addEventListener('DOMContentLoaded', function() {
     initializeFAQ();
     
     function initializeFAQ() {
         const faqToggles = document.querySelectorAll('.faq-toggle');
         
-        faqToggles.forEach(toggle => {
-            toggle.addEventListener('click', function() {
+        if (faqToggles.length === 0) {
+            console.log('No FAQ toggles found');
+            return;
+        }
+        
+        faqToggles.forEach((toggle, index) => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                
                 const content = this.nextElementSibling;
                 const icon = this.querySelector('svg');
-                const isActive = this.classList.contains('active');
+                const isCurrentlyOpen = content.classList.contains('faq-open');
                 
-                // Close all other FAQs
-                faqToggles.forEach(otherToggle => {
-                    if (otherToggle !== this) {
-                        otherToggle.classList.remove('active');
+                // Close all other FAQs first
+                faqToggles.forEach((otherToggle, otherIndex) => {
+                    if (otherIndex !== index) {
                         const otherContent = otherToggle.nextElementSibling;
                         const otherIcon = otherToggle.querySelector('svg');
-                        otherContent.style.maxHeight = '0';
-                        otherContent.classList.remove('active');
-                        otherIcon.style.transform = 'rotate(0deg)';
+                        
+                        // Close other FAQ
+                        otherToggle.classList.remove('faq-active');
+                        otherContent.classList.remove('faq-open');
+                        otherContent.style.maxHeight = '0px';
+                        otherContent.style.paddingBottom = '0px';
+                        
+                        if (otherIcon) {
+                            otherIcon.style.transform = 'rotate(0deg)';
+                        }
                     }
                 });
                 
                 // Toggle current FAQ
-                if (isActive) {
-                    this.classList.remove('active');
-                    content.style.maxHeight = '0';
-                    content.classList.remove('active');
-                    icon.style.transform = 'rotate(0deg)';
+                if (isCurrentlyOpen) {
+                    // Close current FAQ
+                    this.classList.remove('faq-active');
+                    content.classList.remove('faq-open');
+                    content.style.maxHeight = '0px';
+                    content.style.paddingBottom = '0px';
+                    
+                    if (icon) {
+                        icon.style.transform = 'rotate(0deg)';
+                    }
                 } else {
-                    this.classList.add('active');
-                    content.style.maxHeight = content.scrollHeight + 'px';
-                    content.classList.add('active');
-                    icon.style.transform = 'rotate(180deg)';
+                    // Open current FAQ
+                    this.classList.add('faq-active');
+                    content.classList.add('faq-open');
+                    
+                    // Calculate and set the height
+                    const contentHeight = content.scrollHeight;
+                    content.style.maxHeight = contentHeight + 'px';
+                    content.style.paddingBottom = '1.5rem';
+                    
+                    if (icon) {
+                        icon.style.transform = 'rotate(180deg)';
+                    }
                 }
             });
+            
+            // Set up initial state
+            const content = toggle.nextElementSibling;
+            if (content) {
+                content.style.maxHeight = '0px';
+                content.style.paddingBottom = '0px';
+                content.style.overflow = 'hidden';
+                content.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            }
         });
+        
+        console.log(`✅ FAQ initialized with ${faqToggles.length} items`);
     }
+});
+
+// Alternative approach if the above doesn't work - using data attributes
+function initializeFAQAlternative() {
+    const faqItems = document.querySelectorAll('[data-index]');
     
+    faqItems.forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            const index = this.dataset.index;
+            const content = this.parentElement.querySelector('.faq-content');
+            const icon = this.querySelector('svg');
+            
+            // Toggle this FAQ
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                this.classList.remove('faq-active');
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            } else {
+                // Close all others first
+                document.querySelectorAll('.faq-content').forEach(otherContent => {
+                    otherContent.style.display = 'none';
+                });
+                document.querySelectorAll('.faq-toggle').forEach(otherToggle => {
+                    otherToggle.classList.remove('faq-active');
+                    const otherIcon = otherToggle.querySelector('svg');
+                    if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
+                });
+                
+                // Open this one
+                content.style.display = 'block';
+                this.classList.add('faq-active');
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            }
+        });
+    });
+}
     // ===== VIDEO MODAL FUNCTIONALITY =====
     initializeVideoModal();
     
