@@ -119,10 +119,11 @@
                         <?php endif; ?>
                         
                         <p class="text-gray-400 mb-6 max-w-sm">
-                            Build and scale your online store with confidence. Trusted by 100,000+ businesses worldwide.
+                            <?php echo esc_html(get_theme_mod('footer_company_description', __('Build and scale your online store with confidence. Trusted by 100,000+ businesses worldwide.', 'yoursite'))); ?>
                         </p>
                         
                         <!-- Trust Badges -->
+                        <?php if (get_theme_mod('show_trust_badges', true)) : ?>
                         <div class="flex flex-wrap gap-4 mb-6">
                             <!-- SOC2 Badge -->
                             <div class="trust-badge group">
@@ -163,30 +164,33 @@
                                 </svg>
                             </div>
                         </div>
+                        <?php endif; ?>
                         
                         <!-- Social Links -->
+                        <?php if (get_theme_mod('show_social_links', true)) : ?>
                         <div class="flex space-x-4">
-                            <a href="#" class="social-link" aria-label="Twitter">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-                                </svg>
-                            </a>
-                            <a href="#" class="social-link" aria-label="LinkedIn">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                                </svg>
-                            </a>
-                            <a href="#" class="social-link" aria-label="YouTube">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                                </svg>
-                            </a>
-                            <a href="#" class="social-link" aria-label="Instagram">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.405a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z"/>
-                                </svg>
-                            </a>
+                            <?php
+                            // Get social links from customizer
+                            $social_platforms = array(
+                                'twitter' => array('icon' => 'M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z', 'label' => 'Twitter'),
+                                'linkedin' => array('icon' => 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z', 'label' => 'LinkedIn'),
+                                'youtube' => array('icon' => 'M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z', 'label' => 'YouTube'),
+                                'instagram' => array('icon' => 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.405a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z', 'label' => 'Instagram')
+                            );
+                            
+                            foreach ($social_platforms as $platform => $data) {
+                                $url = get_theme_mod("social_{$platform}_url", '');
+                                if (!empty($url)) {
+                                    echo '<a href="' . esc_url($url) . '" class="social-link" aria-label="' . esc_attr($data['label']) . '" target="' . esc_attr(get_theme_mod('social_links_target', '_blank')) . '" rel="noopener noreferrer">';
+                                    echo '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">';
+                                    echo '<path d="' . esc_attr($data['icon']) . '"/>';
+                                    echo '</svg>';
+                                    echo '</a>';
+                                }
+                            }
+                            ?>
                         </div>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -240,10 +244,11 @@
             </div>
 
             <!-- Newsletter Section -->
+            <?php if (get_theme_mod('show_footer_newsletter', true)) : ?>
             <div class="border-t border-gray-800 pt-8 mb-8">
                 <div class="max-w-2xl mx-auto text-center">
-                    <h3 class="text-xl font-semibold text-white mb-3">Stay in the Loop</h3>
-                    <p class="text-gray-400 mb-6">Get the latest updates, tips, and exclusive offers delivered to your inbox.</p>
+                    <h3 class="text-xl font-semibold text-white mb-3"><?php echo esc_html(get_theme_mod('newsletter_title', __('Stay in the Loop', 'yoursite'))); ?></h3>
+                    <p class="text-gray-400 mb-6"><?php echo esc_html(get_theme_mod('newsletter_description', __('Get the latest updates, tips, and exclusive offers delivered to your inbox.', 'yoursite'))); ?></p>
                     
                     <form class="newsletter-form flex flex-col sm:flex-row gap-3 max-w-md mx-auto" method="post" action="<?php echo admin_url('admin-ajax.php'); ?>">
                         <input type="hidden" name="action" value="newsletter_signup">
@@ -267,11 +272,14 @@
                     </p>
                 </div>
             </div>
+            <?php endif; ?>
 
             <!-- Payment Methods & Certifications -->
+            <?php if (get_theme_mod('show_payment_methods', true) || get_theme_mod('show_customer_support', true)) : ?>
             <div class="border-t border-gray-800 pt-8 mb-8">
                 <div class="flex flex-col md:flex-row items-center justify-center gap-8">
                     <!-- Payment Methods -->
+                    <?php if (get_theme_mod('show_payment_methods', true)) : ?>
                     <div class="flex items-center gap-4">
                         <span class="text-gray-400 text-sm">Accepted payments:</span>
                         <div class="flex gap-2">
@@ -301,44 +309,52 @@
                             </svg>
                         </div>
                     </div>
+                    <?php endif; ?>
                     
                     <!-- Customer Support -->
+                    <?php if (get_theme_mod('show_customer_support', true)) : ?>
                     <div class="flex items-center gap-3">
                         <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
-                        <span class="text-gray-400 text-sm">24/7 Customer Support</span>
+                        <span class="text-gray-400 text-sm"><?php echo esc_html(get_theme_mod('support_hours', '24/7')); ?> Customer Support</span>
                         <span class="text-gray-500">•</span>
-                        <a href="/contact" class="text-blue-400 hover:text-blue-300 text-sm font-medium">Get Help Now</a>
+                        <a href="<?php echo esc_url(get_theme_mod('support_link_url', '/contact')); ?>" class="text-blue-400 hover:text-blue-300 text-sm font-medium"><?php echo esc_html(get_theme_mod('support_link_text', __('Get Help Now', 'yoursite'))); ?></a>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
+            <?php endif; ?>
 
             <!-- Bottom Bar -->
             <div class="border-t border-gray-800 pt-8">
                 <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
                     <!-- Copyright -->
                     <div class="text-gray-400 text-sm text-center lg:text-left">
-                        © <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. All rights reserved.
+                        <?php echo wp_kses_post(get_theme_mod('footer_text', sprintf(__('© %s %s. All rights reserved.', 'yoursite'), date('Y'), get_bloginfo('name')))); ?>
                     </div>
                     
                     <!-- Legal Links -->
+                    <?php if (get_theme_mod('show_legal_links', true)) : ?>
                     <div class="flex flex-wrap justify-center items-center gap-6 text-sm">
                         <a href="/privacy-policy" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
                         <a href="/terms-of-service" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
                         <a href="/cookie-policy" class="text-gray-400 hover:text-white transition-colors">Cookie Policy</a>
                         <a href="/sitemap" class="text-gray-400 hover:text-white transition-colors">Sitemap</a>
                     </div>
+                    <?php endif; ?>
                     
                     <!-- Language/Currency Selector -->
+                    <?php if (get_theme_mod('show_language_selector', true) || get_theme_mod('show_currency_selector', true)) : ?>
                     <div class="flex items-center gap-3">
                         <!-- Language Selector -->
+                        <?php if (get_theme_mod('show_language_selector', true)) : ?>
                         <div class="fancy-selector-wrapper">
                             <button class="fancy-selector" id="language-toggle">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
                                 </svg>
-                                <span class="selector-text">EN</span>
+                                <span class="selector-text"><?php echo esc_html(get_theme_mod('default_language', 'EN')); ?></span>
                                 <svg class="w-4 h-4 text-gray-400 chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
@@ -370,12 +386,29 @@
                                 </a>
                             </div>
                         </div>
+                        <?php endif; ?>
                         
                         <!-- Currency Selector -->
+                        <?php if (get_theme_mod('show_currency_selector', true)) : ?>
                         <div class="fancy-selector-wrapper">
                             <button class="fancy-selector" id="currency-toggle">
-                                <span class="currency-symbol">$</span>
-                                <span class="selector-text">USD</span>
+                                <span class="currency-symbol">
+    <?php 
+        $currency = get_theme_mod('default_currency', 'USD');
+        $symbols = array(
+            'USD' => '$',
+            'EUR' => '€',
+            'GBP' => '£',
+            'CAD' => 'C$',
+            'AUD' => 'A$',
+            'INR' => '₹',
+            'JPY' => '¥',
+            'CNY' => '¥'
+        );
+        echo esc_html($symbols[$currency] ?? '');
+    ?>
+</span>
+                                <span class="selector-text"><?php echo esc_html($currency); ?></span>
                                 <svg class="w-4 h-4 text-gray-400 chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
@@ -407,7 +440,9 @@
                                 </a>
                             </div>
                         </div>
+                        <?php endif; ?>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -541,9 +576,6 @@
     z-index: 1000;
     padding: 8px;
 }
-.fancy-selector[aria-expanded="true"] .chevron {
-    transform: rotate(180deg);
-}
 
 .fancy-selector-wrapper.active .fancy-dropdown {
     opacity: 1;
@@ -579,31 +611,6 @@
     font-size: 18px;
 }
 
-/* Glow effect on active selector */
-.fancy-selector-wrapper.active .fancy-selector {
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-}
-
-/* Mobile responsive */
-@media (max-width: 768px) {
-    .fancy-selector {
-        padding: 8px 12px;
-        font-size: 13px;
-    }
-    
-    .fancy-dropdown {
-        left: auto;
-        right: 0;
-    }
-}
-
-/* Remove all old selector styles */
-.selector-wrapper,
-.language-selector,
-.currency-selector {
-    display: none !important;
-}
-
 /* Newsletter Form */
 .newsletter-form input:focus {
     background-color: #1f2937;
@@ -632,95 +639,22 @@
     height: 300px;
 }
 
-/* Pre-footer CTA Animation */
-.pre-footer-cta {
-    position: relative;
-    background-image: 
-        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.3), transparent 50%),
-        radial-gradient(circle at 40% 20%, rgba(255, 219, 98, 0.3), transparent 50%);
-}
-
 /* Dark Mode Adjustments */
 body.dark-mode .site-footer {
     background: linear-gradient(to bottom, #0f172a, #020617);
 }
 
-body.dark-mode .footer-link {
-    color: #64748b;
-}
-
-body.dark-mode .footer-link:hover {
-    color: #e2e8f0;
-}
-
-body.dark-mode .newsletter-form input {
-    background-color: #1e293b;
-    border-color: #334155;
-}
-
-body.dark-mode .language-selector,
-body.dark-mode .currency-selector {
-    background-color: rgba(30, 41, 59, 0.8);
-    border-color: rgba(51, 65, 85, 0.5);
-    color: #e2e8f0;
-}
-
-body.dark-mode .language-selector:hover,
-body.dark-mode .currency-selector:hover {
-    background-color: rgba(30, 41, 59, 1);
-    border-color: rgba(99, 102, 241, 0.5);
-}
-
 /* Mobile Optimizations */
 @media (max-width: 768px) {
-    .pre-footer-cta h2 {
-        font-size: 1.875rem;
+    .fancy-selector {
+        padding: 8px 12px;
+        font-size: 13px;
     }
     
-    .pre-footer-cta p {
-        font-size: 1rem;
+    .fancy-dropdown {
+        left: auto;
+        right: 0;
     }
-    
-    .site-footer {
-        padding-top: 3rem;
-        padding-bottom: 2rem;
-    }
-    
-    .selector-wrapper {
-        width: 100%;
-    }
-    
-    .language-selector,
-    .currency-selector {
-        width: 100%;
-    }
-}
-
-/* Footer Pattern */
-.site-footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1) 50%, transparent);
-}
-
-/* Currency Symbol Animation */
-.currency-selector:focus + span,
-.currency-selector:hover + span {
-    color: #6366f1;
-}
-
-/* Custom Dropdown Arrow Animation */
-.selector-wrapper:hover svg:last-child {
-    transform: translateY(-50%) rotate(180deg);
-}
-
-.selector-wrapper svg:last-child {
-    transition: transform 0.3s ease;
 }
 </style>
 
@@ -773,66 +707,83 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-  // Currency selector - Custom dropdown
-const currencyToggle = document.getElementById('currency-toggle');
-const currencyDropdown = document.getElementById('currency-dropdown');
-
-if (currencyToggle && currencyDropdown) {
-    const wrapper = currencyToggle.closest('.fancy-selector-wrapper');
-    const symbolSpan = currencyToggle.querySelector('.currency-symbol');
-    const textSpan = currencyToggle.querySelector('.selector-text');
-
-    currencyToggle.addEventListener('click', function (e) {
-        e.stopPropagation();
-        wrapper.classList.toggle('active');
-    });
-
-    currencyDropdown.querySelectorAll('.dropdown-item').forEach(item => {
-        item.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            const symbol = this.dataset.symbol;
-            const code = this.dataset.currency;
-
-            symbolSpan.textContent = symbol;
-            textSpan.textContent = code;
-
-            // Mark active item
-            currencyDropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-
-            // Close dropdown
-            wrapper.classList.remove('active');
-        });
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function (e) {
-        if (!wrapper.contains(e.target)) {
-            wrapper.classList.remove('active');
-        }
-    });
-}
-
+    // Language selector
+    const languageToggle = document.getElementById('language-toggle');
+    const languageDropdown = document.getElementById('language-dropdown');
     
-    // Smooth scroll to top
-    const scrollToTop = document.querySelector('.scroll-to-top');
-    if (scrollToTop) {
-        scrollToTop.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
+    if (languageToggle && languageDropdown) {
+        const wrapper = languageToggle.closest('.fancy-selector-wrapper');
+        const textSpan = languageToggle.querySelector('.selector-text');
+        
+        languageToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            wrapper.classList.toggle('active');
+        });
+        
+        languageDropdown.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const code = this.dataset.code;
+                textSpan.textContent = code;
+                
+                // Mark active item
+                languageDropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Close dropdown
+                wrapper.classList.remove('active');
             });
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!wrapper.contains(e.target)) {
+                wrapper.classList.remove('active');
+            }
         });
     }
     
-    // Dynamic copyright year
-    const currentYear = new Date().getFullYear();
-    const copyrightElements = document.querySelectorAll('.current-year');
-    copyrightElements.forEach(el => {
-        el.textContent = currentYear;
-    });
+    // Currency selector
+    const currencyToggle = document.getElementById('currency-toggle');
+    const currencyDropdown = document.getElementById('currency-dropdown');
+    
+    if (currencyToggle && currencyDropdown) {
+        const wrapper = currencyToggle.closest('.fancy-selector-wrapper');
+        const symbolSpan = currencyToggle.querySelector('.currency-symbol');
+        const textSpan = currencyToggle.querySelector('.selector-text');
+        
+        currencyToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            wrapper.classList.toggle('active');
+        });
+        
+        currencyDropdown.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const symbol = this.dataset.symbol;
+                const code = this.dataset.currency;
+                
+                symbolSpan.textContent = symbol;
+                textSpan.textContent = code;
+                
+                // Mark active item
+                currencyDropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Close dropdown
+                wrapper.classList.remove('active');
+            });
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!wrapper.contains(e.target)) {
+                wrapper.classList.remove('active');
+            }
+        });
+    }
 });
 </script>
 

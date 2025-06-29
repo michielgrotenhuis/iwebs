@@ -1406,25 +1406,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </section>
     <?php endif; ?>
 
-    <?php if ($cta_enable) : ?>
-    <!-- CTA Section -->
-    <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
-        <div class="container mx-auto px-4">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-4xl font-bold mb-6"><?php echo esc_html($cta_title); ?></h2>
-                <p class="text-xl text-blue-100 mb-8"><?php echo esc_html($cta_subtitle); ?></p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="<?php echo esc_url($cta_primary_url); ?>" class="btn-primary bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 inline-block">
-                        <?php echo esc_html($cta_primary_text); ?>
-                    </a>
-                    <a href="<?php echo esc_url(home_url($cta_secondary_url)); ?>" class="btn-secondary border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-4 inline-block">
-                        <?php echo esc_html($cta_secondary_text); ?>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-    <?php endif; ?>
 </div>
 
 <!-- Complete JavaScript -->
