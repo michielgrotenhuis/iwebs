@@ -1174,5 +1174,33 @@ function yoursite_show_migration_notice() {
     }
 }
 add_action('admin_notices', 'yoursite_show_migration_notice');
+// Start session for currency persistence
+function yoursite_start_session() {
+    if (!session_id()) {
+        session_start();
+    }
+}
+add_action('init', 'yoursite_start_session', 1);
 
+// Clean up sessions on logout
+function yoursite_cleanup_currency_session() {
+    if (isset($_SESSION['preferred_currency'])) {
+        unset($_SESSION['preferred_currency']);
+    }
+}
+add_action('wp_logout', 'yoursite_cleanup_currency_session');
+
+// Debug function to check currency persistence (remove in production)
+function yoursite_debug_currency_persistence() {
+    if (current_user_can('manage_options') && isset($_GET['debug_currency'])) {
+        echo '<div style="background: #f1f1f1; padding: 10px; margin: 10px; border-left: 4px solid #0073aa;">';
+        echo '<h4>Currency Debug Info:</h4>';
+        echo '<p><strong>Cookie:</strong> ' . (isset($_COOKIE['yoursite_preferred_currency']) ? $_COOKIE['yoursite_preferred_currency'] : 'Not set') . '</p>';
+        echo '<p><strong>Session:</strong> ' . (isset($_SESSION['preferred_currency']) ? $_SESSION['preferred_currency'] : 'Not set') . '</p>';
+        echo '<p><strong>User Meta:</strong> ' . (is_user_logged_in() ? get_user_meta(get_current_user_id(), 'preferred_currency', true) : 'Not logged in') . '</p>';
+        echo '<p><strong>Current Currency:</strong> ' . yoursite_get_user_currency()['code'] . '</p>';
+        echo '</div>';
+    }
+}
+add_action('wp_head', 'yoursite_debug_currency_persistence');
 ?>

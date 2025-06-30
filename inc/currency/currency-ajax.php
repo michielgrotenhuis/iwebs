@@ -616,7 +616,7 @@ function yoursite_ajax_update_conversion_rate() {
 add_action('wp_ajax_update_conversion_rate', 'yoursite_ajax_update_conversion_rate');
 
 /**
- * AJAX: Switch user currency (frontend)
+ * AJAX: Switch user currency (frontend) - FIXED VERSION
  */
 function yoursite_ajax_switch_user_currency() {
     $currency_code = sanitize_text_field($_POST['currency'] ?? '');
@@ -631,12 +631,166 @@ function yoursite_ajax_switch_user_currency() {
         wp_send_json_error(__('Currency not available', 'yoursite'));
     }
     
-    // Set cookie
+    // Set cookie with proper parameters
     $cookie_name = 'yoursite_preferred_currency';
     $cookie_value = $currency_code;
     $cookie_expire = time() + (30 * DAY_IN_SECONDS); // 30 days
+    $cookie_path = COOKIEPATH;
+    $cookie_domain = COOKIE_DOMAIN;
+    $secure = is_ssl();
+    $httponly = false; // Allow JavaScript access for frontend
     
-    setcookie($cookie_name, $cookie_value, $cookie_expire, COOKIEPATH, COOKIE_DOMAIN);
+    // Set the cookie
+    $cookie_set = setcookie(
+        $cookie_name, 
+        $cookie_value, 
+        $cookie_expire, 
+        $cookie_path, 
+        $cookie_domain, 
+        $secure, 
+        $httponly
+    );
+    
+    // Also set it in $_COOKIE for immediate availability
+    $_COOKIE[$cookie_name] = $currency_code;
+    
+    // Update user meta if logged in
+    if (is_user_logged_in()) {
+        update_user_meta(get_current_user_id(), 'preferred_currency', $currency_code);
+    }
+    
+    // Log for debugging (remove in production)
+    error_log("Currency switched to: $currency_code, Cookie set: " . ($cookie_set ? 'Yes' : 'No'));
+    
+    wp_send_json_success(array(
+        'currency' => $currency,
+        'message' => sprintf(__('Currency switched to %s', 'yoursite'), $currency['name']),
+        'cookie_set' => $cookie_set,
+        'currency_code' => $currency_code
+    ));
+}
+add_action('wp_ajax_switch_user_currency', 'yoursite_ajax_switch_user_currency');
+add_action('wp_ajax_nopriv_switch_user_currency', 'yoursite_ajax_switch_user_currency');
+
+/**
+ * Enhanced function to get user's preferred currency with better cookie handling
+ */
+function yoursite_get_user_currency_enhanced() {
+    $cookie_name = 'yoursite_preferred_currency';
+    
+    // Check cookie first (most reliable for non-logged in users)
+    if (isset($_COOKIE[$cookie_name])) {
+        $currency_code = sanitize_text_field($_COOKIE[$cookie_name]);
+        $currency = yoursite_get_currency($currency_code);
+        if ($currency && $currency['status'] === 'active') {
+            return $currency;
+        }
+    }
+    
+    // Check if user is logged in and has preference
+    if (is_user_logged_in()) {
+        $user_currency = get_user_meta(get_current_user_id(), 'preferred_currency', true);
+        if ($user_currency) {
+            $currency = yoursite_get_currency($user_currency);
+            if ($currency && $currency['status'] === 'active') {
+                // Sync cookie with user preference
+                setcookie(
+                    $cookie_name,
+                    $user_currency,
+                    time() + (30 * DAY_IN_SECONDS),
+                    COOKIEPATH,
+                    COOKIE_DOMAIN,
+                    is_ssl(),
+                    false
+                );
+                $_COOKIE[$cookie_name] = $user_currency;
+                return $currency;
+            }
+        }
+    }
+    
+    // Geolocation detection (if enabled)
+    $settings = get_option('yoursite_currency_settings', array());
+    if (!empty($settings['geolocation_detection'])) {
+        $detected_currency = yoursite_detect_currency_by_location();
+        if ($detected_currency) {
+            // Set cookie for detected currency
+            setcookie(
+                $cookie_name,
+                $detected_currency['code'],
+                time() + (30 * DAY_IN_SECONDS),
+                COOKIEPATH,
+                COOKIE_DOMAIN,
+                is_ssl(),
+                false
+            );
+            $_COOKIE[$cookie_name] = $detected_currency['code'];
+            return $detected_currency;
+        }
+    }
+    
+    // Fallback to base currency
+    return yoursite_get_base_currency();
+}
+
+/**
+ * Initialize currency on page load
+ */
+function yoursite_init_currency_on_load() {
+    // This ensures currency is properly set when page loads
+    $current_currency = yoursite_get_user_currency_enhanced();
+    
+    // Set JavaScript variable for frontend
+    wp_add_inline_script('jquery', '
+        window.YourSiteCurrency = window.YourSiteCurrency || {};
+        window.YourSiteCurrency.currentCurrency = "' . esc_js($current_currency['code']) . '";
+        window.YourSiteCurrency.ajaxUrl = "' . esc_js(admin_url('admin-ajax.php')) . '";
+        window.YourSiteCurrency.nonce = "' . esc_js(wp_create_nonce('currency_switch')) . '";
+    ');
+}
+add_action('wp_enqueue_scripts', 'yoursite_init_currency_on_load');
+
+/**
+ * Alternative method: Use session storage along with cookies
+ */
+function yoursite_ajax_switch_user_currency_with_session() {
+    $currency_code = sanitize_text_field($_POST['currency'] ?? '');
+    
+    if (empty($currency_code)) {
+        wp_send_json_error(__('Invalid currency', 'yoursite'));
+    }
+    
+    $currency = yoursite_get_currency($currency_code);
+    
+    if (!$currency || $currency['status'] !== 'active') {
+        wp_send_json_error(__('Currency not available', 'yoursite'));
+    }
+    
+    // Start session if not already started
+    if (!session_id()) {
+        session_start();
+    }
+    
+    // Set session variable
+    $_SESSION['preferred_currency'] = $currency_code;
+    
+    // Set cookie as backup
+    $cookie_name = 'yoursite_preferred_currency';
+    $cookie_value = $currency_code;
+    $cookie_expire = time() + (30 * DAY_IN_SECONDS);
+    
+    $cookie_set = setcookie(
+        $cookie_name,
+        $cookie_value,
+        $cookie_expire,
+        COOKIEPATH,
+        COOKIE_DOMAIN,
+        is_ssl(),
+        false
+    );
+    
+    // Immediate cookie setting for this request
+    $_COOKIE[$cookie_name] = $currency_code;
     
     // Update user meta if logged in
     if (is_user_logged_in()) {
@@ -645,11 +799,69 @@ function yoursite_ajax_switch_user_currency() {
     
     wp_send_json_success(array(
         'currency' => $currency,
-        'message' => sprintf(__('Currency switched to %s', 'yoursite'), $currency['name'])
+        'message' => sprintf(__('Currency switched to %s', 'yoursite'), $currency['name']),
+        'session_set' => isset($_SESSION['preferred_currency']),
+        'cookie_set' => $cookie_set,
+        'currency_code' => $currency_code
     ));
 }
-add_action('wp_ajax_switch_user_currency', 'yoursite_ajax_switch_user_currency');
-add_action('wp_ajax_nopriv_switch_user_currency', 'yoursite_ajax_switch_user_currency');
+
+/**
+ * Enhanced currency retrieval with session support
+ */
+function yoursite_get_user_currency_with_session() {
+    $cookie_name = 'yoursite_preferred_currency';
+    
+    // Start session if not started
+    if (!session_id()) {
+        session_start();
+    }
+    
+    // Check session first (most reliable)
+    if (isset($_SESSION['preferred_currency'])) {
+        $currency_code = sanitize_text_field($_SESSION['preferred_currency']);
+        $currency = yoursite_get_currency($currency_code);
+        if ($currency && $currency['status'] === 'active') {
+            return $currency;
+        }
+    }
+    
+    // Check cookie
+    if (isset($_COOKIE[$cookie_name])) {
+        $currency_code = sanitize_text_field($_COOKIE[$cookie_name]);
+        $currency = yoursite_get_currency($currency_code);
+        if ($currency && $currency['status'] === 'active') {
+            // Sync session with cookie
+            $_SESSION['preferred_currency'] = $currency_code;
+            return $currency;
+        }
+    }
+    
+    // Check user meta if logged in
+    if (is_user_logged_in()) {
+        $user_currency = get_user_meta(get_current_user_id(), 'preferred_currency', true);
+        if ($user_currency) {
+            $currency = yoursite_get_currency($user_currency);
+            if ($currency && $currency['status'] === 'active') {
+                // Sync session and cookie
+                $_SESSION['preferred_currency'] = $user_currency;
+                setcookie(
+                    $cookie_name,
+                    $user_currency,
+                    time() + (30 * DAY_IN_SECONDS),
+                    COOKIEPATH,
+                    COOKIE_DOMAIN,
+                    is_ssl(),
+                    false
+                );
+                return $currency;
+            }
+        }
+    }
+    
+    // Fallback to base currency
+    return yoursite_get_base_currency();
+}
 
 /**
  * AJAX: Get currency pricing for plan

@@ -3,8 +3,7 @@
  * Enhanced Currency Display Functions
  * File: inc/currency/currency-display.php
  * 
- * Updated version combining enhanced styling with existing functionality,
- * improved JavaScript, performance optimizations, and enhanced error handling.
+ * Complete file with PHP 7.0+ compatibility and enhanced functionality
  */
 
 if (!defined('ABSPATH')) {
@@ -65,8 +64,8 @@ function yoursite_render_currency_selector($args = array()) {
         if (window.currencySelectorInitialized) return;
         window.currencySelectorInitialized = true;
         
-        let isProcessing = false;
-        let currencyContainers = null;
+        var isProcessing = false;
+        var currencyContainers = null;
         
         document.addEventListener('DOMContentLoaded', function() {
             initializeCurrencySelector();
@@ -88,12 +87,38 @@ function yoursite_render_currency_selector($args = array()) {
                     closeAllCurrencySelectors();
                 }
             });
+            
+            // Initialize from cookie/session on page load
+            initializeFromStoredCurrency();
+        }
+        
+        function initializeFromStoredCurrency() {
+            // Check if we have a stored currency preference
+            var storedCurrency = getCookieValue('yoursite_preferred_currency');
+            if (storedCurrency && window.YourSiteCurrency) {
+                window.YourSiteCurrency.currentCurrency = storedCurrency;
+                updateCurrencySelectors(storedCurrency, null);
+            }
+        }
+        
+        function getCookieValue(name) {
+            var value = '; ' + document.cookie;
+            var parts = value.split('; ' + name + '=');
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+        
+        function setCookie(name, value, days) {
+            days = days || 30;
+            var expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/;SameSite=Lax';
         }
         
         function handleCurrencyClick(e) {
             try {
                 // Handle currency selector toggle
-                const toggle = e.target.closest('.currency-selector-toggle, .currency-dropdown-toggle');
+                var toggle = e.target.closest('.currency-selector-toggle, .currency-dropdown-toggle');
                 if (toggle) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -102,11 +127,11 @@ function yoursite_render_currency_selector($args = array()) {
                 }
                 
                 // Handle currency selection
-                const currencyItem = e.target.closest('.currency-selector-item, .currency-dropdown-item, [data-currency-code], [data-currency]');
+                var currencyItem = e.target.closest('.currency-selector-item, .currency-dropdown-item, [data-currency-code], [data-currency]');
                 if (currencyItem) {
                     e.preventDefault();
-                    const currency = currencyItem.dataset.currency || currencyItem.dataset.currencyCode;
-                    const symbol = currencyItem.dataset.symbol;
+                    var currency = currencyItem.dataset.currency || currencyItem.dataset.currencyCode;
+                    var symbol = currencyItem.dataset.symbol;
                     switchCurrency(currency, symbol, currencyItem);
                     return;
                 }
@@ -121,7 +146,7 @@ function yoursite_render_currency_selector($args = array()) {
         }
         
         function handleCurrencyKeydown(e) {
-            const target = e.target.closest('.currency-selector-toggle, .currency-dropdown-toggle, .currency-selector-item, .currency-dropdown-item, [data-currency-code], [data-currency]');
+            var target = e.target.closest('.currency-selector-toggle, .currency-dropdown-toggle, .currency-selector-item, .currency-dropdown-item, [data-currency-code], [data-currency]');
             if (!target) return;
             
             if (e.key === 'Enter' || e.key === ' ') {
@@ -133,17 +158,17 @@ function yoursite_render_currency_selector($args = array()) {
         }
         
         function handleArrowNavigation(e) {
-            const container = e.target.closest('.fancy-selector-wrapper, .currency-selector-container');
+            var container = e.target.closest('.fancy-selector-wrapper, .currency-selector-container');
             if (!container) return;
             
-            const dropdown = container.querySelector('.currency-selector-dropdown, .currency-dropdown, .fancy-dropdown');
+            var dropdown = container.querySelector('.currency-selector-dropdown, .currency-dropdown, .fancy-dropdown');
             if (!dropdown || (!dropdown.classList.contains('active') && dropdown.classList.contains('hidden'))) return;
             
             e.preventDefault();
-            const items = dropdown.querySelectorAll('[data-currency-code], [data-currency]');
-            const currentIndex = Array.from(items).findIndex(item => item === document.activeElement);
+            var items = dropdown.querySelectorAll('[data-currency-code], [data-currency]');
+            var currentIndex = Array.from(items).findIndex(function(item) { return item === document.activeElement; });
             
-            let nextIndex;
+            var nextIndex;
             if (e.key === 'ArrowDown') {
                 nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
             } else {
@@ -155,20 +180,20 @@ function yoursite_render_currency_selector($args = array()) {
         
         function toggleCurrencySelector(toggle) {
             try {
-                const wrapper = toggle.closest('.fancy-selector-wrapper, .currency-selector-container');
-                const dropdown = wrapper.querySelector('.currency-selector-dropdown, .currency-dropdown, .fancy-dropdown');
+                var wrapper = toggle.closest('.fancy-selector-wrapper, .currency-selector-container');
+                var dropdown = wrapper.querySelector('.currency-selector-dropdown, .currency-dropdown, .fancy-dropdown');
                 
                 // Close other selectors first
                 closeAllCurrencySelectors();
                 
-                const isActive = wrapper.classList.toggle('active');
+                var isActive = wrapper.classList.toggle('active');
                 toggle.setAttribute('aria-expanded', isActive);
                 toggle.classList.toggle('active', isActive);
                 
                 if (dropdown) {
                     if (isActive) {
                         // Check if selector is in footer and adjust positioning
-                        const isInFooter = wrapper.closest('.site-footer, .footer-currency-selector, footer') !== null;
+                        var isInFooter = wrapper.closest('.site-footer, .footer-currency-selector, footer') !== null;
                         
                         if (isInFooter) {
                             // Position dropdown above for footer
@@ -191,20 +216,20 @@ function yoursite_render_currency_selector($args = array()) {
                         dropdown.removeAttribute('aria-hidden');
                         
                         // Trigger reflow and animate
-                        requestAnimationFrame(() => {
+                        requestAnimationFrame(function() {
                             dropdown.style.opacity = '1';
                             dropdown.style.visibility = 'visible';
                             dropdown.style.transform = 'translateY(0)';
                         });
                         
                         // Focus first option
-                        const firstOption = dropdown.querySelector('[data-currency-code], [data-currency]');
+                        var firstOption = dropdown.querySelector('[data-currency-code], [data-currency]');
                         if (firstOption) {
-                            setTimeout(() => firstOption.focus(), 100);
+                            setTimeout(function() { firstOption.focus(); }, 100);
                         }
                     } else {
                         // Remove focus from dropdown items before hiding
-                        const focusedItem = dropdown.querySelector(':focus');
+                        var focusedItem = dropdown.querySelector(':focus');
                         if (focusedItem) {
                             focusedItem.blur();
                             toggle.focus(); // Return focus to toggle button
@@ -214,10 +239,10 @@ function yoursite_render_currency_selector($args = array()) {
                         dropdown.style.opacity = '0';
                         dropdown.style.visibility = 'hidden';
                         
-                        const isInFooter = wrapper.closest('.site-footer, .footer-currency-selector, footer') !== null;
+                        var isInFooter = wrapper.closest('.site-footer, .footer-currency-selector, footer') !== null;
                         dropdown.style.transform = isInFooter ? 'translateY(8px)' : 'translateY(-8px)';
                         
-                        setTimeout(() => {
+                        setTimeout(function() {
                             dropdown.classList.add('hidden');
                             dropdown.classList.remove('active');
                             dropdown.setAttribute('aria-hidden', 'true');
@@ -232,10 +257,10 @@ function yoursite_render_currency_selector($args = array()) {
         function closeAllCurrencySelectors() {
             if (!currencyContainers) return;
             
-            currencyContainers.forEach(wrapper => {
+            currencyContainers.forEach(function(wrapper) {
                 wrapper.classList.remove('active');
-                const toggle = wrapper.querySelector('.currency-selector-toggle, .currency-dropdown-toggle');
-                const dropdown = wrapper.querySelector('.currency-selector-dropdown, .currency-dropdown, .fancy-dropdown');
+                var toggle = wrapper.querySelector('.currency-selector-toggle, .currency-dropdown-toggle');
+                var dropdown = wrapper.querySelector('.currency-selector-dropdown, .currency-dropdown, .fancy-dropdown');
                 
                 if (toggle) {
                     toggle.setAttribute('aria-expanded', 'false');
@@ -243,11 +268,11 @@ function yoursite_render_currency_selector($args = array()) {
                 }
                 if (dropdown) {
                     // Remove focus from any focused items before hiding
-                    const focusedItem = dropdown.querySelector(':focus');
+                    var focusedItem = dropdown.querySelector(':focus');
                     if (focusedItem) {
                         focusedItem.blur();
                         // Return focus to the toggle button if it exists
-                        const relatedToggle = wrapper.querySelector('.currency-selector-toggle, .currency-dropdown-toggle');
+                        var relatedToggle = wrapper.querySelector('.currency-selector-toggle, .currency-dropdown-toggle');
                         if (relatedToggle) {
                             relatedToggle.focus();
                         }
@@ -267,10 +292,10 @@ function yoursite_render_currency_selector($args = array()) {
             showCurrencyLoadingState();
             
             // Close dropdown and manage focus before making request
-            const dropdown = clickedItem.closest('.currency-selector-dropdown, .currency-dropdown, .fancy-dropdown');
+            var dropdown = clickedItem.closest('.currency-selector-dropdown, .currency-dropdown, .fancy-dropdown');
             if (dropdown) {
-                const wrapper = dropdown.closest('.fancy-selector-wrapper, .currency-selector-container');
-                const toggle = wrapper.querySelector('.currency-selector-toggle, .currency-dropdown-toggle');
+                var wrapper = dropdown.closest('.fancy-selector-wrapper, .currency-selector-container');
+                var toggle = wrapper.querySelector('.currency-selector-toggle, .currency-dropdown-toggle');
                 
                 // Remove focus from clicked item and close dropdown
                 clickedItem.blur();
@@ -278,11 +303,22 @@ function yoursite_render_currency_selector($args = array()) {
                 
                 // Return focus to toggle button
                 if (toggle) {
-                    setTimeout(() => toggle.focus(), 100);
+                    setTimeout(function() { toggle.focus(); }, 100);
                 }
             }
             
-            const requestData = new URLSearchParams({
+            // Set cookie immediately for instant feedback
+            setCookie('yoursite_preferred_currency', currency, 30);
+            
+            // Update global currency state immediately
+            if (window.YourSiteCurrency) {
+                window.YourSiteCurrency.currentCurrency = currency;
+            }
+            
+            // Update UI immediately
+            updateCurrencySelectors(currency, symbol);
+            
+            var requestData = new URLSearchParams({
                 action: 'switch_user_currency',
                 currency: currency,
                 nonce: '<?php echo wp_create_nonce("currency_switch"); ?>'
@@ -293,33 +329,45 @@ function yoursite_render_currency_selector($args = array()) {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: requestData
+                body: requestData,
+                credentials: 'same-origin'
             })
-            .then(response => {
+            .then(function(response) {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error('HTTP error! status: ' + response.status);
                 }
                 return response.json();
             })
-            .then(data => {
+            .then(function(data) {
                 if (data.success) {
-                    // Update all currency selectors on the page
-                    updateCurrencySelectors(currency, symbol);
-                    
                     // Update pricing displays if present
                     updatePricingDisplays(currency);
                     
                     // Show success notification
                     showNotification(data.data.message || 'Currency updated successfully', 'success');
+                    
+                    // Store in localStorage as additional backup
+                    try {
+                        localStorage.setItem('yoursite_preferred_currency', currency);
+                    } catch (e) {
+                        console.warn('localStorage not available:', e);
+                    }
                 } else {
                     throw new Error(data.data || 'Failed to switch currency');
                 }
             })
-            .catch(error => {
+            .catch(function(error) {
                 console.error('Currency switch error:', error);
+                
+                // Revert UI changes on error
+                var previousCurrency = getCookieValue('yoursite_preferred_currency');
+                if (previousCurrency && previousCurrency !== currency) {
+                    updateCurrencySelectors(previousCurrency, null);
+                }
+                
                 showNotification(error.message || 'Failed to switch currency. Please try again.', 'error');
             })
-            .finally(() => {
+            .finally(function() {
                 hideCurrencyLoadingState();
                 isProcessing = false;
             });
@@ -328,22 +376,22 @@ function yoursite_render_currency_selector($args = array()) {
         function updateCurrencySelectors(currency, symbol) {
             if (!currencyContainers) return;
             
-            currencyContainers.forEach(wrapper => {
+            currencyContainers.forEach(function(wrapper) {
                 try {
                     // Update toggle button
-                    const toggle = wrapper.querySelector('.currency-selector-toggle, .currency-dropdown-toggle');
+                    var toggle = wrapper.querySelector('.currency-selector-toggle, .currency-dropdown-toggle');
                     if (toggle) {
-                        const symbolSpan = toggle.querySelector('.currency-symbol');
-                        const codeSpan = toggle.querySelector('.selector-text, .currency-code');
+                        var symbolSpan = toggle.querySelector('.currency-symbol');
+                        var codeSpan = toggle.querySelector('.selector-text, .currency-code');
                         
                         if (symbolSpan && symbol) symbolSpan.textContent = symbol;
                         if (codeSpan) codeSpan.textContent = currency;
                     }
                     
                     // Update active states in dropdown
-                    wrapper.querySelectorAll('[data-currency-code], [data-currency]').forEach(item => {
-                        const itemCurrency = item.dataset.currency || item.dataset.currencyCode;
-                        const isActive = itemCurrency === currency;
+                    wrapper.querySelectorAll('[data-currency-code], [data-currency]').forEach(function(item) {
+                        var itemCurrency = item.dataset.currency || item.dataset.currencyCode;
+                        var isActive = itemCurrency === currency;
                         item.classList.toggle('active', isActive);
                         item.setAttribute('aria-current', isActive ? 'true' : 'false');
                         if (item.setAttribute) {
@@ -361,10 +409,10 @@ function yoursite_render_currency_selector($args = array()) {
             updatePricingCards(currency);
             
             // Update any pricing elements on the page
-            const pricingCards = document.querySelectorAll('[data-plan-id]');
-            pricingCards.forEach(card => {
+            var pricingCards = document.querySelectorAll('[data-plan-id]');
+            pricingCards.forEach(function(card) {
                 // Trigger pricing updates if implemented
-                const event = new CustomEvent('currencyChanged', {
+                var event = new CustomEvent('currencyChanged', {
                     detail: { currency: currency }
                 });
                 document.dispatchEvent(event);
@@ -381,21 +429,22 @@ function yoursite_render_currency_selector($args = array()) {
                     action: 'get_all_pricing_in_currency',
                     currency: currencyCode,
                     nonce: '<?php echo wp_create_nonce("get_pricing"); ?>'
-                })
+                }),
+                credentials: 'same-origin'
             })
-            .then(response => {
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            .then(function(response) {
+                if (!response.ok) throw new Error('HTTP error! status: ' + response.status);
                 return response.json();
             })
-            .then(data => {
+            .then(function(data) {
                 if (data.success && data.data.pricing) {
-                    Object.keys(data.data.pricing).forEach(planId => {
-                        const pricing = data.data.pricing[planId];
+                    Object.keys(data.data.pricing).forEach(function(planId) {
+                        var pricing = data.data.pricing[planId];
                         updatePlanPricing(planId, pricing);
                     });
                 }
             })
-            .catch(error => {
+            .catch(function(error) {
                 console.error('Error updating pricing cards:', error);
             });
         }
@@ -405,18 +454,18 @@ function yoursite_render_currency_selector($args = array()) {
             
             try {
                 // Update monthly prices
-                const monthlySelector = `[data-plan-id="${planId}"] .monthly-price-display, [data-plan-id="${planId}"] .pricing-monthly-pricing`;
-                document.querySelectorAll(monthlySelector).forEach(el => {
-                    const priceElement = el.querySelector('.price-amount, .text-4xl, .text-5xl');
+                var monthlySelector = '[data-plan-id="' + planId + '"] .monthly-price-display, [data-plan-id="' + planId + '"] .pricing-monthly-pricing';
+                document.querySelectorAll(monthlySelector).forEach(function(el) {
+                    var priceElement = el.querySelector('.price-amount, .text-4xl, .text-5xl');
                     if (priceElement && pricing.monthly_price) {
                         priceElement.textContent = pricing.monthly_price.replace(/[^0-9.,]/g, '');
                     }
                 });
                 
                 // Update annual prices
-                const annualSelector = `[data-plan-id="${planId}"] .annual-price-display, [data-plan-id="${planId}"] .pricing-annual-pricing`;
-                document.querySelectorAll(annualSelector).forEach(el => {
-                    const priceElement = el.querySelector('.price-amount, .text-4xl, .text-5xl');
+                var annualSelector = '[data-plan-id="' + planId + '"] .annual-price-display, [data-plan-id="' + planId + '"] .pricing-annual-pricing';
+                document.querySelectorAll(annualSelector).forEach(function(el) {
+                    var priceElement = el.querySelector('.price-amount, .text-4xl, .text-5xl');
                     if (priceElement && pricing.annual_monthly_equivalent) {
                         priceElement.textContent = pricing.annual_monthly_equivalent.replace(/[^0-9.,]/g, '');
                     }
@@ -424,9 +473,9 @@ function yoursite_render_currency_selector($args = array()) {
                 
                 // Update savings
                 if (pricing.savings) {
-                    const savingsSelector = `[data-plan-id="${planId}"] .annual-savings, [data-plan-id="${planId}"] .pricing-annual-savings`;
-                    document.querySelectorAll(savingsSelector).forEach(el => {
-                        const savingsText = el.querySelector('.savings-amount');
+                    var savingsSelector = '[data-plan-id="' + planId + '"] .annual-savings, [data-plan-id="' + planId + '"] .pricing-annual-savings';
+                    document.querySelectorAll(savingsSelector).forEach(function(el) {
+                        var savingsText = el.querySelector('.savings-amount');
                         if (savingsText) {
                             savingsText.textContent = pricing.savings;
                         }
@@ -440,7 +489,7 @@ function yoursite_render_currency_selector($args = array()) {
         function showCurrencyLoadingState() {
             if (!currencyContainers) return;
             
-            currencyContainers.forEach(container => {
+            currencyContainers.forEach(function(container) {
                 container.classList.add('loading');
                 container.setAttribute('aria-busy', 'true');
                 container.style.cursor = 'wait';
@@ -450,19 +499,21 @@ function yoursite_render_currency_selector($args = array()) {
         function hideCurrencyLoadingState() {
             if (!currencyContainers) return;
             
-            currencyContainers.forEach(container => {
+            currencyContainers.forEach(function(container) {
                 container.classList.remove('loading');
                 container.setAttribute('aria-busy', 'false');
                 container.style.cursor = '';
             });
         }
         
-        function showNotification(message, type = 'success') {
-            // Remove existing notifications
-            document.querySelectorAll('.currency-notification').forEach(n => n.remove());
+        function showNotification(message, type) {
+            type = type || 'success';
             
-            const notification = document.createElement('div');
-            notification.className = `currency-notification ${type}`;
+            // Remove existing notifications
+            document.querySelectorAll('.currency-notification').forEach(function(n) { n.remove(); });
+            
+            var notification = document.createElement('div');
+            notification.className = 'currency-notification ' + type;
             notification.textContent = message;
             notification.setAttribute('role', 'alert');
             notification.setAttribute('aria-live', 'polite');
@@ -489,17 +540,17 @@ function yoursite_render_currency_selector($args = array()) {
             document.body.appendChild(notification);
             
             // Animate in
-            requestAnimationFrame(() => {
+            requestAnimationFrame(function() {
                 notification.style.transform = 'translateX(0)';
                 notification.style.opacity = '1';
             });
             
             // Remove after delay
-            const timeout = type === 'error' ? 5000 : 3000;
-            setTimeout(() => {
+            var timeout = type === 'error' ? 5000 : 3000;
+            setTimeout(function() {
                 notification.style.transform = 'translateX(100%)';
                 notification.style.opacity = '0';
-                setTimeout(() => {
+                setTimeout(function() {
                     if (notification.parentNode) {
                         notification.remove();
                     }
@@ -511,7 +562,10 @@ function yoursite_render_currency_selector($args = array()) {
         window.currencySelector = {
             switch: switchCurrency,
             close: closeAllCurrencySelectors,
-            showNotification: showNotification
+            showNotification: showNotification,
+            getCurrentCurrency: function() { 
+                return window.YourSiteCurrency ? window.YourSiteCurrency.currentCurrency : 'USD'; 
+            }
         };
         
     })();
@@ -1154,7 +1208,7 @@ class YourSite_Currency_Selector_Widget extends WP_Widget {
         }
         
         $selector_args = array(
-            'style' => $instance['style'] ?? 'dropdown',
+            'style' => isset($instance['style']) ? $instance['style'] : 'dropdown',
             'show_flag' => !empty($instance['show_flag']),
             'show_name' => !empty($instance['show_name']),
             'show_symbol' => !empty($instance['show_symbol']),
@@ -1243,8 +1297,8 @@ class YourSite_Currency_Selector_Widget extends WP_Widget {
     
     public function update($new_instance, $old_instance) {
         $instance = array();
-        $instance['title'] = sanitize_text_field($new_instance['title'] ?? '');
-        $instance['style'] = in_array($new_instance['style'] ?? '', ['dropdown', 'flags', 'compact']) ? $new_instance['style'] : 'dropdown';
+        $instance['title'] = sanitize_text_field(isset($new_instance['title']) ? $new_instance['title'] : '');
+        $instance['style'] = in_array(isset($new_instance['style']) ? $new_instance['style'] : '', array('dropdown', 'flags', 'compact')) ? $new_instance['style'] : 'dropdown';
         $instance['show_flag'] = !empty($new_instance['show_flag']);
         $instance['show_name'] = !empty($new_instance['show_name']);
         $instance['show_symbol'] = !empty($new_instance['show_symbol']);
@@ -1281,7 +1335,7 @@ function yoursite_currency_selector_shortcode($atts, $content = null) {
     ), $atts, 'currency_selector');
     
     // Validate style parameter
-    if (!in_array($atts['style'], ['dropdown', 'flags', 'compact'])) {
+    if (!in_array($atts['style'], array('dropdown', 'flags', 'compact'))) {
         $atts['style'] = 'dropdown';
     }
     
@@ -1315,171 +1369,23 @@ function yoursite_should_display_currency_selector() {
 }
 
 /**
- * Enhanced pricing display with currency context
+ * Add currency selector to header/footer
  */
-function yoursite_pricing_with_currency_context($plan_id, $show_all_currencies = false) {
-    if (!$plan_id) {
-        return '';
-    }
-    
-    $current_currency = yoursite_get_user_currency();
-    $cache_key = "pricing_context_{$plan_id}_{$current_currency['code']}_" . ($show_all_currencies ? 'all' : 'single');
-    $cached_output = wp_cache_get($cache_key, 'yoursite_pricing');
-    
-    if ($cached_output !== false) {
-        return $cached_output;
-    }
-    
-    $monthly_price = yoursite_get_pricing_plan_price($plan_id, $current_currency['code'], 'monthly');
-    $annual_price = yoursite_get_pricing_plan_price($plan_id, $current_currency['code'], 'annual');
-    
-    ob_start();
-    ?>
-    <div class="pricing-with-currency-context" 
-         data-plan-id="<?php echo esc_attr($plan_id); ?>"
-         data-currency="<?php echo esc_attr($current_currency['code']); ?>">
-        
-        <!-- Current Currency Pricing -->
-        <div class="current-currency-pricing">
-            <div class="currency-header">
-                <span class="currency-flag" aria-hidden="true"><?php echo esc_html($current_currency['flag']); ?></span>
-                <span class="currency-name"><?php echo esc_html($current_currency['name']); ?></span>
-                <span class="currency-code">(<?php echo esc_html($current_currency['code']); ?>)</span>
-            </div>
-            
-            <div class="pricing-display">
-                <?php if ($monthly_price > 0) : ?>
-                    <div class="monthly-pricing" role="text" aria-label="<?php echo esc_attr(sprintf(__('Monthly price: %s', 'yoursite'), yoursite_format_currency($monthly_price, $current_currency['code']))); ?>">
-                        <span class="price"><?php echo yoursite_format_currency($monthly_price, $current_currency['code']); ?></span>
-                        <span class="period">/<?php esc_html_e('month', 'yoursite'); ?></span>
-                    </div>
-                <?php endif; ?>
-                
-                <?php if ($annual_price > 0) : ?>
-                    <div class="annual-pricing" role="text" aria-label="<?php echo esc_attr(sprintf(__('Annual price: %s per month, billed annually', 'yoursite'), yoursite_format_currency($annual_price / 12, $current_currency['code']))); ?>">
-                        <span class="price"><?php echo yoursite_format_currency($annual_price / 12, $current_currency['code']); ?></span>
-                        <span class="period">/<?php esc_html_e('month', 'yoursite'); ?></span>
-                        <span class="billing-note"><?php esc_html_e('billed annually', 'yoursite'); ?></span>
-                        
-                        <?php 
-                        $savings = yoursite_calculate_annual_savings($plan_id, $current_currency['code']);
-                        if ($savings > 0) : ?>
-                            <div class="savings" role="text" aria-label="<?php echo esc_attr(sprintf(__('You save %s per year', 'yoursite'), yoursite_format_currency($savings, $current_currency['code']))); ?>">
-                                <?php printf(esc_html__('Save %s per year', 'yoursite'), yoursite_format_currency($savings, $current_currency['code'])); ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
-        
-        <?php if ($show_all_currencies) : ?>
-            <!-- All Currencies -->
-            <div class="all-currencies-pricing">
-                <h4><?php esc_html_e('Pricing in Other Currencies', 'yoursite'); ?></h4>
-                <div class="currency-pricing-grid" role="table" aria-label="<?php esc_attr_e('Pricing in different currencies', 'yoursite'); ?>">
-                    <?php 
-                    $active_currencies = yoursite_get_active_currencies();
-                    foreach ($active_currencies as $currency) :
-                        if ($currency['code'] === $current_currency['code']) continue;
-                        
-                        $curr_monthly = yoursite_get_pricing_plan_price($plan_id, $currency['code'], 'monthly');
-                        if ($curr_monthly <= 0) continue;
-                    ?>
-                        <div class="currency-pricing-row" role="row">
-                            <span class="currency-info" role="cell">
-                                <span aria-hidden="true"><?php echo esc_html($currency['flag']); ?></span>
-                                <span><?php echo esc_html($currency['code']); ?></span>
-                            </span>
-                            <span class="price" role="cell">
-                                <?php echo yoursite_format_currency($curr_monthly, $currency['code']); ?>/<?php esc_html_e('mo', 'yoursite'); ?>
-                            </span>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        <?php endif; ?>
-        
-    </div>
-    <?php
-    
-    $output = ob_get_clean();
-    
-    // Cache the output for 5 minutes
-    wp_cache_set($cache_key, $output, 'yoursite_pricing', 300);
-    
-    return $output;
-}
-
-/**
- * Note: AJAX handlers are defined in currency-ajax.php to avoid conflicts
- * This file focuses on display functions only
- */
-
-/**
- * Add currency selector to header with improved integration
- */
-function yoursite_add_currency_selector_to_header() {
-    if (!yoursite_should_display_currency_selector()) {
-        return;
-    }
-    
+function yoursite_add_header_currency_selector() {
     $settings = get_option('yoursite_currency_settings', array());
     
-    if ($settings['show_in_header'] ?? true) {
-        echo '<div class="header-currency-selector" role="navigation" aria-label="' . esc_attr__('Currency selection', 'yoursite') . '">';
+    if (isset($settings['display_currency_selector']) ? $settings['display_currency_selector'] : true) {
+        echo '<div class="header-currency-selector" style="margin: 0 15px;">';
         echo yoursite_render_currency_selector(array(
-            'style' => $settings['header_style'] ?? 'compact',
-            'show_flag' => $settings['header_show_flag'] ?? true,
+            'style' => 'compact',
+            'show_flag' => true,
             'show_name' => false,
             'show_symbol' => false,
-            'class' => 'header-currency-selector-widget'
+            'class' => 'header-currency-widget'
         ));
         echo '</div>';
     }
 }
-
-/**
- * Add currency selector to footer with improved integration
- */
-function yoursite_add_currency_selector_to_footer() {
-    if (!yoursite_should_display_currency_selector()) {
-        return;
-    }
-    
-    $settings = get_option('yoursite_currency_settings', array());
-    
-    if ($settings['show_in_footer'] ?? true) {
-        echo '<div class="footer-currency-selector" role="navigation" aria-label="' . esc_attr__('Currency selection', 'yoursite') . '">';
-        echo '<span class="currency-selector-label">' . esc_html__('Currency:', 'yoursite') . ' </span>';
-        echo yoursite_render_currency_selector(array(
-            'style' => $settings['footer_style'] ?? 'dropdown',
-            'show_flag' => $settings['footer_show_flag'] ?? true,
-            'show_name' => false,
-            'show_symbol' => $settings['footer_show_symbol'] ?? true,
-            'class' => 'footer-currency-selector-widget'
-        ));
-        echo '</div>';
-    }
-}
-
-/**
- * Enqueue necessary styles and scripts
- */
-function yoursite_enqueue_currency_assets() {
-    if (!yoursite_should_display_currency_selector()) {
-        return;
-    }
-    
-    // Add inline styles for better compatibility
-    wp_add_inline_style('theme-style', '
-        .shortcode-container.align-center { text-align: center; }
-        .shortcode-container.align-right { text-align: right; }
-        .header-currency-selector { display: inline-block; }
-        .footer-currency-selector { display: flex; align-items: center; gap: 8px; }
-    ');
-}
-add_action('wp_enqueue_scripts', 'yoursite_enqueue_currency_assets');
 
 /**
  * Add structured data for currency information
@@ -1502,6 +1408,24 @@ function yoursite_add_currency_structured_data() {
     echo '<script type="application/ld+json">' . wp_json_encode($structured_data) . '</script>';
 }
 add_action('wp_head', 'yoursite_add_currency_structured_data');
+
+/**
+ * Enqueue necessary styles and scripts
+ */
+function yoursite_enqueue_currency_assets() {
+    if (!yoursite_should_display_currency_selector()) {
+        return;
+    }
+    
+    // Add inline styles for better compatibility
+    wp_add_inline_style('theme-style', '
+        .shortcode-container.align-center { text-align: center; }
+        .shortcode-container.align-right { text-align: right; }
+        .header-currency-selector { display: inline-block; }
+        .footer-currency-selector { display: flex; align-items: center; gap: 8px; }
+    ');
+}
+add_action('wp_enqueue_scripts', 'yoursite_enqueue_currency_assets');
 
 // Hook functions to appropriate actions based on theme/plugin configuration
 // These can be called from theme files or hooked to specific actions
