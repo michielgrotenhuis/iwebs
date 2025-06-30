@@ -7,6 +7,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+add_action('wp_ajax_switch_user_currency', 'yoursite_ajax_switch_user_currency');
+add_action('wp_ajax_nopriv_switch_user_currency', 'yoursite_ajax_switch_user_currency');
+
 // Prevent direct access
 if (!defined('ABSPATH')) {
     exit;

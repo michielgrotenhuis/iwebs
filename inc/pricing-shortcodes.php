@@ -1,6 +1,6 @@
 <?php
 /**
- * Enhanced Pricing Shortcodes with Homepage-Style Layout and Horizontal Scroll
+ * Enhanced Pricing Shortcodes with Currency Integration
  * File: inc/pricing-shortcodes.php
  */
 
@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Enhanced Pricing Table Shortcode with Homepage-Style Design
+ * Enhanced Pricing Table Shortcode with Currency Support
  */
 function yoursite_pricing_table_shortcode($atts) {
     $atts = shortcode_atts(array(
@@ -21,7 +21,9 @@ function yoursite_pricing_table_shortcode($atts) {
         'featured_plan' => '', // Plan ID to highlight as featured
         'title' => '',
         'subtitle' => '',
-        'show_trial_text' => 'true'
+        'show_trial_text' => 'true',
+        'show_currency_selector' => 'true',
+        'currency' => '' // Override default currency
     ), $atts, 'pricing_table');
 
     // Get pricing plans
@@ -56,10 +58,15 @@ function yoursite_pricing_table_shortcode($atts) {
         return '<p>' . __('No valid pricing plans found.', 'yoursite') . '</p>';
     }
 
+    // Get current currency
+    $current_currency = !empty($atts['currency']) ? yoursite_get_currency($atts['currency']) : yoursite_get_user_currency();
+    if (!$current_currency) {
+        $current_currency = yoursite_get_base_currency();
+    }
+
     // Determine if we need horizontal scroll
     $plan_count = count($plans);
     $needs_scroll = $plan_count > 3;
-    $grid_class = $needs_scroll ? 'pricing-scroll-container' : 'pricing-static-grid';
     
     // Generate unique ID for this pricing table
     $table_id = 'pricing-table-' . uniqid();
@@ -67,7 +74,10 @@ function yoursite_pricing_table_shortcode($atts) {
     ob_start();
     ?>
     
-    <div class="enhanced-pricing-section py-12 bg-white dark:bg-gray-800" id="<?php echo esc_attr($table_id); ?>">
+    <div class="enhanced-pricing-section py-12 bg-white dark:bg-gray-800" 
+         id="<?php echo esc_attr($table_id); ?>"
+         data-currency="<?php echo esc_attr($current_currency['code']); ?>">
+        
         <!-- Section Header -->
         <?php if (!empty($atts['title']) || !empty($atts['subtitle'])) : ?>
         <div class="container mx-auto px-4 mb-12">
@@ -86,28 +96,63 @@ function yoursite_pricing_table_shortcode($atts) {
         </div>
         <?php endif; ?>
         
-        <!-- Billing Toggle -->
-        <?php if ($atts['show_toggle'] === 'true') : ?>
+        <!-- Currency and Billing Controls -->
         <div class="container mx-auto px-4 mb-12">
-            <div class="flex items-center justify-center flex-wrap gap-4">
-                <span class="text-gray-700 dark:text-gray-300 font-medium pricing-monthly-label">
-                    <?php _e('Monthly', 'yoursite'); ?>
-                </span>
-                <div class="relative">
-                    <input type="checkbox" id="<?php echo esc_attr($table_id); ?>-billing-toggle" class="sr-only pricing-billing-toggle" checked>
-                    <label for="<?php echo esc_attr($table_id); ?>-billing-toggle" class="relative inline-flex items-center justify-between w-16 h-8 bg-blue-600 rounded-full cursor-pointer transition-colors duration-300 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
-                        <span class="pricing-toggle-switch absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 translate-x-8"></span>
-                    </label>
+            <div class="flex items-center justify-center flex-wrap gap-6">
+                
+                <!-- Currency Selector -->
+                <?php if ($atts['show_currency_selector'] === 'true' && function_exists('yoursite_render_currency_selector')) : ?>
+                <div class="flex items-center gap-3">
+                    <span class="text-gray-700 dark:text-gray-300 font-medium">
+                        <?php _e('Currency:', 'yoursite'); ?>
+                    </span>
+                    <?php echo yoursite_render_currency_selector(array(
+                        'style' => 'dropdown',
+                        'show_flag' => true,
+                        'show_name' => false,
+                        'show_symbol' => true,
+                        'class' => 'pricing-currency-selector',
+                        'container_class' => 'pricing-currency-container'
+                    )); ?>
                 </div>
-                <span class="text-blue-600 dark:text-blue-400 font-semibold pricing-yearly-label">
-                    <?php _e('Annual', 'yoursite'); ?>
-                </span>
-                <span class="bg-emerald-500 text-emerald-50 dark:text-white text-sm font-semibold px-3 py-1 rounded-full shadow-md">
-                    <?php _e('Save 20%', 'yoursite'); ?>
+                <?php endif; ?>
+                
+                <!-- Billing Toggle -->
+                <?php if ($atts['show_toggle'] === 'true') : ?>
+                <div class="flex items-center gap-4">
+                    <span class="text-gray-700 dark:text-gray-300 font-medium pricing-monthly-label">
+                        <?php _e('Monthly', 'yoursite'); ?>
+                    </span>
+                    <div class="relative">
+                        <input type="checkbox" id="<?php echo esc_attr($table_id); ?>-billing-toggle" class="sr-only pricing-billing-toggle" checked>
+                        <label for="<?php echo esc_attr($table_id); ?>-billing-toggle" class="relative inline-flex items-center justify-between w-16 h-8 bg-blue-600 rounded-full cursor-pointer transition-colors duration-300 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
+                            <span class="pricing-toggle-switch absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 translate-x-8"></span>
+                        </label>
+                    </div>
+                    <span class="text-blue-600 dark:text-blue-400 font-semibold pricing-yearly-label">
+                        <?php _e('Annual', 'yoursite'); ?>
+                    </span>
+                    <span class="bg-emerald-500 text-emerald-50 dark:text-white text-sm font-semibold px-3 py-1 rounded-full shadow-md">
+                        <?php _e('Save 20%', 'yoursite'); ?>
+                    </span>
+                </div>
+                <?php endif; ?>
+                
+            </div>
+        </div>
+        
+        <!-- Loading Indicator -->
+        <div class="pricing-loading-indicator hidden text-center py-8">
+            <div class="inline-flex items-center px-4 py-2 bg-blue-50 dark:bg-blue-900 rounded-lg">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span class="text-blue-600 dark:text-blue-300 font-medium">
+                    <?php _e('Updating prices...', 'yoursite'); ?>
                 </span>
             </div>
         </div>
-        <?php endif; ?>
         
         <!-- Pricing Cards Container -->
         <div class="container mx-auto px-4">
@@ -128,9 +173,9 @@ function yoursite_pricing_table_shortcode($atts) {
                     
                     <!-- Scrollable Container -->
                     <div class="pricing-scroll-container overflow-hidden">
-                        <div class="pricing-cards-wrapper flex gap-6 transition-transform duration-300 ease-in-out" style="width: <?php echo ($plan_count * 340) + (($plan_count - 1) * 24); ?>px;">
+                        <div class="pricing-cards-wrapper flex gap-6 transition-all duration-300 ease-in-out" style="width: <?php echo ($plan_count * 340) + (($plan_count - 1) * 24); ?>px;">
                             <?php foreach ($plans as $plan) : ?>
-                                <?php echo yoursite_render_pricing_card($plan, $atts); ?>
+                                <?php echo yoursite_render_pricing_card_with_currency($plan, $atts, $current_currency); ?>
                             <?php endforeach; ?>
                         </div>
                     </div>
@@ -149,7 +194,7 @@ function yoursite_pricing_table_shortcode($atts) {
                 <!-- Static Grid for 1-3 Plans -->
                 <div class="pricing-static-grid grid gap-6 <?php echo 'grid-cols-1 md:grid-cols-' . min($plan_count, 2) . ' lg:grid-cols-' . min($plan_count, 3); ?>">
                     <?php foreach ($plans as $plan) : ?>
-                        <?php echo yoursite_render_pricing_card($plan, $atts); ?>
+                        <?php echo yoursite_render_pricing_card_with_currency($plan, $atts, $current_currency); ?>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
@@ -165,7 +210,7 @@ function yoursite_pricing_table_shortcode($atts) {
         <?php endif; ?>
     </div>
     
-    <!-- Enhanced Styles -->
+    <!-- Enhanced Styles with Currency Support -->
     <style>
     /* Enhanced Pricing Section Styles */
     .enhanced-pricing-section .pricing-card {
@@ -200,6 +245,30 @@ function yoursite_pricing_table_shortcode($atts) {
         transform: scale(1.02) translateY(-4px);
     }
     
+    /* Currency Loading States */
+    .enhanced-pricing-section.currency-loading .pricing-card {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+    
+    .enhanced-pricing-section.currency-loading .pricing-loading-indicator {
+        display: block !important;
+    }
+    
+    .pricing-loading-indicator.hidden {
+        display: none;
+    }
+    
+    /* Currency Price Updates */
+    .pricing-price-amount {
+        transition: all 0.3s ease;
+    }
+    
+    .pricing-price-amount.updating {
+        opacity: 0.5;
+        transform: scale(0.95);
+    }
+    
     /* Horizontal Scroll Styles */
     .pricing-scroll-wrapper {
         position: relative;
@@ -221,6 +290,20 @@ function yoursite_pricing_table_shortcode($atts) {
     .pricing-cards-wrapper .pricing-card {
         flex: 0 0 340px;
         max-width: 340px;
+    }
+    
+    /* Currency Selector Styling */
+    .pricing-currency-container {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 8px 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dark .pricing-currency-container {
+        background: #1f2937;
+        border-color: #374151;
     }
     
     /* Scroll Buttons */
@@ -364,6 +447,12 @@ function yoursite_pricing_table_shortcode($atts) {
             margin-bottom: 1rem;
             display: inline-block;
         }
+        
+        /* Stack currency selector and billing toggle on mobile */
+        .container .flex-wrap {
+            flex-direction: column;
+            gap: 1rem;
+        }
     }
     
     @media (max-width: 480px) {
@@ -388,13 +477,13 @@ function yoursite_pricing_table_shortcode($atts) {
     }
     </style>
     
-    <!-- Enhanced JavaScript -->
+    <!-- Enhanced JavaScript with Currency Integration -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        initializePricingTable('<?php echo $table_id; ?>');
+        initializePricingTableWithCurrency('<?php echo $table_id; ?>');
     });
     
-    function initializePricingTable(tableId) {
+    function initializePricingTableWithCurrency(tableId) {
         const pricingSection = document.getElementById(tableId);
         if (!pricingSection) return;
         
@@ -419,6 +508,30 @@ function yoursite_pricing_table_shortcode($atts) {
         // Initialize horizontal scroll if needed
         if (scrollWrapper) {
             initializeHorizontalScroll(pricingSection);
+        }
+        
+        // Listen for currency changes
+        document.addEventListener('currencyChanged', function(e) {
+            updatePricingCurrency(pricingSection, e.detail.currency);
+        });
+        
+        // Handle currency selector within this table
+        const currencySelector = pricingSection.querySelector('.pricing-currency-container');
+        if (currencySelector) {
+            currencySelector.addEventListener('click', function(e) {
+                const currencyOption = e.target.closest('[data-currency-code], [data-currency]');
+                if (currencyOption) {
+                    e.preventDefault();
+                    const newCurrency = currencyOption.dataset.currencyCode || currencyOption.dataset.currency;
+                    updatePricingCurrency(pricingSection, newCurrency);
+                    
+                    // Dispatch global currency change event
+                    const event = new CustomEvent('currencyChanged', {
+                        detail: { currency: newCurrency }
+                    });
+                    document.dispatchEvent(event);
+                }
+            });
         }
     }
     
@@ -454,6 +567,157 @@ function yoursite_pricing_table_shortcode($atts) {
             yearlyLabel.style.color = '#9ca3af';
             yearlyLabel.style.fontWeight = '400';
         }
+    }
+    
+    function updatePricingCurrency(section, newCurrency) {
+        if (!newCurrency) return;
+        
+        // Show loading state
+        section.classList.add('currency-loading');
+        const loadingIndicator = section.querySelector('.pricing-loading-indicator');
+        if (loadingIndicator) {
+            loadingIndicator.classList.remove('hidden');
+        }
+        
+        // Update section currency attribute
+        section.setAttribute('data-currency', newCurrency);
+        
+        // Get all plan cards in this section
+        const planCards = section.querySelectorAll('.pricing-card[data-plan-id]');
+        
+        // Update each plan's pricing
+        const updatePromises = Array.from(planCards).map(card => {
+            const planId = card.dataset.planId;
+            return updateCardPricing(card, planId, newCurrency);
+        });
+        
+        // Wait for all updates to complete
+        Promise.all(updatePromises).then(() => {
+            // Hide loading state
+            section.classList.remove('currency-loading');
+            if (loadingIndicator) {
+                loadingIndicator.classList.add('hidden');
+            }
+            
+            // Show success message
+            showCurrencyChangeNotification('Prices updated to ' + newCurrency);
+        }).catch(error => {
+            console.error('Error updating pricing currency:', error);
+            section.classList.remove('currency-loading');
+            if (loadingIndicator) {
+                loadingIndicator.classList.add('hidden');
+            }
+            showCurrencyChangeNotification('Error updating prices. Please try again.', true);
+        });
+    }
+    
+    function updateCardPricing(card, planId, currency) {
+        return new Promise((resolve, reject) => {
+            // If we have AJAX available, fetch new pricing
+            if (typeof ajaxurl !== 'undefined') {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', ajaxurl);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.success) {
+                                updateCardElements(card, response.data);
+                                resolve();
+                            } else {
+                                reject(new Error(response.data || 'Failed to update pricing'));
+                            }
+                        } catch (e) {
+                            reject(e);
+                        }
+                    } else {
+                        reject(new Error('HTTP error: ' + xhr.status));
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    reject(new Error('Network error'));
+                };
+                
+                const params = new URLSearchParams({
+                    action: 'get_currency_pricing',
+                    plan_id: planId,
+                    currency: currency,
+                    nonce: '<?php echo wp_create_nonce("get_pricing"); ?>'
+                });
+                
+                xhr.send(params);
+            } else {
+                // Fallback: just resolve without updating
+                resolve();
+            }
+        });
+    }
+    
+    function updateCardElements(card, pricingData) {
+        // Update monthly price
+        const monthlyAmount = card.querySelector('[data-price-type="monthly"]');
+        if (monthlyAmount && pricingData.monthly_price) {
+            monthlyAmount.textContent = pricingData.monthly_price.replace(/[^\d.,]/g, '');
+        }
+        
+        // Update annual prices
+        const annualMonthlyAmount = card.querySelector('[data-price-type="annual-monthly"]');
+        if (annualMonthlyAmount && pricingData.annual_monthly_equivalent) {
+            annualMonthlyAmount.textContent = pricingData.annual_monthly_equivalent.replace(/[^\d.,]/g, '');
+        }
+        
+        // Update currency symbols
+        const currencySymbols = card.querySelectorAll('.currency-symbol');
+        if (currencySymbols.length && pricingData.currency && pricingData.currency.symbol) {
+            currencySymbols.forEach(symbol => {
+                symbol.textContent = pricingData.currency.symbol;
+            });
+        }
+        
+        // Update savings amount
+        const savingsAmount = card.querySelector('[data-savings-amount]');
+        if (savingsAmount && pricingData.savings) {
+            savingsAmount.textContent = pricingData.savings.replace(/[^\d.,]/g, '');
+        }
+        
+        // Update billing text
+        const billingTexts = card.querySelectorAll('.billing-text');
+        if (billingTexts.length && pricingData.raw_annual) {
+            billingTexts.forEach(text => {
+                if (text.textContent.includes('Billed annually')) {
+                    text.textContent = text.textContent.replace(/\([^)]+\)/, `(${pricingData.currency.symbol}${Math.round(pricingData.raw_annual)})`);
+                }
+            });
+        }
+    }
+    
+    function showCurrencyChangeNotification(message, isError = false) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full ${
+            isError ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+        }`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+        
+        // Remove after delay
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }, isError ? 5000 : 3000);
     }
     
     function initializeHorizontalScroll(section) {
@@ -564,14 +828,33 @@ function yoursite_pricing_table_shortcode($atts) {
 }
 
 /**
- * Render individual pricing card with homepage styling
+ * Render individual pricing card with currency support
  */
-function yoursite_render_pricing_card($plan, $atts) {
+function yoursite_render_pricing_card_with_currency($plan, $atts, $current_currency) {
     $meta = yoursite_get_pricing_meta_fields($plan->ID);
     $is_featured = $meta['pricing_featured'] === '1' || $plan->ID == $atts['featured_plan'];
-    $monthly_price = floatval($meta['pricing_monthly_price']);
-    $annual_price = floatval($meta['pricing_annual_price']);
-    $currency_symbol = yoursite_get_currency_symbol($meta['pricing_currency']);
+    
+    // Get pricing in current currency
+    $monthly_price = 0;
+    $annual_price = 0;
+    
+    if (function_exists('yoursite_get_pricing_plan_price')) {
+        $monthly_price = yoursite_get_pricing_plan_price($plan->ID, $current_currency['code'], 'monthly');
+        $annual_price = yoursite_get_pricing_plan_price($plan->ID, $current_currency['code'], 'annual');
+    } else {
+        // Fallback to meta values with conversion
+        $base_monthly = floatval($meta['pricing_monthly_price']);
+        $base_annual = floatval($meta['pricing_annual_price']);
+        
+        if (function_exists('yoursite_convert_price')) {
+            $base_currency = yoursite_get_base_currency();
+            $monthly_price = yoursite_convert_price($base_monthly, $base_currency['code'], $current_currency['code']);
+            $annual_price = $base_annual > 0 ? yoursite_convert_price($base_annual, $base_currency['code'], $current_currency['code']) : 0;
+        } else {
+            $monthly_price = $base_monthly;
+            $annual_price = $base_annual;
+        }
+    }
     
     // Calculate annual monthly equivalent if not set
     if ($annual_price == 0 && $monthly_price > 0) {
@@ -581,7 +864,7 @@ function yoursite_render_pricing_card($plan, $atts) {
     
     ob_start();
     ?>
-    <div class="pricing-card <?php echo $is_featured ? 'featured' : ''; ?>">
+    <div class="pricing-card <?php echo $is_featured ? 'featured' : ''; ?>" data-plan-id="<?php echo esc_attr($plan->ID); ?>">
         <!-- Featured Badge -->
         <?php if ($is_featured) : ?>
             <div class="pricing-featured-badge">
@@ -602,36 +885,42 @@ function yoursite_render_pricing_card($plan, $atts) {
                 </p>
             <?php endif; ?>
             
-            <!-- Price Display with Toggle -->
+            <!-- Price Display with Currency -->
             <div class="mb-6">
                 <!-- Monthly Pricing -->
                 <div class="pricing-monthly-pricing">
                     <div class="flex items-baseline justify-center mb-2">
-                        <span class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
-                            <?php echo $currency_symbol . number_format($monthly_price, 0); ?>
+                        <span class="currency-symbol text-2xl font-bold text-gray-900 dark:text-white mr-1">
+                            <?php echo esc_html($current_currency['symbol']); ?>
+                        </span>
+                        <span class="pricing-price-amount text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white" data-price-type="monthly">
+                            <?php echo number_format($monthly_price, 0); ?>
                         </span>
                         <span class="text-gray-600 dark:text-gray-300 text-lg ml-2">
                             /<?php _e('month', 'yoursite'); ?>
                         </span>
                     </div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">
-                        <?php printf(__('Billed monthly (%s)', 'yoursite'), $currency_symbol . number_format($monthly_price, 0)); ?>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 billing-text">
+                        <?php printf(__('Billed monthly (%s%s)', 'yoursite'), esc_html($current_currency['symbol']), number_format($monthly_price, 0)); ?>
                     </div>
                 </div>
                 
                 <!-- Annual Pricing -->
                 <div class="pricing-annual-pricing">
                     <div class="flex items-baseline justify-center mb-2">
-                        <span class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
-                            <?php echo $currency_symbol . number_format($annual_monthly, 0); ?>
+                        <span class="currency-symbol text-2xl font-bold text-gray-900 dark:text-white mr-1">
+                            <?php echo esc_html($current_currency['symbol']); ?>
+                        </span>
+                        <span class="pricing-price-amount text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white" data-price-type="annual-monthly">
+                            <?php echo number_format($annual_monthly, 0); ?>
                         </span>
                         <span class="text-gray-600 dark:text-gray-300 text-lg ml-2">
                             /<?php _e('month', 'yoursite'); ?>
                         </span>
                     </div>
                     <?php if ($annual_price > 0) : ?>
-                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                            <?php printf(__('Billed annually (%s)', 'yoursite'), $currency_symbol . number_format($annual_price, 0)); ?>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2 billing-text">
+                            <?php printf(__('Billed annually (%s%s)', 'yoursite'), esc_html($current_currency['symbol']), number_format($annual_price, 0)); ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -640,7 +929,7 @@ function yoursite_render_pricing_card($plan, $atts) {
                 <?php if ($monthly_price > 0 && $annual_price > 0) : ?>
                     <div class="pricing-annual-savings">
                         <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-4 py-2 rounded-full text-sm font-semibold inline-block">
-                            <?php printf(__('Save %s per year', 'yoursite'), $currency_symbol . number_format(($monthly_price * 12) - $annual_price, 0)); ?>
+                            <?php printf(__('Save %s%s per year', 'yoursite'), esc_html($current_currency['symbol']), '<span data-savings-amount>' . number_format(($monthly_price * 12) - $annual_price, 0) . '</span>'); ?>
                         </span>
                     </div>
                 <?php endif; ?>
@@ -702,12 +991,115 @@ function yoursite_render_pricing_card($plan, $atts) {
 add_shortcode('pricing_table', 'yoursite_pricing_table_shortcode');
 
 /**
- * Simple pricing cards shortcode (legacy support)
+ * Enhanced pricing comparison shortcode with currency support
+ */
+function yoursite_pricing_comparison_shortcode($atts) {
+    $atts = shortcode_atts(array(
+        'plans' => 'all',
+        'title' => __('Compare All Plans', 'yoursite'),
+        'subtitle' => __('Choose the perfect plan for your business', 'yoursite'),
+        'show_currency_selector' => 'true',
+        'currency' => ''
+    ), $atts, 'pricing_comparison');
+    
+    // Check if the comparison function exists
+    if (!function_exists('yoursite_render_pricing_comparison_table_with_currency')) {
+        return '<p>' . __('Pricing comparison feature not available.', 'yoursite') . '</p>';
+    }
+    
+    ob_start();
+    ?>
+    <div class="pricing-comparison-section py-12" data-currency="<?php echo esc_attr($atts['currency']); ?>">
+        <?php if (!empty($atts['title']) || !empty($atts['subtitle'])) : ?>
+        <div class="container mx-auto px-4 mb-12">
+            <div class="text-center">
+                <?php if (!empty($atts['title'])) : ?>
+                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        <?php echo esc_html($atts['title']); ?>
+                    </h2>
+                <?php endif; ?>
+                <?php if (!empty($atts['subtitle'])) : ?>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                        <?php echo esc_html($atts['subtitle']); ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+            
+            <!-- Currency Selector for Comparison Table -->
+            <?php if ($atts['show_currency_selector'] === 'true' && function_exists('yoursite_render_currency_selector')) : ?>
+            <div class="flex justify-center mt-8">
+                <div class="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-lg px-4 py-3 shadow-lg border border-gray-200 dark:border-gray-700">
+                    <span class="text-gray-700 dark:text-gray-300 font-medium">
+                        <?php _e('Show prices in:', 'yoursite'); ?>
+                    </span>
+                    <?php echo yoursite_render_currency_selector(array(
+                        'style' => 'dropdown',
+                        'show_flag' => true,
+                        'show_name' => true,
+                        'show_symbol' => false,
+                        'class' => 'comparison-currency-selector',
+                        'container_class' => 'comparison-currency-container'
+                    )); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+        
+        <?php echo yoursite_render_pricing_comparison_table_with_currency($atts); ?>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const comparisonSection = document.querySelector('.pricing-comparison-section');
+        if (!comparisonSection) return;
+        
+        // Listen for currency changes
+        document.addEventListener('currencyChanged', function(e) {
+            updateComparisonTableCurrency(comparisonSection, e.detail.currency);
+        });
+        
+        // Handle currency selector within comparison table
+        const currencySelector = comparisonSection.querySelector('.comparison-currency-container');
+        if (currencySelector) {
+            currencySelector.addEventListener('click', function(e) {
+                const currencyOption = e.target.closest('[data-currency-code], [data-currency]');
+                if (currencyOption) {
+                    e.preventDefault();
+                    const newCurrency = currencyOption.dataset.currencyCode || currencyOption.dataset.currency;
+                    updateComparisonTableCurrency(comparisonSection, newCurrency);
+                    
+                    // Dispatch global currency change event
+                    const event = new CustomEvent('currencyChanged', {
+                        detail: { currency: newCurrency }
+                    });
+                    document.dispatchEvent(event);
+                }
+            });
+        }
+    });
+    
+    function updateComparisonTableCurrency(section, newCurrency) {
+        // Implementation depends on having the comparison table function
+        // This will be handled by the comparison table's own currency update logic
+        console.log('Updating comparison table currency to:', newCurrency);
+    }
+    </script>
+    <?php
+    
+    return ob_get_clean();
+}
+
+add_shortcode('pricing_comparison', 'yoursite_pricing_comparison_shortcode');
+
+/**
+ * Simple pricing cards shortcode with currency support (legacy support)
  */
 function yoursite_pricing_cards_shortcode($atts) {
     $atts = shortcode_atts(array(
         'count' => '3',
-        'columns' => '3'
+        'columns' => '3',
+        'show_currency_selector' => 'true'
     ), $atts, 'pricing_cards');
     
     // Get plans
@@ -725,365 +1117,136 @@ function yoursite_pricing_cards_shortcode($atts) {
         return '<p>' . __('No pricing plans found.', 'yoursite') . '</p>';
     }
     
-    // Use the enhanced pricing table
+    // Use the enhanced pricing table with currency support
     return yoursite_pricing_table_shortcode(array(
         'plans' => implode(',', $plan_ids),
         'show_toggle' => 'true',
         'show_features' => 'true',
-        'max_features' => '5'
+        'max_features' => '5',
+        'show_currency_selector' => $atts['show_currency_selector']
     ));
 }
 
 add_shortcode('pricing_cards', 'yoursite_pricing_cards_shortcode');
 
 /**
- * Enhanced pricing comparison shortcode
+ * Currency-specific pricing display shortcode
  */
-function yoursite_pricing_comparison_shortcode($atts) {
+function yoursite_currency_pricing_shortcode($atts) {
     $atts = shortcode_atts(array(
-        'plans' => 'all',
-        'title' => __('Compare All Plans', 'yoursite'),
-        'subtitle' => __('Choose the perfect plan for your business', 'yoursite')
-    ), $atts, 'pricing_comparison');
+        'plan' => '',
+        'currency' => '',
+        'period' => 'monthly', // monthly, annual, both
+        'format' => 'price_only', // price_only, with_currency, full_details
+        'show_original' => 'false'
+    ), $atts, 'currency_pricing');
     
-    // Check if the comparison function exists
-    if (!function_exists('yoursite_render_pricing_comparison_table')) {
-        return '<p>' . __('Pricing comparison feature not available.', 'yoursite') . '</p>';
+    if (empty($atts['plan'])) {
+        return '<span class="error">' . __('Plan ID required', 'yoursite') . '</span>';
+    }
+    
+    $plan_id = intval($atts['plan']);
+    $plan = get_post($plan_id);
+    
+    if (!$plan || $plan->post_type !== 'pricing') {
+        return '<span class="error">' . __('Invalid plan', 'yoursite') . '</span>';
+    }
+    
+    // Get currency
+    $currency = !empty($atts['currency']) ? yoursite_get_currency($atts['currency']) : yoursite_get_user_currency();
+    if (!$currency) {
+        $currency = yoursite_get_base_currency();
+    }
+    
+    // Get pricing
+    $monthly_price = 0;
+    $annual_price = 0;
+    
+    if (function_exists('yoursite_get_pricing_plan_price')) {
+        $monthly_price = yoursite_get_pricing_plan_price($plan_id, $currency['code'], 'monthly');
+        if ($atts['period'] === 'annual' || $atts['period'] === 'both') {
+            $annual_price = yoursite_get_pricing_plan_price($plan_id, $currency['code'], 'annual');
+        }
     }
     
     ob_start();
     ?>
-    <div class="pricing-comparison-section py-12">
-        <?php if (!empty($atts['title']) || !empty($atts['subtitle'])) : ?>
-        <div class="container mx-auto px-4 mb-12">
-            <div class="text-center">
-                <?php if (!empty($atts['title'])) : ?>
-                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                        <?php echo esc_html($atts['title']); ?>
-                    </h2>
+    <span class="currency-pricing-display" data-plan-id="<?php echo esc_attr($plan_id); ?>" data-currency="<?php echo esc_attr($currency['code']); ?>">
+        <?php if ($atts['period'] === 'monthly' || $atts['period'] === 'both') : ?>
+            <span class="monthly-price">
+                <?php if ($atts['format'] === 'with_currency' || $atts['format'] === 'full_details') : ?>
+                    <?php echo esc_html($currency['symbol']); ?>
                 <?php endif; ?>
-                <?php if (!empty($atts['subtitle'])) : ?>
-                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                        <?php echo esc_html($atts['subtitle']); ?>
-                    </p>
+                <span class="price-amount" data-price-type="monthly"><?php echo number_format($monthly_price, 0); ?></span>
+                <?php if ($atts['format'] === 'full_details') : ?>
+                    <span class="price-period">/<?php _e('month', 'yoursite'); ?></span>
                 <?php endif; ?>
-            </div>
-        </div>
+            </span>
         <?php endif; ?>
         
-        <?php echo yoursite_render_pricing_comparison_table(); ?>
-    </div>
+        <?php if ($atts['period'] === 'annual') : ?>
+            <span class="annual-price">
+                <?php if ($atts['format'] === 'with_currency' || $atts['format'] === 'full_details') : ?>
+                    <?php echo esc_html($currency['symbol']); ?>
+                <?php endif; ?>
+                <span class="price-amount" data-price-type="annual"><?php echo number_format($annual_price, 0); ?></span>
+                <?php if ($atts['format'] === 'full_details') : ?>
+                    <span class="price-period">/<?php _e('year', 'yoursite'); ?></span>
+                <?php endif; ?>
+            </span>
+        <?php endif; ?>
+        
+        <?php if ($atts['period'] === 'both' && $annual_price > 0) : ?>
+            <?php _e(' or ', 'yoursite'); ?>
+            <span class="annual-price">
+                <?php if ($atts['format'] === 'with_currency' || $atts['format'] === 'full_details') : ?>
+                    <?php echo esc_html($currency['symbol']); ?>
+                <?php endif; ?>
+                <span class="price-amount" data-price-type="annual"><?php echo number_format($annual_price, 0); ?></span>
+                <?php if ($atts['format'] === 'full_details') : ?>
+                    <span class="price-period">/<?php _e('year', 'yoursite'); ?></span>
+                <?php endif; ?>
+            </span>
+        <?php endif; ?>
+        
+        <?php if ($atts['show_original'] === 'true' && $currency['code'] !== yoursite_get_base_currency()['code']) : ?>
+            <?php
+            $base_currency = yoursite_get_base_currency();
+            $base_monthly = function_exists('yoursite_get_pricing_plan_price') 
+                ? yoursite_get_pricing_plan_price($plan_id, $base_currency['code'], 'monthly')
+                : floatval(get_post_meta($plan_id, '_pricing_monthly_price', true));
+            ?>
+            <span class="original-price text-sm text-gray-500 ml-2">
+                (<?php echo esc_html($base_currency['symbol']) . number_format($base_monthly, 0); ?>/<?php _e('month', 'yoursite'); ?>)
+            </span>
+        <?php endif; ?>
+    </span>
+    
+    <script>
+    document.addEventListener('currencyChanged', function(e) {
+        const pricingDisplays = document.querySelectorAll('.currency-pricing-display[data-plan-id="<?php echo $plan_id; ?>"]');
+        pricingDisplays.forEach(display => {
+            // Update currency display
+            display.setAttribute('data-currency', e.detail.currency);
+            // Update prices via AJAX if available
+            updatePricingDisplay(display, e.detail.currency);
+        });
+    });
+    
+    function updatePricingDisplay(display, currency) {
+        // This would update the individual pricing display
+        // Implementation depends on having the currency conversion functions available
+    }
+    </script>
     <?php
     
     return ob_get_clean();
 }
 
-add_shortcode('pricing_comparison', 'yoursite_pricing_comparison_shortcode');
+add_shortcode('currency_pricing', 'yoursite_currency_pricing_shortcode');
 
 /**
- * Get currency symbol helper function - FIXED SYNTAX
- */
-if (!function_exists('yoursite_get_currency_symbol')) {
-    function yoursite_get_currency_symbol($currency = 'USD') {
-        $symbols = array(
-            'USD' => '$',
-            'EUR' => '€',
-            'GBP' => '£',
-            'CAD' => 'C',
-            'AUD' => 'A',
-            'JPY' => '¥',
-            'CHF' => 'CHF',
-            'SEK' => 'kr',
-            'NOK' => 'kr',
-            'DKK' => 'kr'
-        );
-return isset($symbols[$currency]) ? $symbols[$currency] : '$';
-    }
-}
-
-/**
- * Add admin interface for easy shortcode generation
- */
-
-function yoursite_add_pricing_shortcode_button() {
-    if (current_user_can('edit_posts') && current_user_can('edit_pages')) {
-        add_action('media_buttons', 'yoursite_pricing_shortcode_button');
-    }
-    
-}add_action('admin_init', 'yoursite_add_pricing_shortcode_button');
-
-function yoursite_pricing_shortcode_button() {
-    echo '<button type="button" class="button pricing-shortcode-button" data-editor="content">
-        <span class="dashicons dashicons-money-alt" style="vertical-align: middle;"></span> ' . __('Add Pricing Table', 'yoursite') . '
-    </button>';
-    
-    // Add modal for shortcode generation
-    add_action('admin_footer', 'yoursite_pricing_shortcode_modal');
-}
-
-function yoursite_pricing_shortcode_modal() {
-    static $modal_added = false;
-    if ($modal_added) return;
-    $modal_added = true;
-    
-    // Get available pricing plans
-    $plans = get_posts(array(
-        'post_type' => 'pricing',
-        'posts_per_page' => -1,
-        'post_status' => 'publish',
-        'orderby' => 'title',
-        'order' => 'ASC'
-    ));
-    ?>
-    
-    <div id="pricing-shortcode-modal" style="display: none;">
-        <div class="pricing-shortcode-modal-content">
-            <h3><?php _e('Insert Pricing Table', 'yoursite'); ?></h3>
-            
-            <table class="form-table">
-                <tr>
-                    <th><label for="shortcode-type"><?php _e('Table Type', 'yoursite'); ?></label></th>
-                    <td>
-                        <select id="shortcode-type">
-                            <option value="pricing_table"><?php _e('Enhanced Pricing Cards', 'yoursite'); ?></option>
-                            <option value="pricing_comparison"><?php _e('Feature Comparison Table', 'yoursite'); ?></option>
-                        </select>
-                    </td>
-                </tr>
-                
-                <tr class="pricing-table-options">
-                    <th><label for="selected-plans"><?php _e('Plans to Show', 'yoursite'); ?></label></th>
-                    <td>
-                        <select id="selected-plans" multiple style="height: 120px; width: 100%;">
-                            <option value="all" selected><?php _e('All Plans', 'yoursite'); ?></option>
-                            <?php foreach ($plans as $plan) : ?>
-                                <option value="<?php echo $plan->ID; ?>"><?php echo esc_html($plan->post_title); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                        <p class="description"><?php _e('Hold Ctrl/Cmd to select multiple plans', 'yoursite'); ?></p>
-                    </td>
-                </tr>
-                
-                <tr class="pricing-table-options">
-                    <th><label for="show-toggle"><?php _e('Billing Toggle', 'yoursite'); ?></label></th>
-                    <td>
-                        <label>
-                            <input type="checkbox" id="show-toggle" checked>
-                            <?php _e('Show monthly/annual toggle', 'yoursite'); ?>
-                        </label>
-                    </td>
-                </tr>
-                
-                <tr class="pricing-table-options">
-                    <th><label for="show-features"><?php _e('Features List', 'yoursite'); ?></label></th>
-                    <td>
-                        <label>
-                            <input type="checkbox" id="show-features" checked>
-                            <?php _e('Show features list', 'yoursite'); ?>
-                        </label>
-                    </td>
-                </tr>
-                
-                <tr class="pricing-table-options">
-                    <th><label for="max-features"><?php _e('Max Features', 'yoursite'); ?></label></th>
-                    <td>
-                        <input type="number" id="max-features" value="5" min="1" max="20">
-                        <p class="description"><?php _e('Maximum number of features to display per plan', 'yoursite'); ?></p>
-                    </td>
-                </tr>
-                
-                <tr>
-                    <th><label for="section-title"><?php _e('Section Title', 'yoursite'); ?></label></th>
-                    <td>
-                        <input type="text" id="section-title" placeholder="<?php _e('Optional section title', 'yoursite'); ?>">
-                    </td>
-                </tr>
-                
-                <tr>
-                    <th><label for="section-subtitle"><?php _e('Section Subtitle', 'yoursite'); ?></label></th>
-                    <td>
-                        <input type="text" id="section-subtitle" placeholder="<?php _e('Optional section subtitle', 'yoursite'); ?>">
-                    </td>
-                </tr>
-            </table>
-            
-            <div class="pricing-shortcode-preview">
-                <h4><?php _e('Shortcode Preview:', 'yoursite'); ?></h4>
-                <code id="shortcode-preview">[pricing_table]</code>
-            </div>
-            
-            <div class="pricing-shortcode-actions">
-                <button type="button" class="button-primary" id="insert-pricing-shortcode">
-                    <?php _e('Insert Shortcode', 'yoursite'); ?>
-                </button>
-                <button type="button" class="button" id="cancel-pricing-shortcode">
-                    <?php _e('Cancel', 'yoursite'); ?>
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <style>
-    #pricing-shortcode-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 999999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .pricing-shortcode-modal-content {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        max-width: 600px;
-        width: 90%;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-    
-    .pricing-shortcode-modal-content h3 {
-        margin-top: 0;
-        margin-bottom: 20px;
-        font-size: 18px;
-    }
-    
-    .pricing-shortcode-preview {
-        background: #f9f9f9;
-        padding: 15px;
-        border-radius: 4px;
-        margin: 20px 0;
-    }
-    
-    .pricing-shortcode-preview code {
-        background: white;
-        padding: 10px;
-        border-radius: 4px;
-        display: block;
-        font-family: monospace;
-        word-wrap: break-word;
-    }
-    
-    .pricing-shortcode-actions {
-        text-align: right;
-        margin-top: 20px;
-    }
-    
-    .pricing-shortcode-actions .button {
-        margin-left: 10px;
-    }
-    </style>
-    
-    <script>
-    jQuery(document).ready(function($) {
-        // Open modal
-        $(document).on('click', '.pricing-shortcode-button', function(e) {
-            e.preventDefault();
-            $('#pricing-shortcode-modal').show();
-            updateShortcodePreview();
-        });
-        
-        // Close modal
-        $('#cancel-pricing-shortcode, #pricing-shortcode-modal').on('click', function(e) {
-            if (e.target === this) {
-                $('#pricing-shortcode-modal').hide();
-            }
-        });
-        
-        // Update preview when options change
-        $('#shortcode-type, #selected-plans, #show-toggle, #show-features, #max-features, #section-title, #section-subtitle').on('change keyup', function() {
-            updateShortcodePreview();
-            toggleOptions();
-        });
-        
-        // Toggle options based on shortcode type
-        function toggleOptions() {
-            const type = $('#shortcode-type').val();
-            if (type === 'pricing_comparison') {
-                $('.pricing-table-options').hide();
-            } else {
-                $('.pricing-table-options').show();
-            }
-        }
-        
-        // Update shortcode preview
-        function updateShortcodePreview() {
-            const type = $('#shortcode-type').val();
-            let shortcode = '[' + type;
-            
-            // Add parameters based on type
-            if (type === 'pricing_table') {
-                const selectedPlans = $('#selected-plans').val();
-                if (selectedPlans && selectedPlans.length > 0 && !selectedPlans.includes('all')) {
-                    shortcode += ' plans="' + selectedPlans.join(',') + '"';
-                }
-                
-                if (!$('#show-toggle').is(':checked')) {
-                    shortcode += ' show_toggle="false"';
-                }
-                
-                if (!$('#show-features').is(':checked')) {
-                    shortcode += ' show_features="false"';
-                } else {
-                    const maxFeatures = $('#max-features').val();
-                    if (maxFeatures && maxFeatures !== '5') {
-                        shortcode += ' max_features="' + maxFeatures + '"';
-                    }
-                }
-            }
-            
-            // Add title and subtitle
-            const title = $('#section-title').val().trim();
-            const subtitle = $('#section-subtitle').val().trim();
-            
-            if (title) {
-                shortcode += ' title="' + title + '"';
-            }
-            
-            if (subtitle) {
-                shortcode += ' subtitle="' + subtitle + '"';
-            }
-            
-            shortcode += ']';
-            
-            $('#shortcode-preview').text(shortcode);
-        }
-        
-        // Insert shortcode
-        $('#insert-pricing-shortcode').on('click', function() {
-            const shortcode = $('#shortcode-preview').text();
-            
-            // Insert into editor
-            if (typeof tinymce !== 'undefined' && tinymce.activeEditor && !tinymce.activeEditor.isHidden()) {
-                tinymce.activeEditor.insertContent(shortcode);
-            } else {
-                // Insert into text editor
-                const editor = document.getElementById('content');
-                if (editor) {
-                    const startPos = editor.selectionStart;
-                    const endPos = editor.selectionEnd;
-                    editor.value = editor.value.substring(0, startPos) + shortcode + editor.value.substring(endPos, editor.value.length);
-                    editor.selectionStart = editor.selectionEnd = startPos + shortcode.length;
-                }
-            }
-            
-            $('#pricing-shortcode-modal').hide();
-        });
-        
-        // Initialize
-        toggleOptions();
-    });
-    </script>
-    <?php
-}
-
-/**
- * Enhanced helper functions for better compatibility
+ * Enhanced helper functions for currency integration
  */
 if (!function_exists('yoursite_get_pricing_meta_fields')) {
     function yoursite_get_pricing_meta_fields($post_id) {
@@ -1108,15 +1271,103 @@ if (!function_exists('yoursite_get_pricing_meta_fields')) {
 }
 
 /**
- * Register pricing table widget for use in sidebars
+ * Enhanced currency symbol helper with more currencies
  */
-class YourSite_Pricing_Table_Widget extends WP_Widget {
+if (!function_exists('yoursite_get_currency_symbol')) {
+    function yoursite_get_currency_symbol($currency = 'USD') {
+        $symbols = array(
+            'USD' => '$',
+            'EUR' => '€',
+            'GBP' => '£',
+            'CAD' => 'C',
+            'AUD' => 'A',
+            'JPY' => '¥',
+            'CHF' => 'CHF',
+            'SEK' => 'kr',
+            'NOK' => 'kr',
+            'DKK' => 'kr',
+            'CNY' => '¥',
+            'INR' => '₹',
+            'BRL' => 'R',
+            'RUB' => '₽',
+            'KRW' => '₩',
+            'MXN' => 'MXN',
+            'SGD' => 'S',
+            'NZD' => 'NZ',
+            'HKD' => 'HK',
+            'BTC' => '₿',
+            'ETH' => 'Ξ',
+            'USDC' => 'USDC'
+        );
+        
+return isset($symbols[$currency]) ? $symbols[$currency] : '';
+    }
+}
+
+/**
+ * Add currency update notifications
+ */
+ 
+function yoursite_add_pricing_currency_notifications() {
+    ?>
+    <style>
+    .currency-update-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 300px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        font-weight: 500;
+        transition: all 0.3s ease;
+        transform: translateX(100%);
+    }
+    
+    .currency-update-notification.show {
+        transform: translateX(0);
+    }
+    
+    .currency-update-notification.success {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+    
+    .currency-update-notification.error {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .currency-update-notification {
+            left: 16px;
+            right: 16px;
+            top: 16px;
+            transform: translateY(-100%);
+            max-width: none;
+        }
+        
+        .currency-update-notification.show {
+            transform: translateY(0);
+        }
+    }
+    </style>
+    <?php
+}
+
+add_action('wp_footer', 'yoursite_add_pricing_currency_notifications');
+
+/**
+ * Register enhanced pricing widgets with currency support
+ */
+class YourSite_Pricing_Table_Widget_Enhanced extends WP_Widget {
     
     public function __construct() {
         parent::__construct(
-            'yoursite_pricing_table',
-            __('Pricing Table', 'yoursite'),
-            array('description' => __('Display a pricing table widget', 'yoursite'))
+            'yoursite_pricing_table_enhanced',
+            __('Enhanced Pricing Table', 'yoursite'),
+            array('description' => __('Display a currency-aware pricing table widget', 'yoursite'))
         );
     }
     
@@ -1142,12 +1393,20 @@ class YourSite_Pricing_Table_Widget extends WP_Widget {
             $shortcode_atts[] = 'show_features="false"';
         }
         
+        if (isset($instance['show_currency_selector']) && !$instance['show_currency_selector']) {
+            $shortcode_atts[] = 'show_currency_selector="false"';
+        }
+        
         if (!empty($instance['max_features']) && $instance['max_features'] != 5) {
             $shortcode_atts[] = 'max_features="' . intval($instance['max_features']) . '"';
         }
         
         if (!empty($instance['subtitle'])) {
             $shortcode_atts[] = 'subtitle="' . esc_attr($instance['subtitle']) . '"';
+        }
+        
+        if (!empty($instance['currency'])) {
+            $shortcode_atts[] = 'currency="' . esc_attr($instance['currency']) . '"';
         }
         
         $shortcode = '[pricing_table ' . implode(' ', $shortcode_atts) . ']';
@@ -1160,8 +1419,10 @@ class YourSite_Pricing_Table_Widget extends WP_Widget {
         $title = !empty($instance['title']) ? $instance['title'] : '';
         $subtitle = !empty($instance['subtitle']) ? $instance['subtitle'] : '';
         $plans = !empty($instance['plans']) ? $instance['plans'] : 'all';
+        $currency = !empty($instance['currency']) ? $instance['currency'] : '';
         $show_toggle = isset($instance['show_toggle']) ? (bool) $instance['show_toggle'] : true;
         $show_features = isset($instance['show_features']) ? (bool) $instance['show_features'] : true;
+        $show_currency_selector = isset($instance['show_currency_selector']) ? (bool) $instance['show_currency_selector'] : true;
         $max_features = !empty($instance['max_features']) ? $instance['max_features'] : 5;
         
         // Get available plans
@@ -1172,6 +1433,9 @@ class YourSite_Pricing_Table_Widget extends WP_Widget {
             'orderby' => 'title',
             'order' => 'ASC'
         ));
+        
+        // Get available currencies
+        $available_currencies = function_exists('yoursite_get_active_currencies') ? yoursite_get_active_currencies() : array();
         ?>
         <p>
             <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:', 'yoursite'); ?></label>
@@ -1193,6 +1457,25 @@ class YourSite_Pricing_Table_Widget extends WP_Widget {
                     </option>
                 <?php endforeach; ?>
             </select>
+        </p>
+        
+        <?php if (!empty($available_currencies)) : ?>
+        <p>
+            <label for="<?php echo $this->get_field_id('currency'); ?>"><?php _e('Fixed Currency (optional):', 'yoursite'); ?></label>
+            <select class="widefat" id="<?php echo $this->get_field_id('currency'); ?>" name="<?php echo $this->get_field_name('currency'); ?>">
+                <option value="" <?php selected($currency, ''); ?>><?php _e('Use current user currency', 'yoursite'); ?></option>
+                <?php foreach ($available_currencies as $curr) : ?>
+                    <option value="<?php echo esc_attr($curr['code']); ?>" <?php selected($currency, $curr['code']); ?>>
+                        <?php echo esc_html($curr['flag'] . ' ' . $curr['code'] . ' - ' . $curr['name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </p>
+        <?php endif; ?>
+        
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked($show_currency_selector); ?> id="<?php echo $this->get_field_id('show_currency_selector'); ?>" name="<?php echo $this->get_field_name('show_currency_selector'); ?>" />
+            <label for="<?php echo $this->get_field_id('show_currency_selector'); ?>"><?php _e('Show currency selector', 'yoursite'); ?></label>
         </p>
         
         <p>
@@ -1217,6 +1500,8 @@ class YourSite_Pricing_Table_Widget extends WP_Widget {
         $instance['title'] = (!empty($new_instance['title'])) ? sanitize_text_field($new_instance['title']) : '';
         $instance['subtitle'] = (!empty($new_instance['subtitle'])) ? sanitize_text_field($new_instance['subtitle']) : '';
         $instance['plans'] = (!empty($new_instance['plans'])) ? sanitize_text_field($new_instance['plans']) : 'all';
+        $instance['currency'] = (!empty($new_instance['currency'])) ? sanitize_text_field($new_instance['currency']) : '';
+        $instance['show_currency_selector'] = !empty($new_instance['show_currency_selector']);
         $instance['show_toggle'] = !empty($new_instance['show_toggle']);
         $instance['show_features'] = !empty($new_instance['show_features']);
         $instance['max_features'] = (!empty($new_instance['max_features'])) ? absint($new_instance['max_features']) : 5;
@@ -1225,16 +1510,16 @@ class YourSite_Pricing_Table_Widget extends WP_Widget {
     }
 }
 
-// Register the widget
-function yoursite_register_pricing_widgets() {
-    register_widget('YourSite_Pricing_Table_Widget');
+// Register the enhanced widget
+function yoursite_register_enhanced_pricing_widgets() {
+    register_widget('YourSite_Pricing_Table_Widget_Enhanced');
 }
-add_action('widgets_init', 'yoursite_register_pricing_widgets');
+add_action('widgets_init', 'yoursite_register_enhanced_pricing_widgets');
 
 /**
- * Add CSS and JS dependencies 
+ * Add currency-aware pricing assets
  */
-function yoursite_enqueue_pricing_assets() {
+function yoursite_enqueue_currency_pricing_assets() {
     // Only enqueue on pages that might have pricing shortcodes
     if (is_admin() || !is_singular()) {
         return;
@@ -1243,10 +1528,22 @@ function yoursite_enqueue_pricing_assets() {
     global $post;
     if ($post && (has_shortcode($post->post_content, 'pricing_table') || 
                   has_shortcode($post->post_content, 'pricing_cards') || 
-                  has_shortcode($post->post_content, 'pricing_comparison'))) {
+                  has_shortcode($post->post_content, 'pricing_comparison') ||
+                  has_shortcode($post->post_content, 'currency_pricing'))) {
         
-        // Enqueue any additional CSS/JS if needed
+        // Enqueue necessary scripts
         wp_enqueue_script('jquery');
+        
+        // Add AJAX URL and nonces for currency updates
+        wp_localize_script('jquery', 'pricingCurrencyAjax', array(
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('pricing_currency_nonce'),
+            'strings' => array(
+                'updating' => __('Updating prices...', 'yoursite'),
+                'updated' => __('Prices updated successfully', 'yoursite'),
+                'error' => __('Error updating prices', 'yoursite')
+            )
+        ));
         
         // Add inline styles for better compatibility
         wp_add_inline_style('yoursite-style', '
@@ -1261,6 +1558,30 @@ function yoursite_enqueue_pricing_assets() {
                 display: none;
             }
             
+            .enhanced-pricing-section.currency-loading {
+                position: relative;
+            }
+            
+            .enhanced-pricing-section.currency-loading::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(255, 255, 255, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10;
+            }
+            
+            .pricing-price-amount.updating {
+                opacity: 0.5;
+                transform: scale(0.95);
+                transition: all 0.3s ease;
+            }
+            
             @media (max-width: 768px) {
                 .pricing-card.featured {
                     transform: none !important;
@@ -1269,70 +1590,172 @@ function yoursite_enqueue_pricing_assets() {
                 .pricing-scroll-btn {
                     display: none !important;
                 }
+                
+                .enhanced-pricing-section .container .flex-wrap {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
             }
         ');
     }
 }
-add_action('wp_enqueue_scripts', 'yoursite_enqueue_pricing_assets', 20);
+add_action('wp_enqueue_scripts', 'yoursite_enqueue_currency_pricing_assets', 20);
 
 /**
- * Add pricing table button to classic editor
+ * Enhanced shortcode documentation with currency examples
  */
-function yoursite_add_pricing_quicktags() {
+function yoursite_add_currency_pricing_shortcode_help() {
+    $screen = get_current_screen();
+    if ($screen && in_array($screen->id, array('edit-pricing', 'pricing'))) {
+        $screen->add_help_tab(array(
+            'id' => 'currency-pricing-shortcodes',
+            'title' => __('Currency-Aware Shortcodes', 'yoursite'),
+            'content' => '
+                <h3>' . __('Currency-Enabled Shortcodes', 'yoursite') . '</h3>
+                
+                <h4>[pricing_table] - Enhanced with Currency</h4>
+                <p>' . __('All pricing tables now support automatic currency switching.', 'yoursite') . '</p>
+                <p><strong>' . __('New Parameters:', 'yoursite') . '</strong></p>
+                <ul>
+                    <li><code>show_currency_selector</code> - ' . __('Show currency selector (true/false)', 'yoursite') . '</li>
+                    <li><code>currency</code> - ' . __('Force specific currency (USD, EUR, etc.)', 'yoursite') . '</li>
+                </ul>
+                
+                <h4>[currency_pricing] - New Shortcode</h4>
+                <p>' . __('Display individual plan pricing in any currency.', 'yoursite') . '</p>
+                <p><strong>' . __('Parameters:', 'yoursite') . '</strong></p>
+                <ul>
+                    <li><code>plan</code> - ' . __('Plan ID (required)', 'yoursite') . '</li>
+                    <li><code>currency</code> - ' . __('Currency code', 'yoursite') . '</li>
+                    <li><code>period</code> - ' . __('monthly, annual, or both', 'yoursite') . '</li>
+                    <li><code>format</code> - ' . __('price_only, with_currency, or full_details', 'yoursite') . '</li>
+                    <li><code>show_original</code> - ' . __('Show original currency price', 'yoursite') . '</li>
+                </ul>
+                
+                <h4>' . __('Examples:', 'yoursite') . '</h4>
+                <code>[pricing_table show_currency_selector="true"]</code><br>
+                <code>[pricing_table currency="EUR" show_currency_selector="false"]</code><br>
+                <code>[currency_pricing plan="123" currency="GBP" period="both"]</code><br>
+                <code>[currency_pricing plan="123" format="full_details" show_original="true"]</code>
+                
+                <h4>' . __('Currency Integration Features:', 'yoursite') . '</h4>
+                <ul>
+                    <li>' . __('Automatic price conversion between currencies', 'yoursite') . '</li>
+                    <li>' . __('Real-time currency switching without page reload', 'yoursite') . '</li>
+                    <li>' . __('Currency selector integration', 'yoursite') . '</li>
+                    <li>' . __('Savings calculations in selected currency', 'yoursite') . '</li>
+                    <li>' . __('Mobile-responsive currency controls', 'yoursite') . '</li>
+                </ul>
+            '
+        ));
+    }
+}
+add_action('admin_head', 'yoursite_add_currency_pricing_shortcode_help');
+
+/**
+ * Add currency pricing to quicktags
+ */
+function yoursite_add_currency_pricing_quicktags() {
     if (wp_script_is('quicktags')) {
         ?>
         <script type="text/javascript">
         if (typeof QTags !== 'undefined') {
-            QTags.addButton('pricing_table', '💰 Pricing', '[pricing_table]', '', '', '<?php _e('Insert Pricing Table', 'yoursite'); ?>');
-            QTags.addButton('pricing_comparison', '📊 Compare', '[pricing_comparison]', '', '', '<?php _e('Insert Pricing Comparison', 'yoursite'); ?>');
+            QTags.addButton('pricing_table_currency', '💰🌍 Pricing+Currency', '[pricing_table show_currency_selector="true"]', '', '', '<?php _e('Insert Currency-Aware Pricing Table', 'yoursite'); ?>');
+            QTags.addButton('currency_pricing', '💱 Price', '[currency_pricing plan="" currency=""]', '', '', '<?php _e('Insert Currency Pricing', 'yoursite'); ?>');
         }
         </script>
         <?php
     }
 }
-add_action('admin_print_footer_scripts', 'yoursite_add_pricing_quicktags');
+add_action('admin_print_footer_scripts', 'yoursite_add_currency_pricing_quicktags');
 
 /**
- * Add pricing shortcode documentation to admin
+ * Currency pricing AJAX handler
  */
-function yoursite_add_pricing_shortcode_help() {
-    $screen = get_current_screen();
-    if ($screen && in_array($screen->id, array('edit-pricing', 'pricing'))) {
-        $screen->add_help_tab(array(
-            'id' => 'pricing-shortcodes',
-            'title' => __('Pricing Shortcodes', 'yoursite'),
-            'content' => '
-                <h3>' . __('Available Shortcodes', 'yoursite') . '</h3>
-                <h4>[pricing_table]</h4>
-                <p>' . __('Display pricing cards with homepage-style design.', 'yoursite') . '</p>
-                <p><strong>' . __('Parameters:', 'yoursite') . '</strong></p>
-                <ul>
-                    <li><code>plans</code> - ' . __('Comma-separated plan IDs or "all"', 'yoursite') . '</li>
-                    <li><code>show_toggle</code> - ' . __('Show billing toggle (true/false)', 'yoursite') . '</li>
-                    <li><code>show_features</code> - ' . __('Show features list (true/false)', 'yoursite') . '</li>
-                    <li><code>max_features</code> - ' . __('Maximum features to display', 'yoursite') . '</li>
-                    <li><code>title</code> - ' . __('Section title', 'yoursite') . '</li>
-                    <li><code>subtitle</code> - ' . __('Section subtitle', 'yoursite') . '</li>
-                    <li><code>featured_plan</code> - ' . __('Plan ID to highlight as featured', 'yoursite') . '</li>
-                </ul>
-                
-                <h4>[pricing_comparison]</h4>
-                <p>' . __('Display detailed feature comparison table.', 'yoursite') . '</p>
-                
-                <h4>' . __('Examples:', 'yoursite') . '</h4>
-                <code>[pricing_table plans="1,2,3" title="Choose Your Plan"]</code><br>
-                <code>[pricing_comparison title="Compare All Plans"]</code>
-            '
-        ));
+function yoursite_ajax_get_currency_pricing_enhanced() {
+    // Verify nonce
+    if (!wp_verify_nonce($_POST['nonce'] ?? '', 'pricing_currency_nonce')) {
+        wp_send_json_error(__('Security check failed', 'yoursite'));
     }
+    
+    $plan_id = intval($_POST['plan_id'] ?? 0);
+    $currency_code = sanitize_text_field($_POST['currency'] ?? '');
+    
+    if (!$plan_id || !$currency_code) {
+        wp_send_json_error(__('Invalid parameters', 'yoursite'));
+    }
+    
+    // Get plan
+    $plan = get_post($plan_id);
+    if (!$plan || $plan->post_type !== 'pricing') {
+        wp_send_json_error(__('Plan not found', 'yoursite'));
+    }
+    
+    // Get currency
+    $currency = function_exists('yoursite_get_currency') ? yoursite_get_currency($currency_code) : null;
+    if (!$currency) {
+        wp_send_json_error(__('Currency not found', 'yoursite'));
+    }
+    
+    // Get pricing
+    $monthly_price = 0;
+    $annual_price = 0;
+    
+    if (function_exists('yoursite_get_pricing_plan_price')) {
+        $monthly_price = yoursite_get_pricing_plan_price($plan_id, $currency_code, 'monthly');
+        $annual_price = yoursite_get_pricing_plan_price($plan_id, $currency_code, 'annual');
+    } else {
+        // Fallback to meta values
+        $meta = yoursite_get_pricing_meta_fields($plan_id);
+        $monthly_price = floatval($meta['pricing_monthly_price']);
+        $annual_price = floatval($meta['pricing_annual_price']);
+        
+        // Convert if currency system is available
+        if (function_exists('yoursite_convert_price') && $currency_code !== 'USD') {
+            $base_currency = function_exists('yoursite_get_base_currency') ? yoursite_get_base_currency() : array('code' => 'USD');
+            $monthly_price = yoursite_convert_price($monthly_price, $base_currency['code'], $currency_code);
+            if ($annual_price > 0) {
+                $annual_price = yoursite_convert_price($annual_price, $base_currency['code'], $currency_code);
+            }
+        }
+    }
+    
+    // Calculate derived values
+    if ($annual_price == 0 && $monthly_price > 0) {
+        $annual_price = $monthly_price * 12 * 0.8; // 20% discount
+    }
+    
+    $annual_monthly = $annual_price > 0 ? $annual_price / 12 : 0;
+    $savings = ($monthly_price * 12) - $annual_price;
+    
+    // Format prices
+    $response_data = array(
+        'monthly_price' => $currency['symbol'] . number_format($monthly_price, 0),
+        'annual_price' => $currency['symbol'] . number_format($annual_price, 0),
+        'annual_monthly_equivalent' => $currency['symbol'] . number_format($annual_monthly, 0),
+        'savings' => $savings > 0 ? $currency['symbol'] . number_format($savings, 0) : '',
+        'raw_monthly' => $monthly_price,
+        'raw_annual' => $annual_price,
+        'raw_annual_monthly' => $annual_monthly,
+        'raw_savings' => $savings,
+        'currency' => $currency
+    );
+    
+    wp_send_json_success($response_data);
 }
-add_action('admin_head', 'yoursite_add_pricing_shortcode_help');
+add_action('wp_ajax_get_currency_pricing_enhanced', 'yoursite_ajax_get_currency_pricing_enhanced');
+add_action('wp_ajax_nopriv_get_currency_pricing_enhanced', 'yoursite_ajax_get_currency_pricing_enhanced');
+
+// Also handle the original action name for compatibility
+add_action('wp_ajax_get_currency_pricing', 'yoursite_ajax_get_currency_pricing_enhanced');
+add_action('wp_ajax_nopriv_get_currency_pricing', 'yoursite_ajax_get_currency_pricing_enhanced');
 
 /**
- * Cache pricing plans for better performance
+ * Cached pricing plans with currency support
  */
-function yoursite_get_cached_pricing_plans($args = array()) {
-    $cache_key = 'yoursite_pricing_plans_' . md5(serialize($args));
+function yoursite_get_cached_pricing_plans_with_currency($args = array()) {
+    $current_currency = function_exists('yoursite_get_user_currency') ? yoursite_get_user_currency() : array('code' => 'USD');
+    $cache_key = 'yoursite_pricing_plans_currency_' . $current_currency['code'] . '_' . md5(serialize($args));
     $cached_plans = get_transient($cache_key);
     
     if (false === $cached_plans) {
@@ -1348,71 +1771,102 @@ function yoursite_get_cached_pricing_plans($args = array()) {
         $query_args = wp_parse_args($args, $default_args);
         $cached_plans = get_posts($query_args);
         
-        // Cache for 1 hour
-        set_transient($cache_key, $cached_plans, HOUR_IN_SECONDS);
+        // Cache for 30 minutes (shorter than regular cache due to currency changes)
+        set_transient($cache_key, $cached_plans, 30 * MINUTE_IN_SECONDS);
     }
     
     return $cached_plans;
 }
 
 /**
- * Clear pricing cache when plans are updated
+ * Clear currency pricing cache when plans or currencies are updated
  */
-function yoursite_clear_pricing_cache($post_id) {
-    if (get_post_type($post_id) === 'pricing') {
-        // Clear all pricing related transients
-        global $wpdb;
-        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_yoursite_pricing_plans_%'");
-        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_yoursite_pricing_plans_%'");
+function yoursite_clear_currency_pricing_cache($post_id = null) {
+    if ($post_id && get_post_type($post_id) !== 'pricing') {
+        return;
     }
+    
+    // Clear all currency pricing related transients
+    global $wpdb;
+    $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_yoursite_pricing_plans_currency_%'");
+    $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_yoursite_pricing_plans_currency_%'");
 }
-add_action('save_post', 'yoursite_clear_pricing_cache');
-add_action('delete_post', 'yoursite_clear_pricing_cache');
+add_action('save_post', 'yoursite_clear_currency_pricing_cache');
+add_action('delete_post', 'yoursite_clear_currency_pricing_cache');
+
+// Clear cache when currency rates are updated
+add_action('yoursite_currency_rates_updated', 'yoursite_clear_currency_pricing_cache');
 
 /**
- * Add support for pricing shortcodes in excerpts
+ * Enhanced admin interface updates for currency-aware shortcodes
  */
-function yoursite_pricing_shortcodes_in_excerpts($content) {
-    if (has_shortcode($content, 'pricing_table') || 
-        has_shortcode($content, 'pricing_cards') || 
-        has_shortcode($content, 'pricing_comparison')) {
-        return do_shortcode($content);
-    }
-    return $content;
+function yoursite_enhanced_pricing_shortcode_modal_updates() {
+    static $modal_updated = false;
+    if ($modal_updated) return;
+    $modal_updated = true;
+    
+    // Update the existing modal to include currency options
+    add_action('admin_footer', function() {
+        ?>
+        <script>
+        jQuery(document).ready(function($) {
+            // Add currency options to existing modal if currency system is available
+            if (typeof currencyAjax !== 'undefined') {
+                const currencyRow = `
+                    <tr class="pricing-table-options">
+                        <th><label for="currency-selector"><?php _e('Currency', 'yoursite'); ?></label></th>
+                        <td>
+                            <select id="currency-selector">
+                                <option value=""><?php _e('Use current user currency', 'yoursite'); ?></option>
+                                <option value="USD">🇺🇸 USD - US Dollar</option>
+                                <option value="EUR">🇪🇺 EUR - Euro</option>
+                                <option value="GBP">🇬🇧 GBP - British Pound</option>
+                                <option value="CAD">🇨🇦 CAD - Canadian Dollar</option>
+                                <option value="AUD">🇦🇺 AUD - Australian Dollar</option>
+                            </select>
+                            <p class="description"><?php _e('Force specific currency or leave empty for user selection', 'yoursite'); ?></p>
+                        </td>
+                    </tr>
+                    <tr class="pricing-table-options">
+                        <th><label for="show-currency-selector"><?php _e('Currency Selector', 'yoursite'); ?></label></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" id="show-currency-selector" checked>
+                                <?php _e('Show currency selector widget', 'yoursite'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                `;
+                
+                // Insert after existing options
+                $('#show-features').closest('tr').after(currencyRow);
+                
+                // Update the preview function to include currency options
+                const originalUpdatePreview = updateShortcodePreview;
+                updateShortcodePreview = function() {
+                    originalUpdatePreview();
+                    
+                    let shortcode = $('#shortcode-preview').text();
+                    
+                    const currency = $('#currency-selector').val();
+                    if (currency) {
+                        shortcode = shortcode.slice(0, -1) + ' currency="' + currency + '"]';
+                    }
+                    
+                    if (!$('#show-currency-selector').is(':checked')) {
+                        shortcode = shortcode.slice(0, -1) + ' show_currency_selector="false"]';
+                    }
+                    
+                    $('#shortcode-preview').text(shortcode);
+                };
+                
+                // Update event listeners
+                $('#currency-selector, #show-currency-selector').on('change', updateShortcodePreview);
+            }
+        });
+        </script>
+        <?php
+    });
 }
-add_filter('the_excerpt', 'yoursite_pricing_shortcodes_in_excerpts');
-
-/**
- * Add pricing shortcode examples to the help section
- */
-function yoursite_add_pricing_examples_help() {
-    $screen = get_current_screen();
-    if ($screen && ($screen->post_type === 'page' || $screen->post_type === 'post')) {
-        $screen->add_help_tab(array(
-            'id' => 'pricing-shortcode-examples',
-            'title' => __('Pricing Shortcode Examples', 'yoursite'),
-            'content' => '
-                <h3>' . __('Quick Examples', 'yoursite') . '</h3>
-                <h4>' . __('Basic pricing table:', 'yoursite') . '</h4>
-                <code>[pricing_table]</code>
-                
-                <h4>' . __('With custom title:', 'yoursite') . '</h4>
-                <code>[pricing_table title="Choose Your Plan" subtitle="Perfect for every business"]</code>
-                
-                <h4>' . __('Specific plans only:', 'yoursite') . '</h4>
-                <code>[pricing_table plans="1,2,3"]</code>
-                
-                <h4>' . __('No billing toggle:', 'yoursite') . '</h4>
-                <code>[pricing_table show_toggle="false"]</code>
-                
-                <h4>' . __('Limited features:', 'yoursite') . '</h4>
-                <code>[pricing_table max_features="3"]</code>
-                
-                <h4>' . __('Comparison table:', 'yoursite') . '</h4>
-                <code>[pricing_comparison title="Compare All Features"]</code>
-            '
-        ));
-    }
-}
-add_action('load-post.php', 'yoursite_add_pricing_examples_help');
-add_action('load-post-new.php', 'yoursite_add_pricing_examples_help');
+add_action('admin_init', 'yoursite_enhanced_pricing_shortcode_modal_updates');
+?>
