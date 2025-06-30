@@ -404,130 +404,242 @@ function yoursite_render_pricing_comparison_table() {
     }
     </style>
     
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize tooltip system
-        const tooltip = document.getElementById('feature-tooltip');
-        const tooltipText = tooltip.querySelector('.tooltip-text');
-        const featureLabels = document.querySelectorAll('.feature-label[data-tooltip]');
-        
-        featureLabels.forEach(label => {
-            label.addEventListener('mouseenter', function(e) {
-                const tooltipContent = this.getAttribute('data-tooltip');
-                if (tooltipContent) {
-                    tooltipText.textContent = tooltipContent;
-                    tooltip.classList.remove('hidden');
-                    
-                    setTimeout(() => {
-                        tooltip.classList.add('show');
-                    }, 10);
-                    
-                    updateTooltipPosition(e, tooltip);
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Configuration constants
+    const CONFIG = {
+        TOOLTIP_DELAY: 10,
+        TOOLTIP_HIDE_DELAY: 200,
+        TOOLTIP_MARGIN: 10,
+        SCROLL_THROTTLE_DELAY: 16, // ~60fps
+        STICKY_HEADER_OPACITY_THRESHOLD: 0.2
+    };
+
+    // Utility functions
+    const utils = {
+        throttle(func, delay) {
+            let timeoutId;
+            let lastExecTime = 0;
+            return function (...args) {
+                const currentTime = Date.now();
+                if (currentTime - lastExecTime > delay) {
+                    func.apply(this, args);
+                    lastExecTime = currentTime;
+                } else {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        func.apply(this, args);
+                        lastExecTime = Date.now();
+                    }, delay - (currentTime - lastExecTime));
                 }
-            });
+            };
+        },
+
+        debounce(func, delay) {
+            let timeoutId;
+            return function (...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => func.apply(this, args), delay);
+            };
+        },
+
+        safeQuerySelector(selector) {
+            try {
+                return document.querySelector(selector);
+            } catch (error) {
+                console.warn(`Invalid selector: ${selector}`, error);
+                return null;
+            }
+        },
+
+        safeQuerySelectorAll(selector) {
+            try {
+                return document.querySelectorAll(selector);
+            } catch (error) {
+                console.warn(`Invalid selector: ${selector}`, error);
+                return [];
+            }
+        }
+    };
+
+    // Tooltip system
+    const TooltipManager = {
+        init() {
+            this.tooltip = utils.safeQuerySelector('#feature-tooltip');
+            this.tooltipText = this.tooltip?.querySelector('.tooltip-text');
+            this.featureLabels = utils.safeQuerySelectorAll('.feature-label[data-tooltip]');
             
-            label.addEventListener('mouseleave', function() {
-                tooltip.classList.remove('show');
+            if (!this.tooltip || !this.tooltipText || !this.featureLabels.length) {
+                console.warn('Tooltip elements not found');
+                return;
+            }
+
+            this.bindEvents();
+        },
+
+        bindEvents() {
+            this.featureLabels.forEach(label => {
+                label.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
+                label.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
+                label.addEventListener('mousemove', this.handleMouseMove.bind(this));
+            });
+        },
+
+        handleMouseEnter(e) {
+            const tooltipContent = e.currentTarget.getAttribute('data-tooltip');
+            if (!tooltipContent) return;
+
+            this.tooltipText.textContent = tooltipContent;
+            this.tooltip.classList.remove('hidden');
+            
+            // Use requestAnimationFrame for smooth animation
+            requestAnimationFrame(() => {
                 setTimeout(() => {
-                    tooltip.classList.add('hidden');
-                }, 200);
+                    this.tooltip.classList.add('show');
+                }, CONFIG.TOOLTIP_DELAY);
             });
             
-            label.addEventListener('mousemove', function(e) {
-                if (!tooltip.classList.contains('hidden')) {
-                    updateTooltipPosition(e, tooltip);
+            this.updateTooltipPosition(e);
+        },
+
+        handleMouseLeave() {
+            this.tooltip.classList.remove('show');
+            setTimeout(() => {
+                if (!this.tooltip.classList.contains('show')) {
+                    this.tooltip.classList.add('hidden');
                 }
-            });
-        });
-        
-        function updateTooltipPosition(e, tooltip) {
-            const rect = tooltip.getBoundingClientRect();
-            const x = e.clientX;
-            const y = e.clientY;
+            }, CONFIG.TOOLTIP_HIDE_DELAY);
+        },
+
+        handleMouseMove(e) {
+            if (!this.tooltip.classList.contains('hidden')) {
+                this.updateTooltipPosition(e);
+            }
+        },
+
+        updateTooltipPosition(e) {
+            const rect = this.tooltip.getBoundingClientRect();
+            const { clientX: x, clientY: y } = e;
             
             let left = x - rect.width / 2;
-            let top = y - rect.height - 10;
+            let top = y - rect.height - CONFIG.TOOLTIP_MARGIN;
             
-            // Keep tooltip within viewport
-            if (left < 10) left = 10;
-            if (left + rect.width > window.innerWidth - 10) {
-                left = window.innerWidth - rect.width - 10;
+            // Viewport boundary checking
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            if (left < CONFIG.TOOLTIP_MARGIN) {
+                left = CONFIG.TOOLTIP_MARGIN;
+            } else if (left + rect.width > viewportWidth - CONFIG.TOOLTIP_MARGIN) {
+                left = viewportWidth - rect.width - CONFIG.TOOLTIP_MARGIN;
             }
-            if (top < 10) top = y + 10;
             
-            tooltip.style.left = left + 'px';
-            tooltip.style.top = top + 'px';
+            if (top < CONFIG.TOOLTIP_MARGIN) {
+                top = y + CONFIG.TOOLTIP_MARGIN;
+            }
+            
+            this.tooltip.style.left = `${left}px`;
+            this.tooltip.style.top = `${top}px`;
         }
-        
-        // Initialize billing toggle functionality
-        const comparisonToggle = document.getElementById('comparison-billing-toggle');
-        const comparisonWrapper = document.querySelector('.pricing-comparison-wrapper');
-        const comparisonMonthlyLabel = document.querySelector('.comparison-monthly-label');
-        const comparisonYearlyLabel = document.querySelector('.comparison-yearly-label');
-        
-        // Function to update comparison table display
-        function updateComparisonDisplay(isYearly) {
-            if (!comparisonWrapper) return;
+    };
+
+    // Billing toggle system
+    const BillingToggleManager = {
+        init() {
+            this.comparisonToggle = utils.safeQuerySelector('#comparison-billing-toggle');
+            this.comparisonWrapper = utils.safeQuerySelector('.pricing-comparison-wrapper');
+            this.comparisonMonthlyLabel = utils.safeQuerySelector('.comparison-monthly-label');
+            this.comparisonYearlyLabel = utils.safeQuerySelector('.comparison-yearly-label');
+            this.mainToggle = utils.safeQuerySelector('#billing-toggle');
+
+            if (!this.comparisonToggle || !this.comparisonWrapper) {
+                console.warn('Billing toggle elements not found');
+                return;
+            }
+
+            this.setupInitialState();
+            this.bindEvents();
+        },
+
+        setupInitialState() {
+            // Set initial state to yearly (default)
+            this.comparisonToggle.checked = true;
+            this.updateComparisonDisplay(true);
+        },
+
+        bindEvents() {
+            this.comparisonToggle.addEventListener('change', this.handleComparisonToggleChange.bind(this));
+            
+            // Sync with main toggle if it exists
+            if (this.mainToggle && this.mainToggle !== this.comparisonToggle) {
+                this.mainToggle.addEventListener('change', this.handleMainToggleChange.bind(this));
+            }
+        },
+
+        handleComparisonToggleChange() {
+            const isYearly = this.comparisonToggle.checked;
+            this.updateComparisonDisplay(isYearly);
+            this.syncWithMainToggle(isYearly);
+        },
+
+        handleMainToggleChange() {
+            const isYearly = this.mainToggle.checked;
+            this.comparisonToggle.checked = isYearly;
+            this.updateComparisonDisplay(isYearly);
+        },
+
+        syncWithMainToggle(isYearly) {
+            if (this.mainToggle && this.mainToggle !== this.comparisonToggle) {
+                this.mainToggle.checked = isYearly;
+                this.mainToggle.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        },
+
+        updateComparisonDisplay(isYearly) {
+            const yearlyClass = 'comparison-yearly-active';
+            const monthlyClass = 'comparison-monthly-active';
             
             if (isYearly) {
-                comparisonWrapper.classList.add('comparison-yearly-active');
-                comparisonWrapper.classList.remove('comparison-monthly-active');
-                // Update label styles
-                if (comparisonYearlyLabel) {
-                    comparisonYearlyLabel.style.color = '#3b82f6';
-                    comparisonYearlyLabel.style.fontWeight = '600';
-                }
-                if (comparisonMonthlyLabel) {
-                    comparisonMonthlyLabel.style.color = '#9ca3af';
-                    comparisonMonthlyLabel.style.fontWeight = '400';
-                }
+                this.comparisonWrapper.classList.add(yearlyClass);
+                this.comparisonWrapper.classList.remove(monthlyClass);
+                this.updateLabelStyles(true);
             } else {
-                comparisonWrapper.classList.remove('comparison-yearly-active');
-                comparisonWrapper.classList.add('comparison-monthly-active');
-                // Update label styles
-                if (comparisonMonthlyLabel) {
-                    comparisonMonthlyLabel.style.color = '#3b82f6';
-                    comparisonMonthlyLabel.style.fontWeight = '600';
-                }
-                if (comparisonYearlyLabel) {
-                    comparisonYearlyLabel.style.color = '#9ca3af';
-                    comparisonYearlyLabel.style.fontWeight = '400';
-                }
+                this.comparisonWrapper.classList.remove(yearlyClass);
+                this.comparisonWrapper.classList.add(monthlyClass);
+                this.updateLabelStyles(false);
+            }
+        },
+
+        updateLabelStyles(isYearly) {
+            const activeStyle = { color: '#3b82f6', fontWeight: '600' };
+            const inactiveStyle = { color: '#9ca3af', fontWeight: '400' };
+            
+            if (this.comparisonYearlyLabel) {
+                Object.assign(this.comparisonYearlyLabel.style, isYearly ? activeStyle : inactiveStyle);
+            }
+            
+            if (this.comparisonMonthlyLabel) {
+                Object.assign(this.comparisonMonthlyLabel.style, isYearly ? inactiveStyle : activeStyle);
             }
         }
-        
-        // Set initial state to yearly (default)
-        if (comparisonToggle && comparisonWrapper) {
-            comparisonToggle.checked = true;
-            updateComparisonDisplay(true);
+    };
+
+    // Scroll indicator system
+    const ScrollIndicatorManager = {
+        init() {
+            this.tableContainer = utils.safeQuerySelector('.comparison-table-container');
+            if (!this.tableContainer || !this.shouldShowScrollIndicator()) {
+                return;
+            }
             
-            comparisonToggle.addEventListener('change', function() {
-                const isYearly = this.checked;
-                updateComparisonDisplay(isYearly);
-                
-                // Sync with main pricing toggle if exists
-                const mainToggle = document.getElementById('billing-toggle');
-                if (mainToggle && mainToggle !== this) {
-                    mainToggle.checked = isYearly;
-                    // Trigger change event for main toggle
-                    const event = new Event('change', { bubbles: true });
-                    mainToggle.dispatchEvent(event);
-                }
-            });
-        }
-        
-        // Listen for changes from main pricing toggle
-        const mainToggle = document.getElementById('billing-toggle');
-        if (mainToggle && comparisonToggle && mainToggle !== comparisonToggle) {
-            mainToggle.addEventListener('change', function() {
-                const isYearly = this.checked;
-                comparisonToggle.checked = isYearly;
-                updateComparisonDisplay(isYearly);
-            });
-        }
-        
-        // Add smooth scrolling enhancement
-        function addScrollIndicator() {
+            this.addScrollIndicator();
+        },
+
+        shouldShowScrollIndicator() {
+            return this.tableContainer.scrollWidth > this.tableContainer.clientWidth;
+        },
+
+        addScrollIndicator() {
             const scrollIndicator = document.createElement('div');
             scrollIndicator.className = 'scroll-indicator';
             scrollIndicator.innerHTML = '← Scroll to see more features →';
@@ -543,101 +655,150 @@ function yoursite_render_pricing_comparison_table() {
                 font-weight: 600;
                 border-bottom: 1px solid #e5e7eb;
                 z-index: 20;
+                transition: opacity 0.3s ease;
             `;
             
-            const tableContainer = document.querySelector('.comparison-table-container');
-            if (tableContainer && tableContainer.scrollWidth > tableContainer.clientWidth) {
-                tableContainer.prepend(scrollIndicator);
+            this.tableContainer.prepend(scrollIndicator);
+            this.bindScrollEvents(scrollIndicator);
+        },
+
+        bindScrollEvents(scrollIndicator) {
+            const throttledScrollHandler = utils.throttle((e) => {
+                const { scrollLeft, scrollWidth, clientWidth } = e.target;
+                const scrollPercentage = scrollLeft / (scrollWidth - clientWidth);
                 
-                tableContainer.addEventListener('scroll', function() {
-                    const scrollPercentage = this.scrollLeft / (this.scrollWidth - this.clientWidth);
-                    if (scrollPercentage > 0.9) {
-                        scrollIndicator.style.display = 'none';
-                    } else {
-                        scrollIndicator.style.display = 'block';
-                    }
-                });
+                scrollIndicator.style.opacity = scrollPercentage > 0.9 ? '0' : '1';
+            }, CONFIG.SCROLL_THROTTLE_DELAY);
+            
+            this.tableContainer.addEventListener('scroll', throttledScrollHandler);
+        }
+    };
+
+    // Sticky header system
+    const StickyHeaderManager = {
+        init() {
+            this.tableContainer = utils.safeQuerySelector('.comparison-table-container');
+            this.stickyHeader = utils.safeQuerySelector('.comparison-sticky-header');
+            this.comparisonSection = utils.safeQuerySelector('.pricing-comparison-wrapper');
+            
+            if (!this.tableContainer || !this.stickyHeader || !this.comparisonSection) {
+                console.warn('Sticky header elements not found');
+                return;
+            }
+
+            this.isSticky = false;
+            this.bindEvents();
+            this.handleStickyHeader(); // Initial check
+        },
+
+        bindEvents() {
+            const throttledScrollHandler = utils.throttle(this.handleStickyHeader.bind(this), CONFIG.SCROLL_THROTTLE_DELAY);
+            const debouncedResizeHandler = utils.debounce(this.handleResize.bind(this), 100);
+            
+            window.addEventListener('scroll', throttledScrollHandler);
+            window.addEventListener('resize', debouncedResizeHandler);
+        },
+
+        handleStickyHeader() {
+            const sectionRect = this.comparisonSection.getBoundingClientRect();
+            const containerRect = this.tableContainer.getBoundingClientRect();
+            
+            const shouldBeSticky = sectionRect.top <= 0 && sectionRect.bottom > 0;
+            
+            if (shouldBeSticky && !this.isSticky) {
+                this.activateStickyMode(containerRect);
+            } else if (!shouldBeSticky && this.isSticky) {
+                this.deactivateStickyMode();
+            }
+            
+            this.handleStickyHeaderVisibility(sectionRect);
+        },
+
+        activateStickyMode(containerRect) {
+            this.isSticky = true;
+            Object.assign(this.stickyHeader.style, {
+                position: 'fixed',
+                top: '0px',
+                left: `${containerRect.left}px`,
+                width: `${containerRect.width}px`,
+                zIndex: '999',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                transition: 'opacity 0.3s ease, transform 0.3s ease'
+            });
+        },
+
+        deactivateStickyMode() {
+            this.isSticky = false;
+            Object.assign(this.stickyHeader.style, {
+                position: 'sticky',
+                top: '0',
+                left: 'auto',
+                width: 'auto',
+                zIndex: '100',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                opacity: '1',
+                transform: 'translateY(0)'
+            });
+        },
+
+        handleStickyHeaderVisibility(sectionRect) {
+            if (!this.isSticky) return;
+            
+            const tableBottom = sectionRect.bottom;
+            const threshold = window.innerHeight * CONFIG.STICKY_HEADER_OPACITY_THRESHOLD;
+            
+            if (tableBottom <= threshold) {
+                this.stickyHeader.style.opacity = '0';
+                this.stickyHeader.style.transform = 'translateY(-100%)';
+            } else {
+                this.stickyHeader.style.opacity = '1';
+                this.stickyHeader.style.transform = 'translateY(0)';
+            }
+        },
+
+        handleResize() {
+            if (this.isSticky) {
+                const containerRect = this.tableContainer.getBoundingClientRect();
+                this.stickyHeader.style.left = `${containerRect.left}px`;
+                this.stickyHeader.style.width = `${containerRect.width}px`;
             }
         }
-        
-        // Enhanced sticky header management
-        const tableContainer = document.querySelector('.comparison-table-container');
-        const stickyHeader = document.querySelector('.comparison-sticky-header');
-        const comparisonSection = document.querySelector('.pricing-comparison-wrapper');
-        
-        if (tableContainer && stickyHeader && comparisonSection) {
-            let isSticky = false;
+    };
+
+    // Initialize all systems
+    const initializeSystems = () => {
+        try {
+            TooltipManager.init();
+            BillingToggleManager.init();
+            StickyHeaderManager.init();
             
-            function handleStickyHeader() {
-                const sectionRect = comparisonSection.getBoundingClientRect();
-                const containerRect = tableContainer.getBoundingClientRect();
-                
-                // Check if the comparison section is visible and being scrolled
-                const shouldBeSticky = sectionRect.top <= 0 && sectionRect.bottom > 0;
-                
-                if (shouldBeSticky && !isSticky) {
-                    isSticky = true;
-                    stickyHeader.style.position = 'fixed';
-                    stickyHeader.style.top = '0px';
-                    stickyHeader.style.left = containerRect.left + 'px';
-                    stickyHeader.style.width = containerRect.width + 'px';
-                    stickyHeader.style.zIndex = '999';
-                    stickyHeader.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-                } else if (!shouldBeSticky && isSticky) {
-                    isSticky = false;
-                    stickyHeader.style.position = 'sticky';
-                    stickyHeader.style.top = '0';
-                    stickyHeader.style.left = 'auto';
-                    stickyHeader.style.width = 'auto';
-                    stickyHeader.style.zIndex = '100';
-                    stickyHeader.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-                }
-                
-                // Hide sticky header when reaching the bottom of the table
-                const tableBottom = comparisonSection.getBoundingClientRect().bottom;
-                if (tableBottom <= window.innerHeight * 0.2) {
-                    if (isSticky) {
-                        stickyHeader.style.opacity = '0';
-                        stickyHeader.style.transform = 'translateY(-100%)';
-                    }
-                } else if (isSticky) {
-                    stickyHeader.style.opacity = '1';
-                    stickyHeader.style.transform = 'translateY(0)';
-                }
+            // Add scroll indicator on mobile devices
+            if (window.innerWidth < 1024) {
+                ScrollIndicatorManager.init();
             }
-            
-            // Throttled scroll handler for performance
-            let ticking = false;
-            function handleScroll() {
-                if (!ticking) {
-                    requestAnimationFrame(() => {
-                        handleStickyHeader();
-                        ticking = false;
-                    });
-                    ticking = true;
-                }
-            }
-            
-            // Handle window resize
-            function handleResize() {
-                if (isSticky) {
-                    const containerRect = tableContainer.getBoundingClientRect();
-                    stickyHeader.style.left = containerRect.left + 'px';
-                    stickyHeader.style.width = containerRect.width + 'px';
-                }
-            }
-            
-            window.addEventListener('scroll', handleScroll);
-            window.addEventListener('resize', handleResize);
-            
-            // Initial check
-            handleStickyHeader();
-        // Add scroll indicator on mobile
-        if (window.innerWidth < 1024) {
-            addScrollIndicator();
+        } catch (error) {
+            console.error('Error initializing pricing table systems:', error);
         }
-    });
-    </script>
+    };
+
+    // Run initialization
+    initializeSystems();
+
+    // Handle responsive changes
+    const handleResponsiveChanges = utils.debounce(() => {
+        const isMobile = window.innerWidth < 1024;
+        const scrollIndicatorExists = utils.safeQuerySelector('.scroll-indicator');
+        
+        if (isMobile && !scrollIndicatorExists) {
+            ScrollIndicatorManager.init();
+        } else if (!isMobile && scrollIndicatorExists) {
+            scrollIndicatorExists.remove();
+        }
+    }, 250);
+
+    window.addEventListener('resize', handleResponsiveChanges);
+});
+  </script>
     
     <?php
     return ob_get_clean();
