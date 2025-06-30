@@ -376,27 +376,6 @@ function yoursite_homepage_footer_scripts() {
         if (window.performance && window.performance.mark) {
             window.performance.mark('homepage-interactive');
         }
-        
-        // Add smooth scrolling for all anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    
-                    // Track scroll events
-                    if (typeof gtag !== 'undefined') {
-                        gtag('event', 'scroll_to_section', {
-                            'event_category': 'engagement',
-                            'event_label': this.getAttribute('href')
-                        });
-                    }
-                }
-            });
         });
         
         // Add intersection observer for conversion tracking
@@ -516,11 +495,7 @@ function yoursite_homepage_footer_scripts() {
                     });
                 }
             }
-        });
-        
-        console.log('✅ Homepage tracking and interactions initialized');
-    });
-    </script>
+        });    </script>
     <?php
 }
 add_action('wp_footer', 'yoursite_homepage_footer_scripts', 99);

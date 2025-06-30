@@ -545,188 +545,538 @@ function get_pricing_currency_symbol($currency = 'USD') {
                     $plan_count = count($plans);
                     $use_carousel = $plan_count > 3;
                     
-                    if (!empty($plans)) : ?>
+                  
+if (!empty($plans)) : ?>
+    
+    <!-- Conversion-Optimized Pricing Cards -->
+    <div class="conversion-pricing-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        
+        <?php foreach ($plans as $index => $plan) : 
+            $meta = yoursite_get_pricing_meta_fields($plan->ID);
+            $is_featured = $meta['pricing_featured'] === '1';
+            $monthly_price = floatval($meta['pricing_monthly_price']);
+            $annual_price = floatval($meta['pricing_annual_price']);
+            
+            if ($annual_price == 0 && $monthly_price > 0) {
+                $annual_price = $monthly_price * 12 * 0.8; // 20% discount
+            }
+            $annual_monthly = $annual_price > 0 ? $annual_price / 12 : 0;
+            $annual_savings = ($monthly_price * 12) - $annual_price;
+            
+            $currency_symbol = get_pricing_currency_symbol($meta['pricing_currency']);
+        ?>
+        
+        <!-- Pricing Card -->
+        <div class="conversion-pricing-card relative">
+            
+            <?php if ($is_featured) : ?>
+                <!-- Featured Plan with Gradient Border -->
+                <div class="gradient-border-wrapper relative">
+                    <!-- Most Popular Badge -->
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
+                        <span class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg animate-pulse">
+                            <?php _e('Most Popular', 'yoursite'); ?>
+                        </span>
+                    </div>
+                    
+                    <div class="gradient-border bg-gradient-to-r from-blue-500 to-purple-600 p-0.5 rounded-2xl">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 pt-8 h-full conversion-card-inner">
+            <?php else : ?>
+                <!-- Regular Plan -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 h-full conversion-card-inner hover-lift">
+            <?php endif; ?>
+            
+                <!-- Plan Header -->
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                        <?php echo esc_html($plan->post_title); ?>
+                    </h3>
+                    
+                    <?php if ($plan->post_excerpt) : ?>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            <?php echo esc_html($plan->post_excerpt); ?>
+                        </p>
+                    <?php endif; ?>
+                    
+                    <!-- Dynamic Price Display -->
+                    <div class="price-section mb-6">
+                        <!-- Monthly Pricing -->
+                        <div class="monthly-price-display hidden">
+                            <span class="text-5xl font-bold price-highlight">
+                                <?php echo $currency_symbol . number_format($monthly_price, 0); ?>
+                            </span>
+                            <span class="text-gray-600 dark:text-gray-300">/month</span>
+                        </div>
                         
-                        <?php if ($use_carousel) : ?>
-                        <!-- Carousel Layout for 4+ Plans -->
-                        <div class="pricing-carousel-wrapper relative" style="padding: 40px 60px;">
-                            <!-- Navigation Arrows -->
-                            <button class="pricing-nav-btn pricing-nav-prev" style="margin-left: -20px;">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                                </svg>
-                            </button>
-                            <button class="pricing-nav-btn pricing-nav-next" style="margin-right: -20px;">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                </svg>
-                            </button>
-                            
-                            <!-- Carousel Container -->
-                            <div class="pricing-carousel-container" style="overflow: hidden; margin: 0 auto; max-width: 1020px;">
-                                <div class="pricing-carousel-track flex transition-transform duration-500 ease-in-out" data-total-plans="<?php echo $plan_count; ?>" style="margin: 0 -10px; padding: 25px 10px;">
+                        <!-- Annual Pricing (Default) -->
+                        <div class="annual-price-display">
+                            <span class="text-5xl font-bold price-highlight">
+                                <?php echo $currency_symbol . number_format($annual_monthly, 0); ?>
+                            </span>
+                            <span class="text-gray-600 dark:text-gray-300">/month</span>
+                            <?php if ($annual_price > 0) : ?>
+                                <div class="text-sm text-green-600 dark:text-green-400 font-semibold mt-1">
+                                    <?php printf(__('Billed annually (%s%s/year)', 'yoursite'), $currency_symbol, number_format($annual_price, 0)); ?>
+                                    <?php if ($annual_savings > 0) : ?>
+                                        • <?php printf(__('Save %s%s', 'yoursite'), $currency_symbol, number_format($annual_savings, 0)); ?>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    
+                    <!-- Conversion-Optimized CTAs -->
+                    <div class="cta-section">
+                        <?php if ($is_featured) : ?>
+                            <!-- Featured Plan CTA -->
+                            <a href="<?php echo esc_url($meta['pricing_button_url'] ?: '#'); ?>" 
+                               class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 mb-4 inline-block text-center focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg">
+                                <?php echo esc_html($meta['pricing_button_text'] ?: __('Start Free Trial', 'yoursite')); ?>
+                            </a>
                         <?php else : ?>
-                        <!-- Standard Grid for 1-3 Plans -->
-                        <div class="pricing-grid homepage-pricing-grid">
+                            <!-- Regular Plan CTA -->
+                            <a href="<?php echo esc_url($meta['pricing_button_url'] ?: '#'); ?>" 
+                               class="w-full bg-gray-900 hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 mb-4 inline-block text-center focus:outline-none focus:ring-4 focus:ring-gray-300">
+                                <?php echo esc_html($meta['pricing_button_text'] ?: __('Start Free Trial', 'yoursite')); ?>
+                            </a>
                         <?php endif; ?>
                         
-                            <?php foreach ($plans as $index => $plan) : 
-                                if (!function_exists('yoursite_get_pricing_meta_fields')) {
-                                    require_once get_template_directory() . '/inc/pricing-meta-boxes.php';
-                                }
-                                $meta = yoursite_get_pricing_meta_fields($plan->ID);
-                                $is_featured = $meta['pricing_featured'] === '1';
-                                $monthly_price = floatval($meta['pricing_monthly_price']);
-                                $annual_price = floatval($meta['pricing_annual_price']);
-                                
-                                if ($annual_price == 0 && $monthly_price > 0) {
-                                    $annual_price = $monthly_price * 12 * 0.8;
-                                }
-                                $annual_monthly = $annual_price > 0 ? $annual_price / 12 : 0;
-                                
-                                $currency_symbol = get_pricing_currency_symbol($meta['pricing_currency']);
-                                $card_classes = $use_carousel ? 'pricing-card-carousel flex-shrink-0' : '';
-                                ?>
-                                <div class="pricing-card <?php echo $is_featured ? 'featured' : ''; ?> <?php echo $card_classes; ?> relative transition-all duration-300 hover:shadow-xl">
-                                    
-                                    <!-- Featured Badge -->
-                                    <?php if ($is_featured) : ?>
-                                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                                            <span class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                                                Most Popular
-                                            </span>
-                                        </div>
-                                    <?php endif; ?>
-                                    
-                                    <div class="text-center mb-8 <?php echo $is_featured ? 'mt-4' : ''; ?>">
-                                        <!-- Plan Name -->
-                                        <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-                                            <?php echo esc_html($plan->post_title); ?>
-                                        </h3>
-                                        
-                                        <!-- Plan Description -->
-                                        <?php if ($plan->post_excerpt) : ?>
-                                            <p class="text-gray-600 dark:text-gray-300 mb-6">
-                                                <?php echo esc_html($plan->post_excerpt); ?>
-                                            </p>
-                                        <?php endif; ?>
-                                        
-                                        <!-- Price Display with Toggle -->
-                                        <div class="mb-6">
-                                            <!-- Monthly Pricing -->
-                                            <div class="homepage-monthly-pricing" style="display: none;">
-                                                <span class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
-                                                    <?php echo $currency_symbol . number_format($monthly_price, 0); ?>
-                                                </span>
-                                                <span class="text-gray-600 dark:text-gray-300 text-lg">
-                                                    /month
-                                                </span>
-                                            </div>
-                                            
-                                            <!-- Annual Pricing -->
-                                            <div class="homepage-annual-pricing" style="display: block;">
-                                                <span class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
-                                                    <?php echo $currency_symbol . number_format($annual_monthly, 0); ?>
-                                                </span>
-                                                <span class="text-gray-600 dark:text-gray-300 text-lg">
-                                                    /month
-                                                </span>
-                                                <?php if ($annual_price > 0) : ?>
-                                                    <div class="text-sm text-green-600 dark:text-green-400 mt-1">
-                                                        Billed annually (<?php echo $currency_symbol . number_format($annual_price, 0); ?>)
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                            
-                                            <!-- Savings Badge -->
-                                            <?php if ($monthly_price > 0 && $annual_price > 0) : ?>
-                                                <div class="homepage-annual-savings mt-2" style="display: block;">
-                                                    <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-3 py-1 rounded-full text-sm font-medium">
-                                                        Save <?php echo $currency_symbol . number_format(($monthly_price * 12) - $annual_price, 0); ?> per year
-                                                    </span>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-                                    </div>
-                                    
-                     <!-- CLEAN Features List - No Tailwind spacing classes -->
-<?php if (!empty($meta['pricing_features'])) : ?>
-    <div class="features-section">
-        <ul>
-            <?php 
-            $features = array_filter(explode("\n", $meta['pricing_features']));
-            foreach ($features as $feature) : 
-                $feature = trim($feature);
-                if (!empty($feature)) :
-            ?>
-                <li>
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        <!-- Trust Signal -->
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            <?php _e('14-day free trial • No credit card required', 'yoursite'); ?>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Features List - Optimized Spacing -->
+                <?php if (!empty($meta['pricing_features'])) : ?>
+                    <div class="features-section">
+                        <ul class="conversion-features-list">
+                            <?php 
+                            $features = array_filter(explode("\n", $meta['pricing_features']));
+                            foreach ($features as $feature_index => $feature) : 
+                                $feature = trim($feature);
+                                if (!empty($feature)) :
+                                    // Highlight first feature for featured plans
+                                    $is_highlight = $is_featured && $feature_index === 0;
+                            ?>
+                                <li class="conversion-feature-item <?php echo $is_highlight ? 'highlight-feature' : ''; ?>">
+                                    <svg class="feature-check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span class="feature-text <?php echo $is_highlight ? 'font-semibold' : ''; ?>">
+                                        <?php echo esc_html($feature); ?>
+                                    </span>
+                                </li>
+                            <?php endif; endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+                
+            <?php if ($is_featured) : ?>
+                        </div>
+                    </div>
+                </div>
+            <?php else : ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <?php endforeach; ?>
+    </div>
+    
+    <!-- Trust Signals Section -->
+    <div class="trust-signals-section bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mt-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div class="trust-signal-item">
+                <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <span><?php echo esc_html($feature); ?></span>
-                </li>
-            <?php endif; endforeach; ?>
-        </ul>
+                </div>
+                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <?php _e('30-Day Money Back', 'yoursite'); ?>
+                </h4>
+                <p class="text-gray-600 dark:text-gray-300">
+                    <?php _e('Full refund if not satisfied', 'yoursite'); ?>
+                </p>
+            </div>
+            
+            <div class="trust-signal-item">
+                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <?php _e('Setup in Minutes', 'yoursite'); ?>
+                </h4>
+                <p class="text-gray-600 dark:text-gray-300">
+                    <?php _e('Quick and easy onboarding', 'yoursite'); ?>
+                </p>
+            </div>
+            
+            <div class="trust-signal-item">
+                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </div>
+                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <?php _e('24/7 Support', 'yoursite'); ?>
+                </h4>
+                <p class="text-gray-600 dark:text-gray-300">
+                    <?php _e('Always here to help you succeed', 'yoursite'); ?>
+                </p>
+            </div>
+        </div>
+    </div>
+
+<?php else : ?>
+    <!-- No Plans Available -->
+    <div class="text-center py-12">
+        <div class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-8">
+            <svg class="w-16 h-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+            </svg>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                <?php _e('No pricing plans available yet.', 'yoursite'); ?>
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                <?php _e('Check back soon for our exciting pricing options!', 'yoursite'); ?>
+            </p>
+            <?php if (current_user_can('manage_options')) : ?>
+                <a href="<?php echo admin_url('post-new.php?post_type=pricing'); ?>" 
+                   class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg inline-block transition-colors duration-200">
+                    <?php _e('Create Your First Pricing Plan', 'yoursite'); ?>
+                </a>
+            <?php endif; ?>
+        </div>
     </div>
 <?php endif; ?>
 
 <style>
-/* Inline styles for immediate effect - add this to your template */
-.pricing-card .features-section {
-    margin-bottom: 1.5rem;
+/* ==========================================================================
+   CONVERSION-OPTIMIZED PRICING CARDS CSS
+   ========================================================================== */
+
+/* Grid Layout */
+.conversion-pricing-grid {
+    position: relative;
+    z-index: 1;
 }
 
-.pricing-card .features-section ul {
+/* Card Base Styling */
+.conversion-pricing-card {
+    position: relative;
+    height: 100%;
+}
+
+.conversion-card-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 600px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover Effects */
+.hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* Featured Plan Gradient Border */
+.gradient-border {
+    background: linear-gradient(145deg, #667eea, #764ba2);
+    padding: 3px;
+    border-radius: 1rem;
+}
+
+/* Price Highlighting */
+.price-highlight {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+}
+
+/* Features List Optimized */
+.conversion-features-list {
     list-style: none;
     margin: 0;
     padding: 0;
+    flex-grow: 1;
 }
 
-.pricing-card .features-section li {
+.conversion-feature-item {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 3px;
-    line-height: 1.4;
+    margin-bottom: 12px;
+    padding: 8px 0;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
 }
 
-.pricing-card .features-section li:last-child {
-    margin-bottom: 0;
+.conversion-feature-item:hover {
+    background-color: rgba(59, 130, 246, 0.05);
 }
 
-.pricing-card .features-section svg {
-    width: 16px;
-    height: 16px;
-    margin: 2px 6px 0 0;
+.conversion-feature-item.highlight-feature {
+    background-color: rgba(34, 197, 94, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid #22c55e;
+}
+
+.feature-check-icon {
+    width: 20px;
+    height: 20px;
+    color: #22c55e;
+    margin: 2px 12px 0 0;
     flex-shrink: 0;
-    color: #10b981;
 }
 
-.pricing-card .features-section span {
+.feature-text {
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 1.5;
     color: #374151;
 }
 
-/* Dark mode */
-body.dark-mode .pricing-card .features-section span {
+.dark .feature-text {
     color: #d1d5db;
 }
 
-body.dark-mode .pricing-card .features-section svg {
-    color: #34d399;
+/* CTA Buttons */
+.conversion-pricing-card a[class*="bg-gradient"] {
+    position: relative;
+    overflow: hidden;
+}
+
+.conversion-pricing-card a[class*="bg-gradient"]:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.conversion-pricing-card a[class*="bg-gradient"]:hover:before {
+    left: 100%;
+}
+
+/* Billing Toggle Sync */
+.pricing-page.show-monthly .monthly-price-display {
+    display: block !important;
+}
+
+.pricing-page.show-monthly .annual-price-display {
+    display: none !important;
+}
+
+.pricing-page.show-annual .monthly-price-display {
+    display: none !important;
+}
+
+.pricing-page.show-annual .annual-price-display {
+    display: block !important;
+}
+
+/* Trust Signals */
+.trust-signals-section {
+    animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+.trust-signal-item {
+    transition: transform 0.3s ease;
+}
+
+.trust-signal-item:hover {
+    transform: translateY(-4px);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .conversion-pricing-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    .conversion-card-inner {
+        min-height: auto;
+        padding: 1.5rem;
+    }
+    
+    .conversion-pricing-card .absolute.-top-4 {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        margin-bottom: 1rem;
+        display: block;
+        text-align: center;
+    }
+    
+    .price-highlight {
+        font-size: 2.5rem;
+    }
+    
+    .conversion-feature-item {
+        margin-bottom: 8px;
+    }
+    
+    .feature-check-icon {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+    }
+    
+    .feature-text {
+        font-size: 13px;
+    }
+    
+    /* Mobile CTA optimizations */
+    .cta-section a {
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+        min-height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .trust-signals-section {
+        margin-top: 2rem;
+        padding: 1.5rem;
+    }
+    
+    .trust-signals-section .grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+/* Tablet Adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .conversion-pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .conversion-pricing-grid .conversion-pricing-card:nth-child(3) {
+        grid-column: 1 / -1;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+}
+
+/* Accessibility */
+.conversion-pricing-card:focus-within {
+    outline: 3px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .conversion-card-inner,
+    .trust-signal-item,
+    .conversion-feature-item {
+        transition: none;
+    }
+    
+    .hover-lift:hover {
+        transform: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .conversion-feature-item {
+        border: 1px solid;
+    }
+    
+    .price-highlight {
+        background: none;
+        -webkit-text-fill-color: inherit;
+        color: #000;
+        font-weight: 900;
+    }
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 </style>
+
+<script>
+// Enhanced pricing toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const pricingPage = document.querySelector('.pricing-page');
+    const billingToggle = document.getElementById('pricing-billing-toggle');
+    
+    if (!billingToggle || !pricingPage) return;
+    
+    // Set initial state to annual (default)
+    billingToggle.checked = true;
+    pricingPage.classList.add('show-annual');
+    pricingPage.classList.remove('show-monthly');
+    
+    billingToggle.addEventListener('change', function() {
+        const isAnnual = this.checked;
+        
+        if (isAnnual) {
+            pricingPage.classList.add('show-annual');
+            pricingPage.classList.remove('show-monthly');
+        } else {
+            pricingPage.classList.remove('show-annual');
+            pricingPage.classList.add('show-monthly');
+        }
+        
+        // Add visual feedback
+        const cards = document.querySelectorAll('.conversion-card-inner');
+        cards.forEach(card => {
+            card.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                card.style.transform = '';
+            }, 150);
+        });
+    });
+    
+    // Enhance CTA button interactions
+    const ctaButtons = document.querySelectorAll('.cta-section a');
+    ctaButtons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.02) translateY(-2px)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+        });
+        
+        button.addEventListener('click', function(e) {
+            // Add click animation
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 100);
+        });
+    });
+});
+</script>
                                     
-                                    <!-- CTA Button -->
-                                    <div class="text-center mt-auto">
-                                        <a href="<?php echo esc_url($meta['pricing_button_url'] ?: '#'); ?>" 
-                                           class="<?php echo $is_featured ? 'btn-primary' : 'btn-secondary'; ?> w-full text-center block py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-200 hover:transform hover:-translate-y-1"
-                                           <?php echo $is_featured ? 'style="color: #ffffff !important;"' : ''; ?>>
-                                            <?php echo esc_html($meta['pricing_button_text'] ?: __('Get Started', 'yoursite')); ?>
-                                        </a>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
+      
                             
                         <?php if ($use_carousel) : ?>
                                 </div>
@@ -760,16 +1110,7 @@ body.dark-mode .pricing-card .features-section svg {
                             </button>
                         </div>
                         <?php endif; ?>
-                    <?php else : ?>
-                        <div class="text-center py-12">
-                            <p class="text-white text-lg mb-4">No pricing plans available yet.</p>
-                            <?php if (current_user_can('manage_options')) : ?>
-                                <a href="<?php echo admin_url('post-new.php?post_type=pricing'); ?>" class="btn-primary">
-                                    Create Your First Pricing Plan
-                                </a>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
+
                     
                 </div>
             </div>
@@ -1065,25 +1406,6 @@ body.dark-mode .pricing-card .features-section svg {
     </section>
     <?php endif; ?>
 
-    <?php if ($cta_enable) : ?>
-    <!-- CTA Section -->
-    <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
-        <div class="container mx-auto px-4">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-4xl font-bold mb-6"><?php echo esc_html($cta_title); ?></h2>
-                <p class="text-xl text-blue-100 mb-8"><?php echo esc_html($cta_subtitle); ?></p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="<?php echo esc_url($cta_primary_url); ?>" class="btn-primary bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 inline-block">
-                        <?php echo esc_html($cta_primary_text); ?>
-                    </a>
-                    <a href="<?php echo esc_url(home_url($cta_secondary_url)); ?>" class="btn-secondary border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-4 inline-block">
-                        <?php echo esc_html($cta_secondary_text); ?>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-    <?php endif; ?>
 </div>
 
 <!-- Complete JavaScript -->

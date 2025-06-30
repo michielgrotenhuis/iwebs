@@ -272,32 +272,34 @@ class SiteManager {
         icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isExpanded ? closePath : hamburgerPath}"></path>`;
     }
 
-    /**
-     * Initialize smooth scrolling for anchor links
-     */
-    initSmoothScrolling() {
-        const anchorLinks = document.querySelectorAll('a[href^="#"]:not([href="#"])');
-        
-        anchorLinks.forEach(anchor => {
-            this.addEventListener(anchor, 'click', (e) => {
-                const href = anchor.getAttribute('href');
-                const target = document.querySelector(href);
-                
-                if (!target) return;
-                
-                e.preventDefault();
-                
-                const header = document.querySelector('header');
-                const headerHeight = header ? header.offsetHeight : 0;
-                const targetPosition = target.offsetTop - headerHeight - this.config.scrollOffset;
-                
-                window.scrollTo({
-                    top: Math.max(0, targetPosition),
-                    behavior: 'smooth'
-                });
+/**
+ * Initialize smooth scrolling for anchor links
+ */
+initSmoothScrolling() {
+    const anchorLinks = document.querySelectorAll('a[href^="#"]:not([href="#"])');
+
+    anchorLinks.forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
+            const href = anchor.getAttribute('href');
+            const target = document.querySelector(href);
+
+            if (!target) return;
+
+            e.preventDefault();
+
+            const header = document.querySelector('header');
+            const headerHeight = header ? header.offsetHeight : 0;
+            const scrollOffset = this.config?.scrollOffset || 0;
+            const targetPosition = target.offsetTop - headerHeight - scrollOffset;
+
+            window.scrollTo({
+                top: Math.max(0, targetPosition),
+                behavior: 'smooth'
             });
         });
-    }
+    });
+}
+
 
     /**
      * Initialize scroll animations using Intersection Observer

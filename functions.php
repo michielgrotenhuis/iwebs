@@ -14,11 +14,17 @@ if (!defined('ABSPATH')) {
 
 // Load pricing system components
 require_once get_template_directory() . '/inc/pricing-loader.php';
+require_once get_template_directory() . '/inc/currency-loader.php';
+
 
 // Define theme constants
 define('YOURSITE_THEME_VERSION', '1.0.0');
 define('YOURSITE_THEME_DIR', get_template_directory());
 define('YOURSITE_THEME_URI', get_template_directory_uri());
+if (function_exists('yoursite_add_header_currency_selector')) {
+    add_action('wp_head', 'yoursite_add_header_currency_selector');
+}
+
 
 // =============================================================================
 // DARK MODE SYSTEM
@@ -57,18 +63,19 @@ add_action('wp_head', 'yoursite_add_dark_mode_vars', 1);
  */
 function yoursite_dark_mode_detection() {
     echo '<script>
-        (function() {
-            const isDarkMode = localStorage.getItem("darkMode") === "enabled" ||
-                             (localStorage.getItem("darkMode") === null && 
-                              window.matchMedia && 
-                              window.matchMedia("(prefers-color-scheme: dark)").matches);
-            
-            if (isDarkMode) {
-                document.documentElement.classList.add("dark-mode");
-                document.body.classList.add("dark-mode");
-            }
-        })();
-    </script>';
+    document.addEventListener("DOMContentLoaded", function() {
+        const isDarkMode = localStorage.getItem("darkMode") === "enabled" ||
+                          (localStorage.getItem("darkMode") === null && 
+                           window.matchMedia && 
+                           window.matchMedia("(prefers-color-scheme: dark)").matches);
+        
+        if (isDarkMode) {
+            document.documentElement.classList.add("dark-mode");
+            document.body.classList.add("dark-mode");
+        }
+    });
+</script>
+';
 }
 add_action('wp_head', 'yoursite_dark_mode_detection', 0);
 

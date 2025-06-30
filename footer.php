@@ -344,105 +344,47 @@
                     </div>
                     <?php endif; ?>
                     
-                    <!-- Language/Currency Selector -->
-                    <?php if (get_theme_mod('show_language_selector', true) || get_theme_mod('show_currency_selector', true)) : ?>
-                    <div class="flex items-center gap-3">
-                        <!-- Language Selector -->
-                        <?php if (get_theme_mod('show_language_selector', true)) : ?>
-                        <div class="fancy-selector-wrapper">
-                            <button class="fancy-selector" id="language-toggle">
-                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-                                </svg>
-                                <span class="selector-text"><?php echo esc_html(get_theme_mod('default_language', 'EN')); ?></span>
-                                <svg class="w-4 h-4 text-gray-400 chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                            <div class="fancy-dropdown hidden" id="language-dropdown">
-                                <a href="#" data-lang="en" data-code="EN" class="dropdown-item active">
-                                    <span class="flag">🇺🇸</span> English
-                                </a>
-                                <a href="#" data-lang="es" data-code="ES" class="dropdown-item">
-                                    <span class="flag">🇪🇸</span> Español
-                                </a>
-                                <a href="#" data-lang="fr" data-code="FR" class="dropdown-item">
-                                    <span class="flag">🇫🇷</span> Français
-                                </a>
-                                <a href="#" data-lang="de" data-code="DE" class="dropdown-item">
-                                    <span class="flag">🇩🇪</span> Deutsch
-                                </a>
-                                <a href="#" data-lang="it" data-code="IT" class="dropdown-item">
-                                    <span class="flag">🇮🇹</span> Italiano
-                                </a>
-                                <a href="#" data-lang="pt" data-code="PT" class="dropdown-item">
-                                    <span class="flag">🇵🇹</span> Português
-                                </a>
-                                <a href="#" data-lang="ja" data-code="JP" class="dropdown-item">
-                                    <span class="flag">🇯🇵</span> 日本語
-                                </a>
-                                <a href="#" data-lang="zh" data-code="CN" class="dropdown-item">
-                                    <span class="flag">🇨🇳</span> 中文
-                                </a>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <!-- Currency Selector -->
-                        <?php if (get_theme_mod('show_currency_selector', true)) : ?>
-                        <div class="fancy-selector-wrapper">
-                            <button class="fancy-selector" id="currency-toggle">
-                                <span class="currency-symbol">
-    <?php 
-        $currency = get_theme_mod('default_currency', 'USD');
-        $symbols = array(
-            'USD' => '$',
-            'EUR' => '€',
-            'GBP' => '£',
-            'CAD' => 'C$',
-            'AUD' => 'A$',
-            'INR' => '₹',
-            'JPY' => '¥',
-            'CNY' => '¥'
-        );
-        echo esc_html($symbols[$currency] ?? '');
-    ?>
-</span>
-                                <span class="selector-text"><?php echo esc_html($currency); ?></span>
-                                <svg class="w-4 h-4 text-gray-400 chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                            <div class="fancy-dropdown hidden" id="currency-dropdown">
-                                <a href="#" data-currency="USD" data-symbol="$" class="dropdown-item active">
-                                    <span class="currency-flag">🇺🇸</span> USD <span class="text-gray-500">($)</span>
-                                </a>
-                                <a href="#" data-currency="EUR" data-symbol="€" class="dropdown-item">
-                                    <span class="currency-flag">🇪🇺</span> EUR <span class="text-gray-500">(€)</span>
-                                </a>
-                                <a href="#" data-currency="GBP" data-symbol="£" class="dropdown-item">
-                                    <span class="currency-flag">🇬🇧</span> GBP <span class="text-gray-500">(£)</span>
-                                </a>
-                                <a href="#" data-currency="CAD" data-symbol="C$" class="dropdown-item">
-                                    <span class="currency-flag">🇨🇦</span> CAD <span class="text-gray-500">(C$)</span>
-                                </a>
-                                <a href="#" data-currency="AUD" data-symbol="A$" class="dropdown-item">
-                                    <span class="currency-flag">🇦🇺</span> AUD <span class="text-gray-500">(A$)</span>
-                                </a>
-                                <a href="#" data-currency="INR" data-symbol="₹" class="dropdown-item">
-                                    <span class="currency-flag">🇮🇳</span> INR <span class="text-gray-500">(₹)</span>
-                                </a>
-                                <a href="#" data-currency="JPY" data-symbol="¥" class="dropdown-item">
-                                    <span class="currency-flag">🇯🇵</span> JPY <span class="text-gray-500">(¥)</span>
-                                </a>
-                                <a href="#" data-currency="CNY" data-symbol="¥" class="dropdown-item">
-                                    <span class="currency-flag">🇨🇳</span> CNY <span class="text-gray-500">(¥)</span>
-                                </a>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                    <?php endif; ?>
+                   <!-- Language/Currency Selector -->
+<?php if (get_theme_mod('show_language_selector', true) || get_theme_mod('show_currency_selector', true)) : ?>
+<div class="flex items-center gap-3">
+    <!-- Language Selector -->
+    <?php if (get_theme_mod('show_language_selector', true)) : ?>
+    <div class="fancy-selector-wrapper">
+        <button class="fancy-selector" id="language-toggle">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+            </svg>
+            <span class="selector-text"><?php echo esc_html(get_theme_mod('default_language', 'EN')); ?></span>
+            <svg class="w-4 h-4 text-gray-400 chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </button>
+        <div class="fancy-dropdown hidden" id="language-dropdown">
+            <a href="#" data-lang="en" data-code="EN" class="dropdown-item active">
+                <span class="flag">🇺🇸</span> English
+            </a>
+            <!-- other language options -->
+        </div>
+    </div>
+    <?php endif; ?>
+    
+    <!-- Currency Selector -->
+    <?php if (get_theme_mod('show_currency_selector', true)) : ?>
+        <?php 
+        echo yoursite_render_currency_selector(array(
+            'style' => 'dropdown', 
+            'show_flag' => true,
+            'show_name' => true,
+            'wrapper_class' => 'fancy-selector-wrapper',
+            'toggle_class' => 'fancy-selector',
+            'dropdown_class' => 'fancy-dropdown',
+            'item_class' => 'dropdown-item',
+            'active_class' => 'active'
+        )); 
+        ?>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
                 </div>
             </div>
         </div>
@@ -735,57 +677,59 @@ document.addEventListener('DOMContentLoaded', function() {
                 wrapper.classList.remove('active');
             });
         });
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!wrapper.contains(e.target)) {
-                wrapper.classList.remove('active');
-            }
-        });
     }
     
-    // Currency selector
-    const currencyToggle = document.getElementById('currency-toggle');
-    const currencyDropdown = document.getElementById('currency-dropdown');
-    
-    if (currencyToggle && currencyDropdown) {
-        const wrapper = currencyToggle.closest('.fancy-selector-wrapper');
-        const symbolSpan = currencyToggle.querySelector('.currency-symbol');
-        const textSpan = currencyToggle.querySelector('.selector-text');
-        
-        currencyToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            wrapper.classList.toggle('active');
-        });
-        
-        currencyDropdown.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', function(e) {
+    // Currency selector functionality (using event delegation)
+    document.addEventListener('click', function(e) {
+        // Currency selector toggle
+        if (e.target.closest('.currency-selector-toggle')) {
+            const wrapper = e.target.closest('.fancy-selector-wrapper');
+            if (wrapper) {
+                wrapper.classList.toggle('active');
                 e.preventDefault();
-                
-                const symbol = this.dataset.symbol;
-                const code = this.dataset.currency;
-                
-                symbolSpan.textContent = symbol;
-                textSpan.textContent = code;
-                
-                // Mark active item
-                currencyDropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Close dropdown
+            }
+        }
+        
+        // Currency selection
+        if (e.target.closest('.currency-selector-item')) {
+            const item = e.target.closest('.currency-selector-item');
+            if (!item) return;
+            
+            const wrapper = item.closest('.fancy-selector-wrapper');
+            if (!wrapper) return;
+            
+            const toggle = wrapper.querySelector('.currency-selector-toggle');
+            if (!toggle) return;
+            
+            const symbol = item.dataset.symbol;
+            const code = item.dataset.currency;
+            
+            // Update toggle display
+            const symbolSpan = toggle.querySelector('.currency-symbol');
+            const textSpan = toggle.querySelector('.selector-text');
+            
+            if (symbolSpan) symbolSpan.textContent = symbol;
+            if (textSpan) textSpan.textContent = code;
+            
+            // Mark active item
+            wrapper.querySelectorAll('.currency-selector-item').forEach(i => {
+                i.classList.remove('active');
+            });
+            item.classList.add('active');
+            
+            // Close dropdown
+            wrapper.classList.remove('active');
+            e.preventDefault();
+        }
+        
+        // Close dropdowns when clicking outside
+        if (!e.target.closest('.fancy-selector-wrapper')) {
+            document.querySelectorAll('.fancy-selector-wrapper').forEach(wrapper => {
                 wrapper.classList.remove('active');
             });
-        });
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!wrapper.contains(e.target)) {
-                wrapper.classList.remove('active');
-            }
-        });
-    }
+        }
+    });
 });
 </script>
-
 </body>
 </html>
