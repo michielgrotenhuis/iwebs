@@ -344,104 +344,57 @@
                     </div>
                     <?php endif; ?>
                     
-                   <!-- Language/Currency Selector -->
+ <!-- Language/Currency Selector - FIXED VERSION -->
 <?php if (get_theme_mod('show_language_selector', true) || get_theme_mod('show_currency_selector', true)) : ?>
 <div class="flex items-center gap-3">
     <!-- Language Selector -->
     <?php if (get_theme_mod('show_language_selector', true)) : ?>
     <div class="fancy-selector-wrapper">
-        <button class="fancy-selector" id="language-toggle">
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button class="fancy-selector" id="language-toggle" type="button" aria-expanded="false">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
             </svg>
             <span class="selector-text"><?php echo esc_html(get_theme_mod('default_language', 'EN')); ?></span>
-            <svg class="w-4 h-4 text-gray-400 chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-gray-400 chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
         </button>
-        <div class="fancy-dropdown hidden" id="language-dropdown">
-            <a href="#" data-lang="en" data-code="EN" class="dropdown-item active">
+        <div class="fancy-dropdown hidden" id="language-dropdown" role="listbox" aria-hidden="true">
+            <a href="#" data-lang="en" data-code="EN" class="dropdown-item active" role="option">
                 <span class="flag">🇺🇸</span> English
             </a>
-            <!-- other language options -->
+            <a href="#" data-lang="es" data-code="ES" class="dropdown-item" role="option">
+                <span class="flag">🇪🇸</span> Español
+            </a>
+            <a href="#" data-lang="fr" data-code="FR" class="dropdown-item" role="option">
+                <span class="flag">🇫🇷</span> Français
+            </a>
+            <a href="#" data-lang="de" data-code="DE" class="dropdown-item" role="option">
+                <span class="flag">🇩🇪</span> Deutsch
+            </a>
         </div>
     </div>
     <?php endif; ?>
     
     <!-- Currency Selector -->
     <?php if (get_theme_mod('show_currency_selector', true)) : ?>
-        <?php 
-        echo yoursite_render_currency_selector(array(
+        <?php echo yoursite_render_currency_selector(array(
             'style' => 'dropdown', 
-            'show_flag' => true,
-            'show_name' => true,
+            'show_flag' => false,
+            'show_name' => false,
+            'show_symbol' => true,
             'wrapper_class' => 'fancy-selector-wrapper',
             'toggle_class' => 'fancy-selector',
             'dropdown_class' => 'fancy-dropdown',
             'item_class' => 'dropdown-item',
             'active_class' => 'active'
-        )); 
-        ?>
+        )); ?>
     <?php endif; ?>
 </div>
 <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </footer><!-- #colophon -->
-
-</div><!-- #page -->
-
-<?php wp_footer(); ?>
 
 <style>
-/* Footer Styles */
-.site-footer {
-    background: linear-gradient(to bottom, #111827, #000000);
-}
-
-.footer-link {
-    color: #9ca3af;
-    transition: all 0.2s ease;
-    display: inline-block;
-}
-
-.footer-link:hover {
-    color: #ffffff;
-    transform: translateX(2px);
-}
-
-.social-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    color: #9ca3af;
-    transition: all 0.3s ease;
-}
-
-.social-link:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: #ffffff;
-    transform: translateY(-2px);
-}
-
-/* Trust Badges */
-.trust-badge {
-    opacity: 0.7;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.trust-badge:hover {
-    opacity: 1;
-    transform: translateY(-2px);
-}
-
-/* Fancy Language/Currency Selectors */
+/* ENHANCED FANCY SELECTOR STYLES - MATCHING LANGUAGE SELECTOR */
 .fancy-selector-wrapper {
     position: relative;
     display: inline-block;
@@ -462,6 +415,8 @@
     font-weight: 500;
     position: relative;
     overflow: hidden;
+    min-width: 120px;
+    justify-content: space-between;
 }
 
 .fancy-selector::before {
@@ -492,15 +447,21 @@
     font-size: 16px;
 }
 
+.fancy-selector .selector-text {
+    flex: 1;
+    text-align: left;
+}
+
 .fancy-selector .chevron {
     transition: transform 0.3s ease;
+    flex-shrink: 0;
 }
 
 .fancy-selector-wrapper.active .chevron {
     transform: rotate(180deg);
 }
 
-/* Fancy Dropdown */
+/* DROPDOWN STYLES */
 .fancy-dropdown {
     position: absolute;
     top: calc(100% + 8px);
@@ -517,6 +478,8 @@
     transition: all 0.3s ease;
     z-index: 1000;
     padding: 8px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .fancy-selector-wrapper.active .fancy-dropdown {
@@ -535,12 +498,14 @@
     border-radius: 8px;
     transition: all 0.2s ease;
     font-size: 14px;
+    cursor: pointer;
 }
 
 .dropdown-item:hover {
     background: rgba(99, 102, 241, 0.2);
     color: #ffffff;
     transform: translateX(4px);
+    text-decoration: none;
 }
 
 .dropdown-item.active {
@@ -551,105 +516,139 @@
 .dropdown-item .flag,
 .dropdown-item .currency-flag {
     font-size: 18px;
+    flex-shrink: 0;
 }
 
-/* Newsletter Form */
-.newsletter-form input:focus {
-    background-color: #1f2937;
+.dropdown-item .currency-details {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.newsletter-form button {
-    position: relative;
-    overflow: hidden;
+.dropdown-item .currency-symbol {
+    color: #60a5fa;
+    font-weight: 600;
+    min-width: 20px;
 }
 
-.newsletter-form button:before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.3s, height 0.3s;
+.dropdown-item .currency-code {
+    font-weight: 500;
+    min-width: 40px;
 }
 
-.newsletter-form button:hover:before {
-    width: 300px;
-    height: 300px;
+.dropdown-item .currency-name {
+    color: #9ca3af;
+    font-size: 12px;
 }
 
-/* Dark Mode Adjustments */
-body.dark-mode .site-footer {
-    background: linear-gradient(to bottom, #0f172a, #020617);
+/* DARK MODE ADJUSTMENTS */
+body.dark-mode .fancy-selector,
+body.dark-mode .fancy-dropdown,
+body.dark-mode .dropdown-item {
+    /* Already optimized for dark mode */
 }
 
-/* Mobile Optimizations */
+/* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
     .fancy-selector {
         padding: 8px 12px;
         font-size: 13px;
+        min-width: 100px;
     }
     
     .fancy-dropdown {
         left: auto;
         right: 0;
+        min-width: 160px;
+    }
+    
+    .dropdown-item {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+}
+
+/* ENSURE NO EXTRA SPACING */
+.fancy-selector-wrapper {
+    margin: 0;
+    padding: 0;
+}
+
+.fancy-dropdown {
+    margin: 0;
+}
+
+/* FIX FOR FOOTER SPACING ISSUES */
+.site-footer .flex.items-center.gap-3 {
+    margin: 0;
+    padding: 0;
+    flex-wrap: nowrap;
+}
+
+/* REMOVE ANY EXTRA WHITE SPACE */
+.site-footer .bottom-bar {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.site-footer .bottom-bar .flex {
+    margin-bottom: 0 !important;
+}
+
+/* PREVENT DROPDOWN FROM CAUSING LAYOUT SHIFTS */
+.fancy-dropdown {
+    position: absolute;
+    width: max-content;
+}
+
+/* ACCESSIBILITY IMPROVEMENTS */
+.fancy-selector:focus {
+    outline: 2px solid rgba(99, 102, 241, 0.5);
+    outline-offset: 2px;
+}
+
+.dropdown-item:focus {
+    background: rgba(99, 102, 241, 0.3);
+    color: #ffffff;
+    outline: 1px solid rgba(99, 102, 241, 0.5);
+}
+
+/* HIGH CONTRAST MODE SUPPORT */
+@media (prefers-contrast: high) {
+    .fancy-selector {
+        border-width: 2px;
+        background: #000;
+        color: #fff;
+    }
+    
+    .fancy-dropdown {
+        background: #000;
+        border-width: 2px;
+    }
+    
+    .dropdown-item {
+        color: #fff;
+    }
+}
+
+/* REDUCED MOTION SUPPORT */
+@media (prefers-reduced-motion: reduce) {
+    .fancy-selector,
+    .fancy-dropdown,
+    .dropdown-item,
+    .chevron {
+        transition: none;
+    }
+    
+    .fancy-selector::before {
+        display: none;
     }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Newsletter form submission
-    const newsletterForm = document.querySelector('.newsletter-form');
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const button = this.querySelector('button[type="submit"]');
-            const originalText = button.textContent;
-            
-            button.textContent = 'Subscribing...';
-            button.disabled = true;
-            
-            fetch(this.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    this.reset();
-                    button.textContent = '✓ Subscribed!';
-                    button.style.background = 'linear-gradient(to right, #10b981, #059669)';
-                    
-                    setTimeout(() => {
-                        button.textContent = originalText;
-                        button.style.background = '';
-                        button.disabled = false;
-                    }, 3000);
-                } else {
-                    throw new Error(data.data || 'Subscription failed');
-                }
-            })
-            .catch(error => {
-                console.error('Newsletter signup error:', error);
-                button.textContent = 'Try Again';
-                button.style.background = 'linear-gradient(to right, #ef4444, #dc2626)';
-                
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.style.background = '';
-                    button.disabled = false;
-                }, 3000);
-            });
-        });
-    }
-    
-    // Language selector
+    // Language selector functionality
     const languageToggle = document.getElementById('language-toggle');
     const languageDropdown = document.getElementById('language-dropdown');
     
@@ -659,7 +658,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         languageToggle.addEventListener('click', function(e) {
             e.stopPropagation();
+            // Close currency selector if open
+            closeAllSelectors();
             wrapper.classList.toggle('active');
+            languageToggle.setAttribute('aria-expanded', wrapper.classList.contains('active'));
         });
         
         languageDropdown.querySelectorAll('.dropdown-item').forEach(item => {
@@ -675,60 +677,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Close dropdown
                 wrapper.classList.remove('active');
+                languageToggle.setAttribute('aria-expanded', 'false');
+                
+                // You can add actual language switching logic here
+                console.log('Language switched to:', code);
             });
         });
     }
     
-    // Currency selector functionality (using event delegation)
+    // Global click handler to close dropdowns
     document.addEventListener('click', function(e) {
-        // Currency selector toggle
-        if (e.target.closest('.currency-selector-toggle')) {
-            const wrapper = e.target.closest('.fancy-selector-wrapper');
-            if (wrapper) {
-                wrapper.classList.toggle('active');
-                e.preventDefault();
-            }
-        }
-        
-        // Currency selection
-        if (e.target.closest('.currency-selector-item')) {
-            const item = e.target.closest('.currency-selector-item');
-            if (!item) return;
-            
-            const wrapper = item.closest('.fancy-selector-wrapper');
-            if (!wrapper) return;
-            
-            const toggle = wrapper.querySelector('.currency-selector-toggle');
-            if (!toggle) return;
-            
-            const symbol = item.dataset.symbol;
-            const code = item.dataset.currency;
-            
-            // Update toggle display
-            const symbolSpan = toggle.querySelector('.currency-symbol');
-            const textSpan = toggle.querySelector('.selector-text');
-            
-            if (symbolSpan) symbolSpan.textContent = symbol;
-            if (textSpan) textSpan.textContent = code;
-            
-            // Mark active item
-            wrapper.querySelectorAll('.currency-selector-item').forEach(i => {
-                i.classList.remove('active');
-            });
-            item.classList.add('active');
-            
-            // Close dropdown
-            wrapper.classList.remove('active');
-            e.preventDefault();
-        }
-        
-        // Close dropdowns when clicking outside
         if (!e.target.closest('.fancy-selector-wrapper')) {
-            document.querySelectorAll('.fancy-selector-wrapper').forEach(wrapper => {
-                wrapper.classList.remove('active');
-            });
+            closeAllSelectors();
         }
     });
+    
+    // Escape key handler
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAllSelectors();
+        }
+    });
+    
+    function closeAllSelectors() {
+        document.querySelectorAll('.fancy-selector-wrapper.active').forEach(wrapper => {
+            wrapper.classList.remove('active');
+            const toggle = wrapper.querySelector('.fancy-selector, #language-toggle');
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
 });
 </script>
 </body>
