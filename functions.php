@@ -1203,4 +1203,5 @@ function yoursite_debug_currency_persistence() {
     }
 }
 add_action('wp_head', 'yoursite_debug_currency_persistence');
+
 ?>
