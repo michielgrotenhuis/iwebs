@@ -24,9 +24,7 @@ require_once get_template_directory() . '/inc/currency-loader.php';
 define('YOURSITE_THEME_VERSION', '1.0.0');
 define('YOURSITE_THEME_DIR', get_template_directory());
 define('YOURSITE_THEME_URI', get_template_directory_uri());
-if (function_exists('yoursite_add_header_currency_selector')) {
-    add_action('wp_head', 'yoursite_add_header_currency_selector');
-}
+
 
 
 // =============================================================================
@@ -1204,4 +1202,285 @@ function yoursite_debug_currency_persistence() {
 }
 add_action('wp_head', 'yoursite_debug_currency_persistence');
 
+// Remove the old AJAX action registrations if they exist
+remove_action('wp_ajax_switch_user_currency', 'yoursite_ajax_switch_user_currency');
+remove_action('wp_ajax_nopriv_switch_user_currency', 'yoursite_ajax_switch_user_currency');
+
+// Start session early to prevent header issues
+function yoursite_start_session_safe() {
+    if (!session_id() && !headers_sent()) {
+        session_start();
+    }
+}
+add_action('init', 'yoursite_start_session_safe', 1);
+
+// Enqueue the new currency JavaScript
+function yoursite_enqueue_currency_scripts() {
+    // Enqueue the currency JavaScript file
+    wp_enqueue_script(
+        'yoursite-currency',
+        get_template_directory_uri() . '/assets/js/currency.js',
+        array('jquery'),
+        YOURSITE_THEME_VERSION,
+        true
+    );
+    
+    // Get current user currency
+    $current_currency = yoursite_get_user_currency_safe();
+    
+    // Localize script with currency data
+    wp_localize_script('yoursite-currency', 'YourSiteCurrencyData', array(
+        'current' => $current_currency['code'],
+        'ajaxUrl' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('currency_switch'),
+        'cookieName' => 'yoursite_preferred_currency',
+        'debug' => WP_DEBUG,
+        'currency' => $current_currency
+    ));
+}
+add_action('wp_enqueue_scripts', 'yoursite_enqueue_currency_scripts');
+
+// Enhanced get user currency function with fallbacks
+function yoursite_get_user_currency_safe() {
+    static $current_currency = null;
+    
+    // Return cached result
+    if ($current_currency !== null) {
+        return $current_currency;
+    }
+    
+    $cookie_name = 'yoursite_preferred_currency';
+    
+    // Start session if needed
+    if (!session_id()) {
+        session_start();
+    }
+    
+    // 1. Check session first (most reliable for current request)
+    if (isset($_SESSION['preferred_currency'])) {
+        $currency_code = sanitize_text_field($_SESSION['preferred_currency']);
+        if (function_exists('yoursite_get_currency')) {
+            $currency = yoursite_get_currency($currency_code);
+            if ($currency && $currency['status'] === 'active') {
+                $current_currency = $currency;
+                return $current_currency;
+            }
+        }
+    }
+    
+    // 2. Check cookie
+    if (isset($_COOKIE[$cookie_name])) {
+        $currency_code = sanitize_text_field($_COOKIE[$cookie_name]);
+        if (function_exists('yoursite_get_currency')) {
+            $currency = yoursite_get_currency($currency_code);
+            if ($currency && $currency['status'] === 'active') {
+                $_SESSION['preferred_currency'] = $currency_code;
+                $current_currency = $currency;
+                return $current_currency;
+            }
+        }
+    }
+    
+    // 3. Check user meta if logged in
+    if (is_user_logged_in()) {
+        $user_currency = get_user_meta(get_current_user_id(), 'preferred_currency', true);
+        if ($user_currency && function_exists('yoursite_get_currency')) {
+            $currency = yoursite_get_currency($user_currency);
+            if ($currency && $currency['status'] === 'active') {
+                $_SESSION['preferred_currency'] = $user_currency;
+                $current_currency = $currency;
+                return $current_currency;
+            }
+        }
+    }
+    
+    // 4. Fallback to base currency or USD
+    if (function_exists('yoursite_get_base_currency')) {
+        $current_currency = yoursite_get_base_currency();
+    } else {
+        $current_currency = array(
+            'code' => 'USD',
+            'name' => 'US Dollar',
+            'symbol' => '$',
+            'status' => 'active'
+        );
+    }
+    
+    return $current_currency;
+}
+
+// Initialize currency JavaScript variables in head
+function yoursite_currency_js_vars() {
+    $current_currency = yoursite_get_user_currency_safe();
+    ?>
+    <script>
+    window.YourSiteCurrency = window.YourSiteCurrency || {};
+    window.YourSiteCurrency.current = '<?php echo esc_js($current_currency['code']); ?>';
+    window.YourSiteCurrency.ajaxUrl = '<?php echo esc_js(admin_url('admin-ajax.php')); ?>';
+    window.YourSiteCurrency.nonce = '<?php echo esc_js(wp_create_nonce('currency_switch')); ?>';
+    window.YourSiteCurrency.cookieName = 'yoursite_preferred_currency';
+    window.YourSiteCurrency.debug = <?php echo WP_DEBUG ? 'true' : 'false'; ?>;
+    </script>
+    <?php
+}
+add_action('wp_head', 'yoursite_currency_js_vars', 1);
+
+if (!function_exists('yoursite_cleanup_currency_session')) {
+    function yoursite_cleanup_currency_session() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (isset($_SESSION['preferred_currency'])) {
+            unset($_SESSION['preferred_currency']);
+        }
+    }
+    add_action('wp_logout', 'yoursite_cleanup_currency_session');
+}
+
+
+
+
+// Debug function for development
+function yoursite_currency_debug_info() {
+    if (!current_user_can('manage_options') || !isset($_GET['currency_debug'])) {
+        return;
+    }
+    
+    $current_currency = yoursite_get_user_currency_safe();
+    
+    echo '<div style="position: fixed; top: 10px; left: 10px; background: white; padding: 15px; border: 2px solid #ccc; z-index: 9999; font-family: monospace; font-size: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">';
+    echo '<h4 style="margin: 0 0 10px 0;">Currency Debug Info</h4>';
+    echo '<p><strong>Current:</strong> ' . $current_currency['code'] . ' (' . $current_currency['name'] . ')</p>';
+    echo '<p><strong>Cookie:</strong> ' . (isset($_COOKIE['yoursite_preferred_currency']) ? $_COOKIE['yoursite_preferred_currency'] : 'Not set') . '</p>';
+    echo '<p><strong>Session:</strong> ' . (isset($_SESSION['preferred_currency']) ? $_SESSION['preferred_currency'] : 'Not set') . '</p>';
+    echo '<p><strong>User Meta:</strong> ' . (is_user_logged_in() ? get_user_meta(get_current_user_id(), 'preferred_currency', true) : 'Not logged in') . '</p>';
+    echo '<p><strong>Headers Sent:</strong> ' . (headers_sent() ? 'Yes' : 'No') . '</p>';
+    echo '<p><strong>Session ID:</strong> ' . (session_id() ?: 'No session') . '</p>';
+    echo '<p style="margin: 10px 0 0 0; font-size: 10px; color: #666;">Visit: <code>?currency_debug=1</code></p>';
+    echo '</div>';
+}
+add_action('wp_footer', 'yoursite_currency_debug_info');
+
+// Helper function to get currency pricing for templates
+function yoursite_get_plan_pricing_display($plan_id, $currency_code = null) {
+    if (!$currency_code) {
+        $current_currency = yoursite_get_user_currency_safe();
+        $currency_code = $current_currency['code'];
+    }
+    
+    if (!function_exists('yoursite_get_pricing_plan_price')) {
+        return false;
+    }
+    
+    $monthly_price = yoursite_get_pricing_plan_price($plan_id, $currency_code, 'monthly');
+    $annual_price = yoursite_get_pricing_plan_price($plan_id, $currency_code, 'annual');
+    
+    if ($monthly_price === false || $annual_price === false) {
+        return false;
+    }
+    
+    $annual_monthly_equivalent = $annual_price > 0 ? $annual_price / 12 : 0;
+    $savings = $monthly_price > 0 && $annual_monthly_equivalent > 0 ? 
+               ($monthly_price * 12) - $annual_price : 0;
+    $discount_percentage = $monthly_price > 0 ? 
+                          round((($savings / ($monthly_price * 12)) * 100), 0) : 0;
+    
+    return array(
+        'monthly' => array(
+            'raw' => $monthly_price,
+            'formatted' => yoursite_format_currency($monthly_price, $currency_code)
+        ),
+        'annual' => array(
+            'raw' => $annual_price,
+            'formatted' => yoursite_format_currency($annual_price, $currency_code),
+            'monthly_equivalent' => array(
+                'raw' => $annual_monthly_equivalent,
+                'formatted' => yoursite_format_currency($annual_monthly_equivalent, $currency_code)
+            )
+        ),
+        'savings' => array(
+            'raw' => $savings,
+            'formatted' => $savings > 0 ? yoursite_format_currency($savings, $currency_code) : '',
+            'percentage' => $discount_percentage
+        ),
+        'currency_code' => $currency_code
+    );
+}
+
+
+
+
+
+// Add currency info to body class for CSS targeting
+function yoursite_add_currency_body_class($classes) {
+    $current_currency = yoursite_get_user_currency_safe();
+    $classes[] = 'currency-' . strtolower($current_currency['code']);
+    return $classes;
+}
+add_filter('body_class', 'yoursite_add_currency_body_class');
+
+// Add currency meta tag for SEO/Analytics
+function yoursite_add_currency_meta() {
+    $current_currency = yoursite_get_user_currency_safe();
+    echo '<meta name="currency" content="' . esc_attr($current_currency['code']) . '">' . "\n";
+    echo '<meta name="currency-name" content="' . esc_attr($current_currency['name']) . '">' . "\n";
+}
+add_action('wp_head', 'yoursite_add_currency_meta');
+
+// Log currency switches for analytics (optional)
+function yoursite_log_currency_switch($user_id, $old_currency, $new_currency) {
+    if (WP_DEBUG_LOG) {
+        error_log(sprintf(
+            'Currency Switch: User %d changed from %s to %s at %s',
+            $user_id,
+            $old_currency,
+            $new_currency,
+            current_time('mysql')
+        ));
+    }
+    
+    // You can add Google Analytics tracking here
+    // or send data to your analytics service
+}
+
+// WordPress admin bar currency info (for admins)
+function yoursite_add_currency_admin_bar($wp_admin_bar) {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+    
+    $current_currency = yoursite_get_user_currency_safe();
+    
+    $wp_admin_bar->add_node(array(
+        'id' => 'currency-info',
+        'title' => '💱 ' . $current_currency['code'],
+        'href' => admin_url('edit.php?post_type=pricing'),
+        'meta' => array(
+            'title' => 'Current Currency: ' . $current_currency['name']
+        )
+    ));
+}
+add_action('admin_bar_menu', 'yoursite_add_currency_admin_bar', 80);
+
+// Optional: Auto-refresh currency rates daily
+function yoursite_schedule_currency_rate_refresh() {
+    if (!wp_next_scheduled('yoursite_refresh_currency_rates')) {
+        wp_schedule_event(time(), 'daily', 'yoursite_refresh_currency_rates');
+    }
+}
+add_action('wp', 'yoursite_schedule_currency_rate_refresh');
+
+function yoursite_auto_refresh_currency_rates() {
+    if (function_exists('yoursite_update_currency_rates')) {
+        yoursite_update_currency_rates();
+    }
+}
+add_action('yoursite_refresh_currency_rates', 'yoursite_auto_refresh_currency_rates');
+
+// Clean up scheduled events on theme deactivation
+function yoursite_cleanup_currency_cron() {
+    wp_clear_scheduled_hook('yoursite_refresh_currency_rates');
+}
+register_deactivation_hook(__FILE__, 'yoursite_cleanup_currency_cron');
 ?>
