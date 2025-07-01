@@ -1,3 +1,130 @@
+<?php
+/**
+ * The template for displaying the footer
+ * Enhanced with Dynamic Currency Support for Limited Time Offer
+ */
+
+// Get current user currency
+$current_currency = yoursite_get_user_currency();
+
+// Base USD amount for the free setup offer
+$base_usd_amount = 200;
+
+// Function to convert USD to target currency with realistic rates
+function convert_usd_to_currency($usd_amount, $target_currency) {
+    // Exchange rates (you should ideally fetch these from an API)
+    $exchange_rates = array(
+        'USD' => 1.00,
+        'EUR' => 0.85,
+        'GBP' => 0.75,
+        'CAD' => 1.25,
+        'AUD' => 1.35,
+        'JPY' => 110.0,
+        'CHF' => 0.92,
+        'SEK' => 9.50,
+        'NOK' => 9.80,
+        'DKK' => 6.30,
+        'PLN' => 3.80,
+        'CZK' => 22.0,
+        'HUF' => 320.0,
+        'BGN' => 1.66,
+        'RON' => 4.20,
+        'HRK' => 6.40,
+        'RUB' => 75.0,
+        'CNY' => 6.45,
+        'INR' => 74.0,
+        'KRW' => 1180.0,
+        'SGD' => 1.35,
+        'HKD' => 7.80,
+        'MXN' => 20.0,
+        'BRL' => 5.20,
+        'ARS' => 98.0,
+        'CLP' => 800.0,
+        'COP' => 3800.0,
+        'PEN' => 3.60,
+        'UYU' => 43.0,
+        'ZAR' => 14.5,
+        'EGP' => 15.7,
+        'NGN' => 411.0,
+        'KES' => 108.0,
+        'GHS' => 6.10,
+        'TND' => 2.75,
+        'MAD' => 9.00,
+        'THB' => 33.0,
+        'PHP' => 50.0,
+        'VND' => 23000.0,
+        'IDR' => 14300.0,
+        'MYR' => 4.15,
+        'ILS' => 3.25,
+        'AED' => 3.67,
+        'SAR' => 3.75,
+        'QAR' => 3.64,
+        'KWD' => 0.30,
+        'BHD' => 0.38,
+        'OMR' => 0.38,
+        'JOD' => 0.71,
+        'LBP' => 1507.0,
+        'TRY' => 8.50,
+        'IRR' => 42000.0,
+        'PKR' => 170.0,
+        'BDT' => 85.0,
+        'LKR' => 200.0,
+        'NPR' => 118.0,
+        'BTN' => 74.0,
+        'MVR' => 15.4,
+        'AFN' => 80.0,
+        'UZS' => 10600.0,
+        'KZT' => 426.0,
+        'KGS' => 84.0,
+        'TJS' => 11.3,
+        'TMT' => 3.50,
+        'AZN' => 1.70,
+        'GEL' => 3.30,
+        'AMD' => 522.0,
+        'BYN' => 2.60,
+        'MDL' => 17.8,
+        'UAH' => 27.0,
+        'RSD' => 100.0,
+        'MKD' => 52.0,
+        'ALL' => 104.0,
+        'BAM' => 1.66,
+        'ISK' => 127.0,
+    );
+    
+    $rate = isset($exchange_rates[$target_currency]) ? $exchange_rates[$target_currency] : 1.00;
+    $converted_amount = $usd_amount * $rate;
+    
+    // Round to appropriate decimal places based on currency
+    if (in_array($target_currency, ['JPY', 'KRW', 'VND', 'IDR', 'IRR', 'UZS', 'LBP', 'CLP', 'COP', 'HUF', 'CZK'])) {
+        // Currencies that don't use decimal places
+        return round($converted_amount);
+    } elseif (in_array($target_currency, ['KWD', 'BHD', 'OMR', 'JOD'])) {
+        // Currencies with 3 decimal places
+        return round($converted_amount, 3);
+    } else {
+        // Most currencies use 2 decimal places, but round to whole numbers for offers
+        return round($converted_amount);
+    }
+}
+
+// Format the currency display
+function format_currency_for_offer($amount, $currency_code, $currency_symbol) {
+    // For certain currencies, show without decimals
+    if (in_array($currency_code, ['JPY', 'KRW', 'VND', 'IDR', 'IRR', 'UZS', 'LBP', 'CLP', 'COP', 'HUF', 'CZK'])) {
+        return $currency_symbol . number_format($amount, 0);
+    } elseif (in_array($currency_code, ['KWD', 'BHD', 'OMR', 'JOD'])) {
+        return $currency_symbol . number_format($amount, 3);
+    } else {
+        // For offers, always show round numbers
+        return $currency_symbol . number_format($amount, 0);
+    }
+}
+
+// Calculate the converted amount
+$converted_amount = convert_usd_to_currency($base_usd_amount, $current_currency['code']);
+$formatted_amount = format_currency_for_offer($converted_amount, $current_currency['code'], $current_currency['symbol']);
+?>
+
 </main><!-- #primary -->
 
     <!-- Pre-Footer CTA Section -->
@@ -32,9 +159,12 @@
                     Start your 14-day free trial today. No credit card required, no setup fees, cancel anytime.
                 </p>
                 
-                <!-- Urgency/Scarcity -->
-                <div class="bg-yellow-400 text-yellow-900 px-6 py-3 rounded-full inline-block font-bold text-lg mb-8">
-                    🔥 Limited Time: Free setup worth $200
+                <!-- Dynamic Currency Limited Time Offer -->
+                <div class="limited-time-offer bg-yellow-400 text-yellow-900 px-6 py-3 rounded-full inline-block font-bold text-lg mb-8" 
+                     data-base-amount="<?php echo esc_attr($base_usd_amount); ?>"
+                     data-current-currency="<?php echo esc_attr($current_currency['code']); ?>"
+                     data-current-amount="<?php echo esc_attr($converted_amount); ?>">
+                    🔥 <span class="offer-text">Limited Time: Free setup worth <span class="offer-amount"><?php echo esc_html($formatted_amount); ?></span></span>
                 </div>
                 
                 <!-- CTA Buttons -->
@@ -541,6 +671,30 @@
     font-size: 12px;
 }
 
+/* LIMITED TIME OFFER STYLES */
+.limited-time-offer {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.limited-time-offer:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.offer-amount {
+    font-weight: 800;
+    display: inline-block;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+/* Animation for amount changes */
+.offer-amount.updating {
+    opacity: 0.6;
+    transform: scale(0.95);
+}
+
 /* DARK MODE ADJUSTMENTS */
 body.dark-mode .fancy-selector,
 body.dark-mode .fancy-dropdown,
@@ -565,6 +719,11 @@ body.dark-mode .dropdown-item {
     .dropdown-item {
         padding: 8px 10px;
         font-size: 13px;
+    }
+    
+    .limited-time-offer {
+        font-size: 1rem;
+        padding: 1rem 1.5rem;
     }
 }
 
@@ -629,6 +788,11 @@ body.dark-mode .dropdown-item {
     .dropdown-item {
         color: #fff;
     }
+    
+    .limited-time-offer {
+        border: 2px solid #000;
+        font-weight: 900;
+    }
 }
 
 /* REDUCED MOTION SUPPORT */
@@ -636,79 +800,227 @@ body.dark-mode .dropdown-item {
     .fancy-selector,
     .fancy-dropdown,
     .dropdown-item,
-    .chevron {
+    .chevron,
+    .limited-time-offer,
+    .offer-amount {
         transition: none;
     }
     
     .fancy-selector::before {
         display: none;
     }
+    
+    .limited-time-offer:hover {
+        transform: none;
+    }
+}
+
+/* DARK MODE ENHANCEMENTS */
+@media (prefers-color-scheme: dark) {
+    .limited-time-offer {
+        background: linear-gradient(45deg, #fbbf24, #f59e0b);
+        color: #92400e;
+    }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Language selector functionality
-    const languageToggle = document.getElementById('language-toggle');
-    const languageDropdown = document.getElementById('language-dropdown');
-    
-    if (languageToggle && languageDropdown) {
-        const wrapper = languageToggle.closest('.fancy-selector-wrapper');
-        const textSpan = languageToggle.querySelector('.selector-text');
+    // Exchange rates object - same as PHP version
+    const exchangeRates = {
+        'USD': 1.00,
+        'EUR': 0.85,
+        'GBP': 0.75,
+        'CAD': 1.25,
+        'AUD': 1.35,
+        'JPY': 110.0,
+        'CHF': 0.92,
+        'SEK': 9.50,
+        'NOK': 9.80,
+        'DKK': 6.30,
+        'PLN': 3.80,
+        'CZK': 22.0,
+        'HUF': 320.0,
+        'BGN': 1.66,
+        'RON': 4.20,
+        'HRK': 6.40,
+        'RUB': 75.0,
+        'CNY': 6.45,
+        'INR': 74.0,
+        'KRW': 1180.0,
+        'SGD': 1.35,
+        'HKD': 7.80,
+        'MXN': 20.0,
+        'BRL': 5.20,
+        'ARS': 98.0,
+        'CLP': 800.0,
+        'COP': 3800.0,
+        'PEN': 3.60,
+        'UYU': 43.0,
+        'ZAR': 14.5,
+        'EGP': 15.7,
+        'NGN': 411.0,
+        'KES': 108.0,
+        'GHS': 6.10,
+        'TND': 2.75,
+        'MAD': 9.00,
+        'THB': 33.0,
+        'PHP': 50.0,
+        'VND': 23000.0,
+        'IDR': 14300.0,
+        'MYR': 4.15,
+        'ILS': 3.25,
+        'AED': 3.67,
+        'SAR': 3.75,
+        'QAR': 3.64,
+        'KWD': 0.30,
+        'BHD': 0.38,
+        'OMR': 0.38,
+        'JOD': 0.71,
+        'LBP': 1507.0,
+        'TRY': 8.50,
+        'IRR': 42000.0,
+        'PKR': 170.0,
+        'BDT': 85.0,
+        'LKR': 200.0,
+        'NPR': 118.0,
+        'BTN': 74.0,
+        'MVR': 15.4,
+        'AFN': 80.0,
+        'UZS': 10600.0,
+        'KZT': 426.0,
+        'KGS': 84.0,
+        'TJS': 11.3,
+        'TMT': 3.50,
+        'AZN': 1.70,
+        'GEL': 3.30,
+        'AMD': 522.0,
+        'BYN': 2.60,
+        'MDL': 17.8,
+        'UAH': 27.0,
+        'RSD': 100.0,
+        'MKD': 52.0,
+        'ALL': 104.0,
+        'BAM': 1.66,
+        'ISK': 127.0
+    };
+
+    // Currency symbols mapping
+    const currencySymbols = {
+        'USD': '                ,
+        'EUR': '€',
+        'GBP': '£',
+        'CAD': 'C                ,
+        'AUD': 'A                ,
+        'JPY': '¥',
+        'CHF': 'CHF ',
+        'SEK': 'kr',
+        'NOK': 'kr',
+        'DKK': 'kr',
+        'PLN': 'zł',
+        'CZK': 'Kč',
+        'HUF': 'Ft',
+        'BGN': 'лв',
+        'RON': 'lei',
+        'HRK': 'kn',
+        'RUB': '₽',
+        'CNY': '¥',
+        'INR': '₹',
+        'KRW': '₩',
+        'SGD': 'S                ,
+        'HKD': 'HK                ,
+        'MXN': '                ,
+        'BRL': 'R                ,
+        'ARS': '                ,
+        'CLP': '                ,
+        'COP': '                ,
+        'PEN': 'S/',
+        'UYU': '$U',
+        'ZAR': 'R',
+        'EGP': 'E£',
+        'NGN': '₦',
+        'KES': 'KSh',
+        'GHS': 'GH₵',
+        'TND': 'د.ت',
+        'MAD': 'د.م.',
+        'THB': '฿',
+        'PHP': '₱',
+        'VND': '₫',
+        'IDR': 'Rp',
+        'MYR': 'RM',
+        'ILS': '₪',
+        'AED': 'د.إ',
+        'SAR': '﷼',
+        'QAR': 'ر.ق',
+        'KWD': 'د.ك',
+        'BHD': '.د.ب',
+        'OMR': 'ر.ع.',
+        'JOD': 'د.ا',
+        'LBP': 'ل.ل',
+        'TRY': '₺',
+        'IRR': '﷼',
+        'PKR': '₨',
+        'BDT': '৳',
+        'LKR': '₨',
+        'NPR': '₨',
+        'BTN': 'Nu.',
+        'MVR': 'Rf',
+        'AFN': '؋',
+        'UZS': 'лв',
+        'KZT': '₸',
+        'KGS': 'лв',
+        'TJS': 'смн',
+        'TMT': 'T',
+        'AZN': '₼',
+        'GEL': '₾',
+        'AMD': '֏',
+        'BYN': 'Br',
+        'MDL': 'lei',
+        'UAH': '₴',
+        'RSD': 'дин.',
+        'MKD': 'ден',
+        'ALL': 'L',
+        'BAM': 'КМ',
+        'ISK': 'kr'
+    };
+
+    // Convert USD to target currency
+    function convertUsdToCurrency(usdAmount, targetCurrency) {
+        const rate = exchangeRates[targetCurrency] || 1.00;
+        const convertedAmount = usdAmount * rate;
         
-        languageToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            // Close currency selector if open
-            closeAllSelectors();
-            wrapper.classList.toggle('active');
-            languageToggle.setAttribute('aria-expanded', wrapper.classList.contains('active'));
-        });
+        // Round based on currency type
+        if (['JPY', 'KRW', 'VND', 'IDR', 'IRR', 'UZS', 'LBP', 'CLP', 'COP', 'HUF', 'CZK'].includes(targetCurrency)) {
+            return Math.round(convertedAmount);
+        } else if (['KWD', 'BHD', 'OMR', 'JOD'].includes(targetCurrency)) {
+            return Math.round(convertedAmount * 1000) / 1000;
+        } else {
+            return Math.round(convertedAmount);
+        }
+    }
+
+    // Format currency for display
+    function formatCurrencyForOffer(amount, currencyCode) {
+        const symbol = currencySymbols[currencyCode] || '                ;
         
-        languageDropdown.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const code = this.dataset.code;
-                textSpan.textContent = code;
-                
-                // Mark active item
-                languageDropdown.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Close dropdown
-                wrapper.classList.remove('active');
-                languageToggle.setAttribute('aria-expanded', 'false');
-                
-                // You can add actual language switching logic here
-                console.log('Language switched to:', code);
-            });
-        });
-    }
-    
-    // Global click handler to close dropdowns
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.fancy-selector-wrapper')) {
-            closeAllSelectors();
+        if (['JPY', 'KRW', 'VND', 'IDR', 'IRR', 'UZS', 'LBP', 'CLP', 'COP', 'HUF', 'CZK'].includes(currencyCode)) {
+            return symbol + new Intl.NumberFormat().format(amount);
+        } else if (['KWD', 'BHD', 'OMR', 'JOD'].includes(currencyCode)) {
+            return symbol + new Intl.NumberFormat(undefined, {minimumFractionDigits: 3, maximumFractionDigits: 3}).format(amount);
+        } else {
+            return symbol + new Intl.NumberFormat().format(amount);
         }
-    });
-    
-    // Escape key handler
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeAllSelectors();
-        }
-    });
-    
-    function closeAllSelectors() {
-        document.querySelectorAll('.fancy-selector-wrapper.active').forEach(wrapper => {
-            wrapper.classList.remove('active');
-            const toggle = wrapper.querySelector('.fancy-selector, #language-toggle');
-            if (toggle) {
-                toggle.setAttribute('aria-expanded', 'false');
-            }
-        });
     }
-});
-</script>
-</body>
-</html>
+
+    // Update offer amount when currency changes
+    function updateOfferAmount(newCurrencyCode) {
+        const offerElement = document.querySelector('.limited-time-offer');
+        const offerAmountElement = document.querySelector('.offer-amount');
+        
+        if (!offerElement || !offerAmountElement) return;
+        
+        const baseAmount = parseInt(offerElement.dataset.baseAmount) || 200;
+        const convertedAmount = convertUsdToCurrency(baseAmount, newCurrencyCode);
+        const formattedAmount = formatCurrencyForOffer(convertedAmount, newCurrencyCode);
+        
+        //

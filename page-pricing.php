@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Pricing Page - Unified Hero & Cards Section
+ * Template Name: Pricing Page - Enhanced with Dynamic Currency Support
  * Complete implementation with hero and pricing in one section
  */
 
@@ -9,6 +9,9 @@ get_header();
 // Load required files
 require_once get_template_directory() . '/inc/pricing-comparison-table.php';
 require_once get_template_directory() . '/inc/pricing-shortcodes.php';
+
+// Get current user currency
+$current_currency = function_exists('yoursite_get_user_currency') ? yoursite_get_user_currency() : array('code' => 'USD', 'symbol' => '$');
 
 // Get customizer settings
 $hero_title = get_theme_mod('pricing_hero_title', 'Simple, Transparent Pricing');
@@ -40,7 +43,12 @@ function get_pricing_currency_symbol($currency = 'USD') {
         'EUR' => '€',
         'GBP' => '£',
         'CAD' => 'C$',
-        'AUD' => 'A$'
+        'AUD' => 'A$',
+        'JPY' => '¥',
+        'CHF' => 'CHF',
+        'SEK' => 'kr',
+        'NOK' => 'kr',
+        'DKK' => 'kr'
     );
     return isset($symbols[$currency]) ? $symbols[$currency] : '$';
 }
@@ -82,6 +90,34 @@ function get_pricing_currency_symbol($currency = 'USD') {
     color: rgba(255, 255, 255, 0.9) !important;
 }
 
+/* Currency Selector Styling */
+.currency-selector-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 2rem auto;
+    max-width: 600px;
+}
+
+.currency-selector-wrapper .currency-selector {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    color: #374151;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.currency-selector-wrapper .currency-selector:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 /* Billing toggle in unified section */
 .billing-toggle-wrapper {
     background: rgba(255, 255, 255, 0.1);
@@ -116,13 +152,6 @@ function get_pricing_currency_symbol($currency = 'USD') {
     transition: all 0.3s ease;
 }
 
-/* Carousel-specific card styling */
-.pricing-card-carousel {
-    width: 320px;
-    margin-right: 2rem;
-    flex-shrink: 0;
-}
-
 /* Featured card styling */
 .pricing-card.featured {
     background: rgba(255, 255, 255, 1);
@@ -131,91 +160,29 @@ function get_pricing_currency_symbol($currency = 'USD') {
     transform: scale(1.05);
 }
 
-/* Carousel wrapper */
-.pricing-carousel-wrapper {
+/* Currency updating state */
+.pricing-updating {
     position: relative;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 60px;
+    transition: opacity 0.3s ease;
 }
 
-/* Carousel container */
-.pricing-carousel-container {
-    overflow: hidden;
-    border-radius: 12px;
-    margin: 0 auto;
-    max-width: 1020px;
-}
-
-/* Carousel track */
-.pricing-carousel-track {
-    display: flex;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
-}
-
-/* Navigation buttons */
-.pricing-nav-btn {
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    color: #6b7280;
-    z-index: 20;
-    opacity: 1;
-    transition: all 0.3s ease;
+.pricing-updating::after {
+    content: '';
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
-}
-
-.pricing-nav-prev {
-    left: 0;
-    margin-left: -20px;
-}
-
-.pricing-nav-next {
-    right: 0;
-    margin-right: -20px;
-}
-
-.pricing-nav-btn:hover:not(:disabled) {
-    background: white;
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.pricing-nav-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    transform: translateY(-50%) scale(0.9);
-}
-
-/* Carousel dots */
-.carousel-dots {
-    margin-top: 2rem;
-}
-
-.carousel-dot {
-    width: 12px;
-    height: 12px;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 4px solid rgba(59, 130, 246, 0.2);
+    border-top-color: #3b82f6;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    animation: spin 1s linear infinite;
+    z-index: 10;
 }
 
-.carousel-dot:hover {
-    background-color: rgba(255, 255, 255, 0.7);
-    transform: scale(1.2);
-}
-
-.carousel-dot.active {
-    background-color: white;
-    transform: scale(1.3);
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 /* Compare button styling for unified section */
@@ -294,40 +261,49 @@ function get_pricing_currency_symbol($currency = 'USD') {
 }
 
 /* Price Display Toggle - Main Pricing Section */
-.pricing-page.show-annual .homepage-monthly-pricing {
+.pricing-page.show-annual .homepage-monthly-pricing,
+.pricing-page.show-annual .monthly-pricing {
     display: none !important;
 }
 
-.pricing-page.show-annual .homepage-annual-pricing {
+.pricing-page.show-annual .homepage-annual-pricing,
+.pricing-page.show-annual .annual-pricing {
     display: block !important;
 }
 
-.pricing-page.show-annual .homepage-annual-savings {
+.pricing-page.show-annual .homepage-annual-savings,
+.pricing-page.show-annual .annual-savings {
     display: block !important;
 }
 
-.pricing-page.show-monthly .homepage-monthly-pricing {
+.pricing-page.show-monthly .homepage-monthly-pricing,
+.pricing-page.show-monthly .monthly-pricing {
     display: block !important;
 }
 
-.pricing-page.show-monthly .homepage-annual-pricing {
+.pricing-page.show-monthly .homepage-annual-pricing,
+.pricing-page.show-monthly .annual-pricing {
     display: none !important;
 }
 
-.pricing-page.show-monthly .homepage-annual-savings {
+.pricing-page.show-monthly .homepage-annual-savings,
+.pricing-page.show-monthly .annual-savings {
     display: none !important;
 }
 
 /* Default state shows annual */
-.pricing-page .homepage-monthly-pricing {
+.pricing-page .homepage-monthly-pricing,
+.pricing-page .monthly-pricing {
     display: none !important;
 }
 
-.pricing-page .homepage-annual-pricing {
+.pricing-page .homepage-annual-pricing,
+.pricing-page .annual-pricing {
     display: block !important;
 }
 
-.pricing-page .homepage-annual-savings {
+.pricing-page .homepage-annual-savings,
+.pricing-page .annual-savings {
     display: block !important;
 }
 
@@ -369,6 +345,20 @@ function get_pricing_currency_symbol($currency = 'USD') {
     transition: all 0.3s ease;
 }
 
+/* Pricing display transitions */
+.pricing-display {
+    transition: all 0.3s ease;
+}
+
+.price-amount {
+    transition: all 0.2s ease;
+}
+
+/* Currency change notification */
+.currency-change-notification {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
     .homepage-pricing-grid {
@@ -386,48 +376,25 @@ function get_pricing_currency_symbol($currency = 'USD') {
         min-height: auto;
     }
     
-    .billing-toggle-wrapper {
+    .billing-toggle-wrapper,
+    .currency-selector-wrapper {
         padding: 1rem;
         margin: 2rem auto;
     }
     
-    /* Mobile carousel adjustments */
-    .pricing-carousel-wrapper {
-        padding: 0 20px;
+    .currency-change-notification {
+        left: 1rem;
+        right: 1rem;
+        top: 1rem;
+        transform: translateY(-100%);
     }
     
-    .pricing-carousel-container {
-        max-width: 280px;
-        padding: 30px 0;
+    .currency-change-notification.translate-x-0 {
+        transform: translateY(0);
     }
     
-    .pricing-card-carousel {
-        width: 280px;
-        margin: 0 5px;
-    }
-    
-    .pricing-nav-btn {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .pricing-nav-prev {
-        margin-left: -10px !important;
-    }
-    
-    .pricing-nav-next {
-        margin-right: -10px !important;
-    }
-    
-    .pricing-carousel-track .pricing-card.featured {
-        transform: none;
-        margin-top: 0;
-        margin-bottom: 0;
-        border: 2px solid #3b82f6;
-    }
-    
-    .pricing-carousel-track .pricing-card.featured:hover {
-        transform: translateY(-4px);
+    .currency-change-notification.translate-x-full {
+        transform: translateY(-100%);
     }
 }
 
@@ -435,38 +402,11 @@ function get_pricing_currency_symbol($currency = 'USD') {
     .homepage-pricing-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
-    .pricing-carousel-container {
-        max-width: 680px;
-        padding: 25px 0;
-    }
-    
-    .pricing-card-carousel {
-        margin: 0 8px;
-    }
 }
 
 @media (min-width: 1025px) {
     .homepage-pricing-grid {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    }
-}
-
-/* Touch scrolling for carousel on mobile */
-@media (max-width: 1024px) {
-    .pricing-carousel-container {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-    
-    .pricing-carousel-container::-webkit-scrollbar {
-        display: none;
-    }
-    
-    .pricing-carousel-track {
-        transition: none;
     }
 }
 
@@ -480,14 +420,11 @@ function get_pricing_currency_symbol($currency = 'USD') {
     transform: scale(1.05) translateY(-4px);
 }
 
-/* Carousel performance optimizations */
-.pricing-carousel-track {
-    backface-visibility: hidden;
-    perspective: 1000px;
-}
-
-.pricing-card-carousel {
-    backface-visibility: hidden;
+/* Dark mode support for notifications */
+@media (prefers-color-scheme: dark) {
+    .currency-change-notification {
+        background-color: #10b981;
+    }
 }
 </style>
 
@@ -509,24 +446,50 @@ function get_pricing_currency_symbol($currency = 'USD') {
                         </p>
                     </div>
                     
-                    <!-- Billing Toggle -->
-                    <div class="billing-toggle-wrapper max-w-md mx-auto">
-                        <div class="flex items-center justify-center flex-wrap gap-4">
-                            <span class="text-white font-medium pricing-monthly-label">
-                                <?php echo esc_html($monthly_text); ?>
-                            </span>
-                            <div class="relative">
-                                <input type="checkbox" id="pricing-billing-toggle" class="sr-only" checked>
-                                <label for="pricing-billing-toggle" class="relative inline-flex items-center justify-between w-16 h-8 rounded-full cursor-pointer transition-colors duration-300 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
-                                    <span class="toggle-switch absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 translate-x-8"></span>
-                                </label>
+                    <!-- Currency & Billing Controls -->
+                    <div class="max-w-4xl mx-auto">
+                        
+                        <!-- Currency Selector -->
+                        <?php if (function_exists('yoursite_should_display_currency_selector') && yoursite_should_display_currency_selector()) : ?>
+                        <div class="currency-selector-wrapper">
+                            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-white font-medium">
+                                        <?php _e('Currency:', 'yoursite'); ?>
+                                    </span>
+                                    <?php 
+                                    echo yoursite_render_currency_selector(array(
+                                        'style' => 'dropdown',
+                                        'show_flag' => true,
+                                        'show_name' => false,
+                                        'show_symbol' => true,
+                                        'class' => 'pricing-currency-selector currency-selector'
+                                    )); 
+                                    ?>
+                                </div>
                             </div>
-                            <span class="text-white font-semibold pricing-yearly-label">
-                                <?php echo esc_html($yearly_text); ?>
-                            </span>
-                            <span class="bg-emerald-500 text-black text-sm font-semibold px-3 py-1 rounded-full shadow-md">
-                                <?php echo esc_html($save_text); ?>
-                            </span>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <!-- Billing Toggle -->
+                        <div class="billing-toggle-wrapper max-w-md mx-auto">
+                            <div class="flex items-center justify-center flex-wrap gap-4">
+                                <span class="text-white font-medium pricing-monthly-label">
+                                    <?php echo esc_html($monthly_text); ?>
+                                </span>
+                                <div class="relative">
+                                    <input type="checkbox" id="pricing-billing-toggle" class="sr-only" checked>
+                                    <label for="pricing-billing-toggle" class="relative inline-flex items-center justify-between w-16 h-8 rounded-full cursor-pointer transition-colors duration-300 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
+                                        <span class="toggle-switch absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 translate-x-8"></span>
+                                    </label>
+                                </div>
+                                <span class="text-white font-semibold pricing-yearly-label">
+                                    <?php echo esc_html($yearly_text); ?>
+                                </span>
+                                <span class="bg-emerald-500 text-black text-sm font-semibold px-3 py-1 rounded-full shadow-md">
+                                    <?php echo esc_html($save_text); ?>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     
@@ -543,718 +506,504 @@ function get_pricing_currency_symbol($currency = 'USD') {
                     
                     $plans = get_posts($args);
                     $plan_count = count($plans);
-                    $use_carousel = $plan_count > 3;
                     
-                  
-if (!empty($plans)) : ?>
-    
-    <!-- Conversion-Optimized Pricing Cards -->
-    <div class="conversion-pricing-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-        
-        <?php foreach ($plans as $index => $plan) : 
-            $meta = yoursite_get_pricing_meta_fields($plan->ID);
-            $is_featured = $meta['pricing_featured'] === '1';
-            $monthly_price = floatval($meta['pricing_monthly_price']);
-            $annual_price = floatval($meta['pricing_annual_price']);
-            
-            if ($annual_price == 0 && $monthly_price > 0) {
-                $annual_price = $monthly_price * 12 * 0.8; // 20% discount
-            }
-            $annual_monthly = $annual_price > 0 ? $annual_price / 12 : 0;
-            $annual_savings = ($monthly_price * 12) - $annual_price;
-            
-            $currency_symbol = get_pricing_currency_symbol($meta['pricing_currency']);
-        ?>
-        
-        <!-- Pricing Card -->
-        <div class="conversion-pricing-card relative">
-            
-            <?php if ($is_featured) : ?>
-                <!-- Featured Plan with Gradient Border -->
-                <div class="gradient-border-wrapper relative">
-                    <!-- Most Popular Badge -->
-                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
-                        <span class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg animate-pulse">
-                            <?php _e('Most Popular', 'yoursite'); ?>
-                        </span>
-                    </div>
+                    // Helper function
+                    if (!function_exists('yoursite_get_pricing_meta_fields')) {
+                        function yoursite_get_pricing_meta_fields($post_id) {
+                            return array(
+                                'pricing_featured' => get_post_meta($post_id, '_pricing_featured', true),
+                                'pricing_monthly_price' => get_post_meta($post_id, '_pricing_monthly_price', true),
+                                'pricing_annual_price' => get_post_meta($post_id, '_pricing_annual_price', true),
+                                'pricing_currency' => get_post_meta($post_id, '_pricing_currency', true) ?: 'USD',
+                                'pricing_features' => get_post_meta($post_id, '_pricing_features', true),
+                                'pricing_button_text' => get_post_meta($post_id, '_pricing_button_text', true),
+                                'pricing_button_url' => get_post_meta($post_id, '_pricing_button_url', true)
+                            );
+                        }
+                    }
                     
-                    <div class="gradient-border bg-gradient-to-r from-blue-500 to-purple-600 p-0.5 rounded-2xl">
-                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 pt-8 h-full conversion-card-inner">
-            <?php else : ?>
-                <!-- Regular Plan -->
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 h-full conversion-card-inner hover-lift">
-            <?php endif; ?>
-            
-                <!-- Plan Header -->
-                <div class="text-center mb-6">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                        <?php echo esc_html($plan->post_title); ?>
-                    </h3>
-                    
-                    <?php if ($plan->post_excerpt) : ?>
-                        <p class="text-gray-600 dark:text-gray-300 mb-4">
-                            <?php echo esc_html($plan->post_excerpt); ?>
-                        </p>
-                    <?php endif; ?>
-                    
-                    <!-- Dynamic Price Display -->
-                    <div class="price-section mb-6">
-                        <!-- Monthly Pricing -->
-                        <div class="monthly-price-display hidden">
-                            <span class="text-5xl font-bold price-highlight">
-                                <?php echo $currency_symbol . number_format($monthly_price, 0); ?>
-                            </span>
-                            <span class="text-gray-600 dark:text-gray-300">/month</span>
-                        </div>
+                    if (!empty($plans)) : ?>
                         
-                        <!-- Annual Pricing (Default) -->
-                        <div class="annual-price-display">
-                            <span class="text-5xl font-bold price-highlight">
-                                <?php echo $currency_symbol . number_format($annual_monthly, 0); ?>
-                            </span>
-                            <span class="text-gray-600 dark:text-gray-300">/month</span>
-                            <?php if ($annual_price > 0) : ?>
-                                <div class="text-sm text-green-600 dark:text-green-400 font-semibold mt-1">
-                                    <?php printf(__('Billed annually (%s%s/year)', 'yoursite'), $currency_symbol, number_format($annual_price, 0)); ?>
-                                    <?php if ($annual_savings > 0) : ?>
-                                        • <?php printf(__('Save %s%s', 'yoursite'), $currency_symbol, number_format($annual_savings, 0)); ?>
+                        <!-- Enhanced Pricing Cards with Dynamic Currency -->
+                        <div class="homepage-pricing-grid" id="pricing-cards-container">
+                            <?php foreach ($plans as $index => $plan) : 
+                                $meta = yoursite_get_pricing_meta_fields($plan->ID);
+                                $is_featured = $meta['pricing_featured'] === '1';
+                                
+                                // Get pricing in current currency
+                                $monthly_price = function_exists('yoursite_get_pricing_plan_price') 
+                                    ? yoursite_get_pricing_plan_price($plan->ID, $current_currency['code'], 'monthly')
+                                    : floatval($meta['pricing_monthly_price']);
+                                
+                                $annual_price = function_exists('yoursite_get_pricing_plan_price') 
+                                    ? yoursite_get_pricing_plan_price($plan->ID, $current_currency['code'], 'annual')
+                                    : floatval($meta['pricing_annual_price']);
+                                
+                                if ($annual_price == 0 && $monthly_price > 0) {
+                                    $annual_price = $monthly_price * 12 * 0.8; // 20% discount
+                                }
+                                $annual_monthly = $annual_price > 0 ? $annual_price / 12 : 0;
+                                
+                                // Calculate savings
+                                $savings = function_exists('yoursite_calculate_annual_savings') 
+                                    ? yoursite_calculate_annual_savings($plan->ID, $current_currency['code'])
+                                    : ($monthly_price * 12) - $annual_price;
+                                
+                                $currency_symbol = get_pricing_currency_symbol($current_currency['code']);
+                            ?>
+                            
+                            <!-- Pricing Card -->
+                            <div class="pricing-card relative <?php echo $is_featured ? 'featured' : ''; ?>"
+                                 data-plan-id="<?php echo esc_attr($plan->ID); ?>">
+                                
+                                <?php if ($is_featured) : ?>
+                                    <!-- Featured Plan Badge -->
+                                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
+                                        <span class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg animate-pulse">
+                                            <?php _e('Most Popular', 'yoursite'); ?>
+                                        </span>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <!-- Plan Header -->
+                                <div class="text-center mb-6 <?php echo $is_featured ? 'pt-8' : ''; ?>">
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                        <?php echo esc_html($plan->post_title); ?>
+                                    </h3>
+                                    
+                                    <?php if ($plan->post_excerpt) : ?>
+                                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                            <?php echo esc_html($plan->post_excerpt); ?>
+                                        </p>
                                     <?php endif; ?>
                                 </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    
-                    <!-- Conversion-Optimized CTAs -->
-                    <div class="cta-section">
-                        <?php if ($is_featured) : ?>
-                            <!-- Featured Plan CTA -->
-                            <a href="<?php echo esc_url($meta['pricing_button_url'] ?: '#'); ?>" 
-                               class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 mb-4 inline-block text-center focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg">
-                                <?php echo esc_html($meta['pricing_button_text'] ?: __('Start Free Trial', 'yoursite')); ?>
-                            </a>
-                        <?php else : ?>
-                            <!-- Regular Plan CTA -->
-                            <a href="<?php echo esc_url($meta['pricing_button_url'] ?: '#'); ?>" 
-                               class="w-full bg-gray-900 hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 mb-4 inline-block text-center focus:outline-none focus:ring-4 focus:ring-gray-300">
-                                <?php echo esc_html($meta['pricing_button_text'] ?: __('Start Free Trial', 'yoursite')); ?>
-                            </a>
-                        <?php endif; ?>
-                        
-                        <!-- Trust Signal -->
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            <?php _e('14-day free trial • No credit card required', 'yoursite'); ?>
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- Features List - Optimized Spacing -->
-                <?php if (!empty($meta['pricing_features'])) : ?>
-                    <div class="features-section">
-                        <ul class="conversion-features-list">
-                            <?php 
-                            $features = array_filter(explode("\n", $meta['pricing_features']));
-                            foreach ($features as $feature_index => $feature) : 
-                                $feature = trim($feature);
-                                if (!empty($feature)) :
-                                    // Highlight first feature for featured plans
-                                    $is_highlight = $is_featured && $feature_index === 0;
-                            ?>
-                                <li class="conversion-feature-item <?php echo $is_highlight ? 'highlight-feature' : ''; ?>">
-                                    <svg class="feature-check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    <span class="feature-text <?php echo $is_highlight ? 'font-semibold' : ''; ?>">
-                                        <?php echo esc_html($feature); ?>
-                                    </span>
-                                </li>
-                            <?php endif; endforeach; ?>
-                        </ul>
-                    </div>
-                <?php endif; ?>
-                
-            <?php if ($is_featured) : ?>
-                        </div>
-                    </div>
-                </div>
-            <?php else : ?>
-                </div>
-            <?php endif; ?>
-        </div>
-        
-        <?php endforeach; ?>
-    </div>
-    
-    <!-- Trust Signals Section -->
-    <div class="trust-signals-section bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mt-12">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div class="trust-signal-item">
-                <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
-                    <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                    <?php _e('30-Day Money Back', 'yoursite'); ?>
-                </h4>
-                <p class="text-gray-600 dark:text-gray-300">
-                    <?php _e('Full refund if not satisfied', 'yoursite'); ?>
-                </p>
-            </div>
-            
-            <div class="trust-signal-item">
-                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
-                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                </div>
-                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                    <?php _e('Setup in Minutes', 'yoursite'); ?>
-                </h4>
-                <p class="text-gray-600 dark:text-gray-300">
-                    <?php _e('Quick and easy onboarding', 'yoursite'); ?>
-                </p>
-            </div>
-            
-            <div class="trust-signal-item">
-                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
-                    <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                    </svg>
-                </div>
-                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                    <?php _e('24/7 Support', 'yoursite'); ?>
-                </h4>
-                <p class="text-gray-600 dark:text-gray-300">
-                    <?php _e('Always here to help you succeed', 'yoursite'); ?>
-                </p>
-            </div>
-        </div>
-    </div>
-
-<?php else : ?>
-    <!-- No Plans Available -->
-    <div class="text-center py-12">
-        <div class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-8">
-            <svg class="w-16 h-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-            </svg>
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                <?php _e('No pricing plans available yet.', 'yoursite'); ?>
-            </h3>
-            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                <?php _e('Check back soon for our exciting pricing options!', 'yoursite'); ?>
-            </p>
-            <?php if (current_user_can('manage_options')) : ?>
-                <a href="<?php echo admin_url('post-new.php?post_type=pricing'); ?>" 
-                   class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg inline-block transition-colors duration-200">
-                    <?php _e('Create Your First Pricing Plan', 'yoursite'); ?>
-                </a>
-            <?php endif; ?>
-        </div>
-    </div>
-<?php endif; ?>
-
-<style>
-/* ==========================================================================
-   CONVERSION-OPTIMIZED PRICING CARDS CSS
-   ========================================================================== */
-
-/* Grid Layout */
-.conversion-pricing-grid {
-    position: relative;
-    z-index: 1;
-}
-
-/* Card Base Styling */
-.conversion-pricing-card {
-    position: relative;
-    height: 100%;
-}
-
-.conversion-card-inner {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 600px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Hover Effects */
-.hover-lift:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-}
-
-/* Featured Plan Gradient Border */
-.gradient-border {
-    background: linear-gradient(145deg, #667eea, #764ba2);
-    padding: 3px;
-    border-radius: 1rem;
-}
-
-/* Price Highlighting */
-.price-highlight {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: inline-block;
-}
-
-/* Features List Optimized */
-.conversion-features-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    flex-grow: 1;
-}
-
-.conversion-feature-item {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 12px;
-    padding: 8px 0;
-    border-radius: 6px;
-    transition: background-color 0.2s ease;
-}
-
-.conversion-feature-item:hover {
-    background-color: rgba(59, 130, 246, 0.05);
-}
-
-.conversion-feature-item.highlight-feature {
-    background-color: rgba(34, 197, 94, 0.1);
-    padding: 12px;
-    border-radius: 8px;
-    border-left: 4px solid #22c55e;
-}
-
-.feature-check-icon {
-    width: 20px;
-    height: 20px;
-    color: #22c55e;
-    margin: 2px 12px 0 0;
-    flex-shrink: 0;
-}
-
-.feature-text {
-    font-size: 14px;
-    line-height: 1.5;
-    color: #374151;
-}
-
-.dark .feature-text {
-    color: #d1d5db;
-}
-
-/* CTA Buttons */
-.conversion-pricing-card a[class*="bg-gradient"] {
-    position: relative;
-    overflow: hidden;
-}
-
-.conversion-pricing-card a[class*="bg-gradient"]:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-}
-
-.conversion-pricing-card a[class*="bg-gradient"]:hover:before {
-    left: 100%;
-}
-
-/* Billing Toggle Sync */
-.pricing-page.show-monthly .monthly-price-display {
-    display: block !important;
-}
-
-.pricing-page.show-monthly .annual-price-display {
-    display: none !important;
-}
-
-.pricing-page.show-annual .monthly-price-display {
-    display: none !important;
-}
-
-.pricing-page.show-annual .annual-price-display {
-    display: block !important;
-}
-
-/* Trust Signals */
-.trust-signals-section {
-    animation: fadeInUp 0.6s ease-out 0.3s both;
-}
-
-.trust-signal-item {
-    transition: transform 0.3s ease;
-}
-
-.trust-signal-item:hover {
-    transform: translateY(-4px);
-}
-
-/* Mobile Optimizations */
-@media (max-width: 768px) {
-    .conversion-pricing-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 0 1rem;
-    }
-    
-    .conversion-card-inner {
-        min-height: auto;
-        padding: 1.5rem;
-    }
-    
-    .conversion-pricing-card .absolute.-top-4 {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        margin-bottom: 1rem;
-        display: block;
-        text-align: center;
-    }
-    
-    .price-highlight {
-        font-size: 2.5rem;
-    }
-    
-    .conversion-feature-item {
-        margin-bottom: 8px;
-    }
-    
-    .feature-check-icon {
-        width: 16px;
-        height: 16px;
-        margin-right: 8px;
-    }
-    
-    .feature-text {
-        font-size: 13px;
-    }
-    
-    /* Mobile CTA optimizations */
-    .cta-section a {
-        padding: 1rem 1.5rem;
-        font-size: 1.1rem;
-        min-height: 56px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .trust-signals-section {
-        margin-top: 2rem;
-        padding: 1.5rem;
-    }
-    
-    .trust-signals-section .grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-}
-
-/* Tablet Adjustments */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .conversion-pricing-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .conversion-pricing-grid .conversion-pricing-card:nth-child(3) {
-        grid-column: 1 / -1;
-        max-width: 400px;
-        margin: 0 auto;
-    }
-}
-
-/* Accessibility */
-.conversion-pricing-card:focus-within {
-    outline: 3px solid #3b82f6;
-    outline-offset: 2px;
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-    .conversion-card-inner,
-    .trust-signal-item,
-    .conversion-feature-item {
-        transition: none;
-    }
-    
-    .hover-lift:hover {
-        transform: none;
-    }
-}
-
-/* High contrast mode */
-@media (prefers-contrast: high) {
-    .conversion-feature-item {
-        border: 1px solid;
-    }
-    
-    .price-highlight {
-        background: none;
-        -webkit-text-fill-color: inherit;
-        color: #000;
-        font-weight: 900;
-    }
-}
-
-/* Animation keyframes */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-</style>
-
-<script>
-// Enhanced pricing toggle functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const pricingPage = document.querySelector('.pricing-page');
-    const billingToggle = document.getElementById('pricing-billing-toggle');
-    
-    if (!billingToggle || !pricingPage) return;
-    
-    // Set initial state to annual (default)
-    billingToggle.checked = true;
-    pricingPage.classList.add('show-annual');
-    pricingPage.classList.remove('show-monthly');
-    
-    billingToggle.addEventListener('change', function() {
-        const isAnnual = this.checked;
-        
-        if (isAnnual) {
-            pricingPage.classList.add('show-annual');
-            pricingPage.classList.remove('show-monthly');
-        } else {
-            pricingPage.classList.remove('show-annual');
-            pricingPage.classList.add('show-monthly');
-        }
-        
-        // Add visual feedback
-        const cards = document.querySelectorAll('.conversion-card-inner');
-        cards.forEach(card => {
-            card.style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                card.style.transform = '';
-            }, 150);
-        });
-    });
-    
-    // Enhance CTA button interactions
-    const ctaButtons = document.querySelectorAll('.cta-section a');
-    ctaButtons.forEach(button => {
-        button.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.02) translateY(-2px)';
-        });
-        
-        button.addEventListener('mouseleave', function() {
-            this.style.transform = '';
-        });
-        
-        button.addEventListener('click', function(e) {
-            // Add click animation
-            this.style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 100);
-        });
-    });
-});
-</script>
+                                
+                                <!-- Dynamic Price Display -->
+                                <div class="price-section mb-6 text-center">
+                                    <!-- Monthly Pricing -->
+                                    <div class="monthly-pricing pricing-display homepage-monthly-pricing" style="display: none;">
+                                        <div class="text-4xl font-bold text-gray-900 dark:text-white">
+                                            <span class="price-amount" data-price-type="monthly" data-plan-id="<?php echo esc_attr($plan->ID); ?>">
+                                                <?php 
+                                                if (function_exists('yoursite_format_currency')) {
+                                                    echo yoursite_format_currency($monthly_price, $current_currency['code']);
+                                                } else {
+                                                    echo $currency_symbol . number_format($monthly_price, 0);
+                                                }
+                                                ?>
+                                            </span>
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/month</span>
+                                        </div>
+                                        <?php if ($monthly_price > 0) : ?>
+                                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                                                <?php _e('Billed monthly', 'yoursite'); ?>
+                                            </p>
+                                        <?php endif; ?>
+                                    </div>
                                     
-      
-                            
-                        <?php if ($use_carousel) : ?>
+                                    <!-- Annual Pricing (Default) -->
+                                    <div class="annual-pricing pricing-display homepage-annual-pricing">
+                                        <div class="text-4xl font-bold text-gray-900 dark:text-white">
+                                            <span class="price-amount" data-price-type="annual-monthly" data-plan-id="<?php echo esc_attr($plan->ID); ?>">
+                                                <?php 
+                                                if (function_exists('yoursite_format_currency')) {
+                                                    echo yoursite_format_currency($annual_monthly, $current_currency['code']);
+                                                } else {
+                                                    echo $currency_symbol . number_format($annual_monthly, 0);
+                                                }
+                                                ?>
+                                            </span>
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/month</span>
+                                        </div>
+                                        <?php if ($annual_price > 0) : ?>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                                <span>
+                                                    <?php 
+                                                    printf(
+                                                        __('Billed annually (%s/year)', 'yoursite'), 
+                                                        '<span data-price-type="annual" data-plan-id="' . esc_attr($plan->ID) . '">' . 
+                                                        (function_exists('yoursite_format_currency') 
+                                                            ? yoursite_format_currency($annual_price, $current_currency['code'])
+                                                            : $currency_symbol . number_format($annual_price, 0)
+                                                        ) . '</span>'
+                                                    ); 
+                                                    ?>
+                                                </span>
+                                            </div>
+                                            <div class="homepage-annual-savings mt-2">
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                    <?php _e('Save', 'yoursite'); ?> 
+                                                    <span data-savings-amount data-plan-id="<?php echo esc_attr($plan->ID); ?>" class="ml-1">
+                                                        <?php 
+                                                        if (function_exists('yoursite_format_currency')) {
+                                                            echo yoursite_format_currency($savings, $current_currency['code']);
+                                                        } else {
+                                                            echo $currency_symbol . number_format($savings, 0);
+                                                        }
+                                                        ?>
+                                                    </span>/year
+                                                </span>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                
+                                <!-- Features List -->
+                                <?php if (!empty($meta['pricing_features'])) : ?>
+                                    <div class="features-section mb-6 flex-grow">
+                                        <ul class="space-y-3">
+                                            <?php 
+                                            $features = array_filter(explode("\n", $meta['pricing_features']));
+                                            foreach ($features as $feature_index => $feature) : 
+                                                $feature = trim($feature);
+                                                if (!empty($feature)) :
+                                            ?>
+                                                <li class="flex items-start">
+                                                    <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                    </svg>
+                                                    <span class="text-gray-700 dark:text-gray-300">
+                                                        <?php echo esc_html($feature); ?>
+                                                    </span>
+                                                </li>
+                                            <?php endif; endforeach; ?>
+                                        </ul>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <!-- CTA Button -->
+                                <div class="cta-section mt-auto">
+                                    <?php if ($is_featured) : ?>
+                                        <!-- Featured Plan CTA -->
+                                        <a href="<?php echo esc_url($meta['pricing_button_url'] ?: '#'); ?>" 
+                                           class="pricing-button w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 mb-4 inline-block text-center focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg"
+                                           data-monthly-url="<?php echo esc_url($meta['pricing_button_url'] ?: '#'); ?>"
+                                           data-annual-url="<?php echo esc_url(str_replace('monthly', 'annual', $meta['pricing_button_url'] ?: '#')); ?>">
+                                            <?php echo esc_html($meta['pricing_button_text'] ?: __('Start Free Trial', 'yoursite')); ?>
+                                        </a>
+                                    <?php else : ?>
+                                        <!-- Regular Plan CTA -->
+                                        <a href="<?php echo esc_url($meta['pricing_button_url'] ?: '#'); ?>" 
+                                           class="pricing-button w-full bg-gray-900 hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 mb-4 inline-block text-center focus:outline-none focus:ring-4 focus:ring-gray-300"
+                                           data-monthly-url="<?php echo esc_url($meta['pricing_button_url'] ?: '#'); ?>"
+                                           data-annual-url="<?php echo esc_url(str_replace('monthly', 'annual', $meta['pricing_button_url'] ?: '#')); ?>">
+                                            <?php echo esc_html($meta['pricing_button_text'] ?: __('Start Free Trial', 'yoursite')); ?>
+                                        </a>
+                                    <?php endif; ?>
+                                    
+                                    <!-- Trust Signal -->
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center">
+                                        <?php _e('14-day free trial • No credit card required', 'yoursite'); ?>
+                                    </p>
                                 </div>
                             </div>
                             
-                            <!-- Carousel Dots Navigation -->
-                            <div class="carousel-dots flex justify-center mt-8 space-x-3">
-                                <?php 
-                                $dots_count = ceil($plan_count / 3);
-                                for ($i = 0; $i < $dots_count; $i++) : ?>
-                                    <button class="carousel-dot w-3 h-3 rounded-full transition-all duration-300 <?php echo $i === 0 ? 'bg-white' : 'bg-white bg-opacity-50 hover:bg-opacity-70'; ?>" 
-                                            data-slide="<?php echo $i; ?>"></button>
-                                <?php endfor; ?>
+                            <?php endforeach; ?>
+                        </div>
+                        
+                    <?php else : ?>
+                        <!-- Fallback Pricing if no pricing posts exist -->
+                        <div class="homepage-pricing-grid" id="pricing-cards-container">
+                            <!-- Free Plan -->
+                            <div class="pricing-card" data-plan-id="free">
+                                <div class="text-center mb-6">
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Free</h3>
+                                    <p class="text-gray-600 dark:text-gray-300">Perfect for getting started</p>
+                                </div>
+                                <div class="price-section mb-6 text-center">
+                                    <div class="monthly-pricing pricing-display homepage-monthly-pricing" style="display: none;">
+                                        <div class="text-4xl font-bold text-gray-900 dark:text-white">
+                                            <span class="price-amount"><?php echo $current_currency['symbol']; ?>0</span>
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/month</span>
+                                        </div>
+                                    </div>
+                                    <div class="annual-pricing pricing-display homepage-annual-pricing">
+                                        <div class="text-4xl font-bold text-gray-900 dark:text-white">
+                                            <span class="price-amount"><?php echo $current_currency['symbol']; ?>0</span>
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/month</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cta-section mt-auto">
+                                    <a href="#signup" class="pricing-button w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 inline-block text-center">
+                                        Start Free
+                                    </a>
+                                </div>
                             </div>
                             
+                            <!-- Pro Plan -->
+                            <div class="pricing-card featured" data-plan-id="pro">
+                                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
+                                    <span class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                                        Most Popular
+                                    </span>
+                                </div>
+                                <div class="text-center mb-6 pt-8">
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Pro</h3>
+                                    <p class="text-gray-600 dark:text-gray-300">For growing businesses</p>
+                                </div>
+                                <div class="price-section mb-6 text-center">
+                                    <div class="monthly-pricing pricing-display homepage-monthly-pricing" style="display: none;">
+                                        <div class="text-4xl font-bold text-gray-900 dark:text-white">
+                                            <span class="price-amount"><?php echo $current_currency['symbol']; ?>29</span>
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/month</span>
+                                        </div>
+                                    </div>
+                                    <div class="annual-pricing pricing-display homepage-annual-pricing">
+                                        <div class="text-4xl font-bold text-gray-900 dark:text-white">
+                                            <span class="price-amount"><?php echo $current_currency['symbol']; ?>23</span>
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/month</span>
+                                        </div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                            Billed annually (<?php echo $current_currency['symbol']; ?>276/year)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cta-section mt-auto">
+                                    <a href="#signup" class="pricing-button w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 inline-block text-center shadow-lg">
+                                        Start Free Trial
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Enterprise Plan -->
+                            <div class="pricing-card" data-plan-id="enterprise">
+                                <div class="text-center mb-6">
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Enterprise</h3>
+                                    <p class="text-gray-600 dark:text-gray-300">For large organizations</p>
+                                </div>
+                                <div class="price-section mb-6 text-center">
+                                    <div class="monthly-pricing pricing-display homepage-monthly-pricing" style="display: none;">
+                                        <div class="text-4xl font-bold text-gray-900 dark:text-white">
+                                            <span class="price-amount"><?php echo $current_currency['symbol']; ?>99</span>
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/month</span>
+                                        </div>
+                                    </div>
+                                    <div class="annual-pricing pricing-display homepage-annual-pricing">
+                                        <div class="text-4xl font-bold text-gray-900 dark:text-white">
+                                            <span class="price-amount"><?php echo $current_currency['symbol']; ?>79</span>
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/month</span>
+                                        </div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                            Billed annually (<?php echo $current_currency['symbol']; ?>948/year)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cta-section mt-auto">
+                                    <a href="#contact" class="pricing-button w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 inline-block text-center">
+                                        Contact Sales
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <?php else : ?>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <!-- Compare All Features Button -->
-                        <?php if ($comparison_enable) : ?>
-                        <div class="text-center mt-16">
-                            <button class="unified-compare-btn hover:bg-gray-100 dark:hover:bg-gray-700 text-lg px-8 py-4 rounded-lg font-semibold" data-scroll-to-comparison onclick="document.querySelector('.pricing-comparison-wrapper').scrollIntoView({behavior: 'smooth'})">
-                                <span class="flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                    <?php endif; ?>
+                    
+                    <!-- Trust Signals Section -->
+                    <div class="trust-signals-section bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mt-12">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                            <div class="trust-signal-item">
+                                <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                    <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    Compare All Features
-                                </span>
-                            </button>
+                                </div>
+                                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                    <?php _e('30-Day Money Back', 'yoursite'); ?>
+                                </h4>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    <?php _e('Full refund if not satisfied', 'yoursite'); ?>
+                                </p>
+                            </div>
+                            
+                            <div class="trust-signal-item">
+                                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                    <?php _e('Setup in Minutes', 'yoursite'); ?>
+                                </h4>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    <?php _e('Quick and easy onboarding', 'yoursite'); ?>
+                                </p>
+                            </div>
+                            
+                            <div class="trust-signal-item">
+                                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                    <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                    </svg>
+                                </div>
+                                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                    <?php _e('24/7 Support', 'yoursite'); ?>
+                                </h4>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    <?php _e('Always here to help you succeed', 'yoursite'); ?>
+                                </p>
+                            </div>
                         </div>
-                        <?php endif; ?>
-
+                    </div>
+                    
+                    <!-- Compare All Features Button -->
+                    <?php if ($comparison_enable) : ?>
+                    <div class="text-center mt-16">
+                        <button class="unified-compare-btn hover:bg-gray-100 dark:hover:bg-gray-700 text-lg px-8 py-4 rounded-lg font-semibold" data-scroll-to-comparison onclick="document.querySelector('.pricing-comparison-wrapper').scrollIntoView({behavior: 'smooth'})">
+                            <span class="flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                </svg>
+                                Compare All Features
+                            </span>
+                        </button>
+                    </div>
+                    <?php endif; ?>
                     
                 </div>
             </div>
         </div>
     </section>
- <!-- DIFM Banner Section -->
-<section class="py-16 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 border-y border-gray-200 dark:border-gray-600">
-    <div class="container mx-auto px-4">
-        <div class="max-w-6xl mx-auto">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-                
-                <!-- Background Pattern -->
-                <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5 dark:from-blue-400/10 dark:to-purple-400/10"></div>
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full transform translate-x-16 -translate-y-16"></div>
-                    <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-500/10 to-pink-500/10 rounded-full transform -translate-x-12 translate-y-12"></div>
+
+    <!-- DIFM Banner Section -->
+    <section class="py-16 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 border-y border-gray-200 dark:border-gray-600">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                     
-                    <!-- Content -->
-                    <div class="relative px-8 py-12 lg:px-12 lg:py-16">
-                        <div class="grid lg:grid-cols-2 gap-12 items-center">
-                            
-                            <!-- Left Content -->
-                            <div class="text-center lg:text-left">
-                                <!-- Badge -->
-                                <div class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full text-sm font-semibold text-blue-700 dark:text-blue-300 mb-6">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                    </svg>
-                                    <?php echo esc_html(get_theme_mod('difm_banner_badge_text', 'Done-For-You Service')); ?>
+                    <!-- Background Pattern -->
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5 dark:from-blue-400/10 dark:to-purple-400/10"></div>
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full transform translate-x-16 -translate-y-16"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-500/10 to-pink-500/10 rounded-full transform -translate-x-12 translate-y-12"></div>
+                        
+                        <!-- Content -->
+                        <div class="relative px-8 py-12 lg:px-12 lg:py-16">
+                            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                                
+                                <!-- Left Content -->
+                                <div class="text-center lg:text-left">
+                                    <!-- Badge -->
+                                    <div class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full text-sm font-semibold text-blue-700 dark:text-blue-300 mb-6">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        </svg>
+                                        <?php echo esc_html(get_theme_mod('difm_banner_badge_text', 'Done-For-You Service')); ?>
+                                    </div>
+                                    
+                                    <!-- Main Heading -->
+                                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
+                                        <?php echo esc_html(get_theme_mod('difm_banner_title', 'Don\'t Want to Build It Yourself?')); ?>
+                                    </h2>
+                                    
+                                    <!-- Subheading -->
+                                    <p class="text-xl text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                                        <?php echo esc_html(get_theme_mod('difm_banner_subtitle', 'Let our expert team build your perfect website while you focus on your business.')); ?>
+                                    </p>
+                                    
+                                    <!-- Features List -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 text-left">
+                                        <?php 
+                                        $features = array(
+                                            get_theme_mod('difm_banner_feature_1', 'Professional Design'),
+                                            get_theme_mod('difm_banner_feature_2', 'Fast Delivery'),
+                                            get_theme_mod('difm_banner_feature_3', 'Full Setup Included'),
+                                            get_theme_mod('difm_banner_feature_4', 'Ongoing Support')
+                                        );
+                                        
+                                        $feature_icons = array(
+                                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>',
+                                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>',
+                                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
+                                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>'
+                                        );
+                                        
+                                        foreach ($features as $index => $feature) :
+                                            if (!empty(trim($feature))) :
+                                        ?>
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400 mr-3">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <?php echo $feature_icons[$index]; ?>
+                                                    </svg>
+                                                </div>
+                                                <span class="text-gray-700 dark:text-gray-300 text-sm font-medium"><?php echo esc_html($feature); ?></span>
+                                            </div>
+                                        <?php 
+                                            endif;
+                                        endforeach; 
+                                        ?>
+                                    </div>
+                                    
+                                    <!-- CTA Buttons -->
+                                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                        <!-- Primary CTA - Build My Website -->
+                                        <a href="<?php echo esc_url(home_url(get_theme_mod('difm_banner_primary_url', '/build-my-website'))); ?>" 
+                                           class="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200">
+                                            <svg class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-2m-2 0H7m5 0v-9a1 1 0 00-1-1H9a1 1 0 00-1 1v9m5 0H9m6-12v4m-8-4v4"></path>
+                                            </svg>
+                                            <?php echo esc_html(get_theme_mod('difm_banner_primary_text', 'Build My Website')); ?>
+                                            <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                        </a>
+                                        
+                                        <!-- Secondary CTA - Contact -->
+                                        <a href="<?php echo esc_url(home_url(get_theme_mod('difm_banner_secondary_url', '/contact'))); ?>" 
+                                           class="group inline-flex items-center justify-center px-8 py-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl border-2 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200">
+                                            <svg class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                            </svg>
+                                            <?php echo esc_html(get_theme_mod('difm_banner_secondary_text', 'Ask Questions')); ?>
+                                        </a>
+                                    </div>
                                 </div>
                                 
-                                <!-- Main Heading -->
-                                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
-                                    <?php echo esc_html(get_theme_mod('difm_banner_title', 'Don\'t Want to Build It Yourself?')); ?>
-                                </h2>
-                                
-                                <!-- Subheading -->
-                                <p class="text-xl text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-                                    <?php echo esc_html(get_theme_mod('difm_banner_subtitle', 'Let our expert team build your perfect website while you focus on your business.')); ?>
-                                </p>
-                                
-                                <!-- Features List -->
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 text-left">
-                                    <?php 
-                                    $features = array(
-                                        get_theme_mod('difm_banner_feature_1', 'Professional Design'),
-                                        get_theme_mod('difm_banner_feature_2', 'Fast Delivery'),
-                                        get_theme_mod('difm_banner_feature_3', 'Full Setup Included'),
-                                        get_theme_mod('difm_banner_feature_4', 'Ongoing Support')
-                                    );
-                                    
-                                    $feature_icons = array(
-                                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>',
-                                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>',
-                                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>',
-                                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>'
-                                    );
-                                    
-                                    foreach ($features as $index => $feature) :
-                                        if (!empty(trim($feature))) :
-                                    ?>
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400 mr-3">
-                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <?php echo $feature_icons[$index]; ?>
+                                <!-- Right Visual Element -->
+                                <div class="relative hidden lg:block">
+                                    <div class="relative w-full max-w-md mx-auto">
+                                        <!-- Main illustration container -->
+                                        <div class="relative bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl p-8 border border-blue-100 dark:border-blue-800">
+                                            <!-- Computer/Website mockup -->
+                                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                                <!-- Browser bar -->
+                                                <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600">
+                                                    <div class="flex items-center space-x-2">
+                                                        <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                                                        <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                                                        <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                                                        <div class="flex-1 bg-white dark:bg-gray-600 rounded-sm h-6 ml-4 flex items-center px-3">
+                                                            <div class="w-3 h-3 bg-gray-300 dark:bg-gray-500 rounded mr-2"></div>
+                                                            <div class="w-24 h-2 bg-gray-200 dark:bg-gray-500 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Website content -->
+                                                <div class="p-6">
+                                                    <div class="space-y-4">
+                                                        <div class="h-4 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-700 dark:to-purple-700 rounded w-3/4"></div>
+                                                        <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded w-full"></div>
+                                                        <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded w-5/6"></div>
+                                                        <div class="flex space-x-3 mt-4">
+                                                            <div class="w-20 h-12 bg-gradient-to-r from-blue-400 to-purple-400 rounded"></div>
+                                                            <div class="w-20 h-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Floating elements -->
+                                            <div class="absolute -top-4 -right-4 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                                 </svg>
                                             </div>
-                                            <span class="text-gray-700 dark:text-gray-300 text-sm font-medium"><?php echo esc_html($feature); ?></span>
-                                        </div>
-                                    <?php 
-                                        endif;
-                                    endforeach; 
-                                    ?>
-                                </div>
-                                
-                                <!-- CTA Buttons -->
-                                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                    <!-- Primary CTA - Build My Website -->
-                                    <a href="<?php echo esc_url(home_url(get_theme_mod('difm_banner_primary_url', '/build-my-website'))); ?>" 
-                                       class="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200">
-                                        <svg class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-2m-2 0H7m5 0v-9a1 1 0 00-1-1H9a1 1 0 00-1 1v9m5 0H9m6-12v4m-8-4v4"></path>
-                                        </svg>
-                                        <?php echo esc_html(get_theme_mod('difm_banner_primary_text', 'Build My Website')); ?>
-                                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                        </svg>
-                                    </a>
-                                    
-                                    <!-- Secondary CTA - Contact -->
-                                    <a href="<?php echo esc_url(home_url(get_theme_mod('difm_banner_secondary_url', '/contact'))); ?>" 
-                                       class="group inline-flex items-center justify-center px-8 py-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl border-2 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200">
-                                        <svg class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                        </svg>
-                                        <?php echo esc_html(get_theme_mod('difm_banner_secondary_text', 'Ask Questions')); ?>
-                                    </a>
-                                </div>
-                            </div>
-                            
-                            <!-- Right Visual Element -->
-                            <div class="relative hidden lg:block">
-                                <div class="relative w-full max-w-md mx-auto">
-                                    <!-- Main illustration container -->
-                                    <div class="relative bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl p-8 border border-blue-100 dark:border-blue-800">
-                                        <!-- Computer/Website mockup -->
-                                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-                                            <!-- Browser bar -->
-                                            <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600">
-                                                <div class="flex items-center space-x-2">
-                                                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
-                                                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                                                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
-                                                    <div class="flex-1 bg-white dark:bg-gray-600 rounded-sm h-6 ml-4 flex items-center px-3">
-                                                        <div class="w-3 h-3 bg-gray-300 dark:bg-gray-500 rounded mr-2"></div>
-                                                        <div class="w-24 h-2 bg-gray-200 dark:bg-gray-500 rounded"></div>
-                                                    </div>
-                                                </div>
+                                            
+                                            <div class="absolute -bottom-3 -left-3 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                </svg>
                                             </div>
-                                            <!-- Website content -->
-                                            <div class="p-6">
-                                                <div class="space-y-4">
-                                                    <div class="h-4 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-700 dark:to-purple-700 rounded w-3/4"></div>
-                                                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded w-full"></div>
-                                                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded w-5/6"></div>
-                                                    <div class="flex space-x-3 mt-4">
-                                                        <div class="w-20 h-12 bg-gradient-to-r from-blue-400 to-purple-400 rounded"></div>
-                                                        <div class="w-20 h-12 bg-gray-200 dark:bg-gray-600 rounded"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Floating elements -->
-                                        <div class="absolute -top-4 -right-4 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
-                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                            </svg>
-                                        </div>
-                                        
-                                        <div class="absolute -bottom-3 -left-3 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center shadow-lg">
-                                            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                            </svg>
                                         </div>
                                     </div>
                                 </div>
@@ -1264,74 +1013,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
-<style>
-/* DIFM Banner Section Styles */
-.difm-banner-section {
-    position: relative;
-    overflow: hidden;
-}
-
-/* Hover animations for CTA buttons */
-.difm-banner-section .group:hover .group-hover\:scale-110 {
-    transform: scale(1.1);
-}
-
-.difm-banner-section .group:hover .group-hover\:translate-x-1 {
-    transform: translateX(0.25rem);
-}
-
-/* Floating animation for visual elements */
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-}
-
-.difm-banner-section .float-animation {
-    animation: float 3s ease-in-out infinite;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .difm-banner-section .grid-cols-2 {
-        grid-template-columns: 1fr;
-    }
-    
-    .difm-banner-section .flex-col {
-        flex-direction: column;
-    }
-    
-    .difm-banner-section .sm\:flex-row {
-        flex-direction: column;
-    }
-}
-
-/* Dark mode specific adjustments */
-.dark .difm-banner-section {
-    background: linear-gradient(135deg, rgb(31, 41, 55) 0%, rgb(55, 65, 81) 50%, rgb(31, 41, 55) 100%);
-}
-
-/* Enhanced hover effects */
-.difm-banner-section a:hover {
-    transform: translateY(-2px);
-}
-
-.difm-banner-section a:active {
-    transform: translateY(0);
-}
-
-/* Subtle animations for the visual mockup */
-.difm-banner-section .website-mockup {
-    transition: all 0.3s ease;
-}
-
-.difm-banner-section:hover .website-mockup {
-    transform: translateY(-5px);
-}
-</style>
-
+    </section>
 
     <?php if ($comparison_enable) : ?>
     <!-- Enhanced Plans Comparison Section -->
@@ -1408,20 +1090,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </div>
 
-<!-- Complete JavaScript -->
+<!-- Enhanced JavaScript for Dynamic Currency and Billing -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('=== UNIFIED PRICING PAGE LOADED ===');
+    console.log('=== ENHANCED PRICING PAGE WITH DYNAMIC CURRENCY LOADED ===');
     
     // Find elements
     var pricingPage = document.querySelector('.pricing-page');
     var billingToggle = document.getElementById('pricing-billing-toggle');
     var comparisonToggle = document.getElementById('comparison-billing-toggle');
+    var currencySelector = document.querySelector('.pricing-currency-selector');
     
     // Find all pricing elements
-    var mainMonthlyPricing = document.querySelectorAll('.homepage-monthly-pricing');
-    var mainAnnualPricing = document.querySelectorAll('.homepage-annual-pricing');
-    var mainAnnualSavings = document.querySelectorAll('.homepage-annual-savings');
+    var mainMonthlyPricing = document.querySelectorAll('.homepage-monthly-pricing, .monthly-pricing');
+    var mainAnnualPricing = document.querySelectorAll('.homepage-annual-pricing, .annual-pricing');
+    var mainAnnualSavings = document.querySelectorAll('.homepage-annual-savings, .annual-savings');
     var comparisonMonthlyPricing = document.querySelectorAll('.monthly-pricing');
     var comparisonAnnualPricing = document.querySelectorAll('.annual-pricing');
     
@@ -1565,6 +1248,9 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 showMonthlyPricing();
             }
+            
+            // Update button URLs
+            updateButtonUrls(isYearly);
         });
     }
     
@@ -1585,7 +1271,256 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 showMonthlyPricing();
             }
+            
+            // Update button URLs
+            updateButtonUrls(isYearly);
         });
+    }
+    
+    function updateButtonUrls(isAnnual) {
+        var pricingButtons = document.querySelectorAll('.pricing-button');
+        pricingButtons.forEach(function(button) {
+            var newUrl = isAnnual ? 
+                button.dataset.annualUrl : 
+                button.dataset.monthlyUrl;
+            
+            if (newUrl) {
+                button.href = newUrl;
+            }
+        });
+    }
+    
+    // Currency change functionality
+    document.addEventListener('currencyChanged', function(e) {
+        updateAllPricing(e.detail.currency);
+    });
+    
+    // Listen for currency selector changes
+    document.addEventListener('click', function(e) {
+        var currencyItem = e.target.closest('[data-currency-code], [data-currency]');
+        if (!currencyItem) return;
+        
+        var newCurrency = currencyItem.dataset.currency || currencyItem.dataset.currencyCode;
+        if (newCurrency) {
+            updateAllPricing(newCurrency);
+        }
+    });
+    
+    function updateAllPricing(currencyCode) {
+        console.log('Updating all pricing to currency:', currencyCode);
+        
+        // Show loading state
+        var pricingSection = document.querySelector('.unified-pricing-section');
+        if (pricingSection) {
+            pricingSection.classList.add('pricing-updating');
+            pricingSection.style.opacity = '0.7';
+            pricingSection.style.pointerEvents = 'none';
+        }
+        
+        // Get all plan IDs
+        var planCards = document.querySelectorAll('[data-plan-id]');
+        var planIds = Array.from(planCards).map(function(card) { 
+            return card.dataset.planId; 
+        }).filter(function(id) { 
+            return id && id !== 'free' && id !== 'pro' && id !== 'enterprise'; 
+        });
+        
+        if (planIds.length > 0) {
+            // Fetch pricing for real plans
+            fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    action: 'get_all_pricing_in_currency',
+                    currency: currencyCode,
+                    plan_ids: planIds.join(','),
+                    nonce: '<?php echo wp_create_nonce("get_pricing"); ?>'
+                })
+            })
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data.success && data.data.pricing) {
+                    updatePricingCards(data.data.pricing, data.data.currency_info);
+                    showCurrencyChangeNotification(currencyCode);
+                } else {
+                    console.error('Failed to update pricing:', data.data);
+                    // Fallback: update currency symbols only
+                    updateCurrencySymbolsOnly(currencyCode);
+                    showCurrencyChangeNotification(currencyCode);
+                }
+            })
+            .catch(function(error) {
+                console.error('Error updating pricing:', error);
+                // Fallback: update currency symbols only
+                updateCurrencySymbolsOnly(currencyCode);
+                showCurrencyChangeNotification(currencyCode);
+            })
+            .finally(function() {
+                // Remove loading state
+                if (pricingSection) {
+                    pricingSection.classList.remove('pricing-updating');
+                    pricingSection.style.opacity = '';
+                    pricingSection.style.pointerEvents = '';
+                }
+            });
+        } else {
+            // Update fallback pricing cards
+            updateCurrencySymbolsOnly(currencyCode);
+            showCurrencyChangeNotification(currencyCode);
+            if (pricingSection) {
+                pricingSection.classList.remove('pricing-updating');
+                pricingSection.style.opacity = '';
+                pricingSection.style.pointerEvents = '';
+            }
+        }
+    }
+    
+    function updatePricingCards(pricingData, currencyInfo) {
+        Object.keys(pricingData).forEach(function(planId) {
+            var pricing = pricingData[planId];
+            var card = document.querySelector('[data-plan-id="' + planId + '"]');
+            
+            if (!card) return;
+            
+            try {
+                // Update monthly price
+                var monthlyAmount = card.querySelector('[data-price-type="monthly"][data-plan-id="' + planId + '"]');
+                if (monthlyAmount && pricing.monthly_price_formatted) {
+                    monthlyAmount.textContent = pricing.monthly_price_formatted.replace(/[^\d.,€£$¥]/g, '');
+                }
+                
+                // Update annual monthly equivalent
+                var annualMonthlyAmount = card.querySelector('[data-price-type="annual-monthly"][data-plan-id="' + planId + '"]');
+                if (annualMonthlyAmount && pricing.annual_monthly_equivalent_formatted) {
+                    annualMonthlyAmount.textContent = pricing.annual_monthly_equivalent_formatted.replace(/[^\d.,€£$¥]/g, '');
+                }
+                
+                // Update annual total
+                var annualAmount = card.querySelector('[data-price-type="annual"][data-plan-id="' + planId + '"]');
+                if (annualAmount && pricing.annual_price_formatted) {
+                    annualAmount.textContent = pricing.annual_price_formatted;
+                }
+                
+                // Update savings
+                var savingsAmount = card.querySelector('[data-savings-amount][data-plan-id="' + planId + '"]');
+                if (savingsAmount && pricing.savings_formatted) {
+                    savingsAmount.textContent = pricing.savings_formatted;
+                }
+                
+                // Update currency symbols if they exist as separate elements
+                var currencySymbols = card.querySelectorAll('.currency-symbol');
+                currencySymbols.forEach(function(symbol) {
+                    if (currencyInfo && currencyInfo.symbol) {
+                        symbol.textContent = currencyInfo.symbol;
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error updating card pricing:', error, planId);
+            }
+        });
+    }
+    
+    function updateCurrencySymbolsOnly(currencyCode) {
+        // Get currency symbol based on code
+        var currencySymbols = {
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+            'CAD': 'C',
+            'AUD': 'A',
+            'JPY': '¥',
+            'CHF': 'CHF',
+            'SEK': 'kr',
+            'NOK': 'kr',
+            'DKK': 'kr'
+        };
+        
+        var symbol = currencySymbols[currencyCode] || '$';
+        
+        // Update fallback pricing if exists
+        var fallbackCards = document.querySelectorAll('[data-plan-id="free"], [data-plan-id="pro"], [data-plan-id="enterprise"]');
+        
+        fallbackCards.forEach(function(card) {
+            var priceAmounts = card.querySelectorAll('.price-amount');
+            priceAmounts.forEach(function(amount) {
+                var currentText = amount.textContent;
+                var numericValue = currentText.replace(/[^\d]/g, '');
+                if (numericValue) {
+                    amount.textContent = symbol + numericValue;
+                }
+            });
+            
+            // Update annual billing text
+            var annualTexts = card.querySelectorAll('p, div');
+            annualTexts.forEach(function(text) {
+                if (text.textContent.includes('Billed annually')) {
+                    var matches = text.textContent.match(/\d+/);
+                    if (matches) {
+                        var planId = card.dataset.planId;
+                        var annualPrice;
+                        
+                        switch(planId) {
+                            case 'pro':
+                                annualPrice = 276;
+                                break;
+                            case 'enterprise':
+                                annualPrice = 948;
+                                break;
+                            default:
+                                annualPrice = parseInt(matches[0]);
+                        }
+                        
+                        // Simple currency conversion estimation (you'd want real rates)
+                        if (currencyCode === 'EUR') {
+                            annualPrice = Math.round(annualPrice * 0.85);
+                        } else if (currencyCode === 'GBP') {
+                            annualPrice = Math.round(annualPrice * 0.75);
+                        }
+                        
+                        text.innerHTML = text.innerHTML.replace(/[$€£¥]\d+/, symbol + annualPrice);
+                    }
+                }
+            });
+        });
+    }
+    
+    function showCurrencyChangeNotification(currencyCode) {
+        // Remove any existing notifications
+        var existingNotifications = document.querySelectorAll('.currency-change-notification');
+        existingNotifications.forEach(function(n) { n.remove(); });
+        
+        // Create notification
+        var notification = document.createElement('div');
+        notification.className = 'currency-change-notification fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+        notification.innerHTML = '\
+            <div class="flex items-center">\
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">\
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>\
+                </svg>\
+                <span>Prices updated to ' + currencyCode + '</span>\
+            </div>\
+        ';
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        requestAnimationFrame(function() {
+            notification.classList.remove('translate-x-full');
+            notification.classList.add('translate-x-0');
+        });
+        
+        // Remove after 3 seconds
+        setTimeout(function() {
+            notification.classList.add('translate-x-full');
+            setTimeout(function() { 
+                if (notification.parentNode) {
+                    notification.remove(); 
+                }
+            }, 300);
+        }, 3000);
     }
     
     // FAQ toggle functionality
@@ -1645,179 +1580,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Initialize Pricing Carousel
-    initializePricingCarousel();
+    // Enhanced currency change listener
+    document.addEventListener('currencyChanged', function(e) {
+        console.log('Currency changed event received:', e.detail.currency);
+        updateAllPricing(e.detail.currency);
+    });
     
-    function initializePricingCarousel() {
-        var carouselWrapper = document.querySelector('.pricing-carousel-wrapper');
-        if (!carouselWrapper) {
-            console.log('No carousel found - using standard grid');
-            return;
-        }
-        
-        var carouselContainer = document.querySelector('.pricing-carousel-container');
-        var carouselTrack = document.querySelector('.pricing-carousel-track');
-        var prevBtn = document.querySelector('.pricing-nav-prev');
-        var nextBtn = document.querySelector('.pricing-nav-next');
-        var dots = document.querySelectorAll('.carousel-dot');
-        
-        if (!carouselTrack) {
-            console.log('Carousel track not found');
-            return;
-        }
-        
-        var totalPlans = parseInt(carouselTrack.getAttribute('data-total-plans'));
-        var currentSlide = 0;
-        var cardsPerView = 3; // Default for desktop
-        var maxSlides = Math.max(0, Math.ceil(totalPlans / cardsPerView) - 1);
-        
-        // Responsive cards per view
-        function updateCardsPerView() {
-            if (window.innerWidth < 769) {
-                cardsPerView = 1; // Mobile: 1 card
-            } else if (window.innerWidth < 1025) {
-                cardsPerView = 2; // Tablet: 2 cards
-            } else {
-                cardsPerView = 3; // Desktop: 3 cards
-            }
-            maxSlides = Math.max(0, Math.ceil(totalPlans / cardsPerView) - 1);
-            currentSlide = Math.min(currentSlide, maxSlides);
-            updateCarousel();
-        }
-        
-        function updateCarousel() {
-            if (!carouselTrack) return;
-            
-            var cardWidth = 320;
-            var gap = 20;
-            var translateX = currentSlide * cardsPerView * (cardWidth + gap);
-            
-            carouselTrack.style.transform = 'translateX(-' + translateX + 'px)';
-            
-            // Update navigation buttons
-            if (prevBtn) {
-                prevBtn.disabled = currentSlide === 0;
-            }
-            if (nextBtn) {
-                nextBtn.disabled = currentSlide >= maxSlides;
-            }
-            
-            // Update dots
-            for (var i = 0; i < dots.length; i++) {
-                if (i === currentSlide) {
-                    dots[i].classList.add('active');
-                } else {
-                    dots[i].classList.remove('active');
-                }
-            }
-        }
-        
-        // Navigation button events
-        if (prevBtn) {
-            prevBtn.addEventListener('click', function() {
-                if (currentSlide > 0) {
-                    currentSlide--;
-                    updateCarousel();
-                }
-            });
-        }
-        
-        if (nextBtn) {
-            nextBtn.addEventListener('click', function() {
-                if (currentSlide < maxSlides) {
-                    currentSlide++;
-                    updateCarousel();
-                }
-            });
-        }
-        
-        // Dot navigation
-        for (var i = 0; i < dots.length; i++) {
-            dots[i].addEventListener('click', function() {
-                var slideIndex = parseInt(this.getAttribute('data-slide'));
-                currentSlide = slideIndex;
-                updateCarousel();
-            });
-        }
-        
-        // Touch/swipe support
-        var startX = 0;
-        var currentX = 0;
-        var isDragging = false;
-        var threshold = 50;
-        
-        carouselTrack.addEventListener('touchstart', function(e) {
-            startX = e.touches[0].clientX;
-            isDragging = true;
-            carouselTrack.style.transition = 'none';
-        });
-        
-        carouselTrack.addEventListener('touchmove', function(e) {
-            if (!isDragging) return;
-            currentX = e.touches[0].clientX;
-            var diffX = currentX - startX;
-            
-            if ((currentSlide === 0 && diffX > 0) || (currentSlide >= maxSlides && diffX < 0)) {
-                diffX = diffX * 0.3;
-            }
-            
-            var cardWidth = 320;
-            var gap = 20;
-            var baseTranslateX = currentSlide * cardsPerView * (cardWidth + gap);
-            carouselTrack.style.transform = 'translateX(-' + (baseTranslateX - diffX) + 'px)';
-        });
-        
-        carouselTrack.addEventListener('touchend', function() {
-            if (!isDragging) return;
-            isDragging = false;
-            
-            carouselTrack.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-            
-            var diffX = currentX - startX;
-            
-            if (Math.abs(diffX) > threshold) {
-                if (diffX > 0 && currentSlide > 0) {
-                    currentSlide--;
-                } else if (diffX < 0 && currentSlide < maxSlides) {
-                    currentSlide++;
-                }
-            }
-            
-            updateCarousel();
-        });
-        
-        // Keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (!carouselWrapper || document.activeElement.tagName === 'INPUT') return;
-            
-            if (e.key === 'ArrowLeft' && currentSlide > 0) {
-                currentSlide--;
-                updateCarousel();
-                e.preventDefault();
-            } else if (e.key === 'ArrowRight' && currentSlide < maxSlides) {
-                currentSlide++;
-                updateCarousel();
-                e.preventDefault();
-            }
-        });
-        
-        // Window resize handler
-        var resizeTimeout;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(function() {
-                updateCardsPerView();
-            }, 150);
-        });
-        
-        // Initialize
-        updateCardsPerView();
-        updateCarousel();
-        
-        console.log('Pricing carousel initialized');
-    }
-    
-    console.log('Unified pricing page setup complete');
+    console.log('Enhanced pricing page setup complete');
 });
 </script>
 
